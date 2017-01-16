@@ -4,7 +4,7 @@
     android:id="@+id/activity_settings2"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context="com.jiji.iready.SettingsActivity2">
+    tools:context="com.jiji.object.SettingsActivity2">
 
     <include layout="@layout/activity_common_toolsbar" />
 </RelativeLayout>

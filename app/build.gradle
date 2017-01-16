@@ -5,7 +5,7 @@ android {
     buildToolsVersion "24.0.2"
     useLibrary 'org.apache.http.legacy'
     defaultConfig {
-        applicationId "com.jiji.iready"
+        applicationId "com.yaozu.object"
         minSdkVersion 15
         targetSdkVersion 24
         versionCode 1

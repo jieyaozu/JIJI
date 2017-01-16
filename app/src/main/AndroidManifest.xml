@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-    package="com.jiji.iready">
+    package="com.yaozu.object">
 
     <application
         android:allowBackup="false"
@@ -8,7 +8,9 @@
         android:label="@string/app_name"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".activity.SplashActivity">
+        <activity
+            android:name="com.yaozu.object.activity.SplashActivity"
+            android:theme="@style/NoTitleBar">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -16,7 +18,7 @@
             </intent-filter>
         </activity>
         <activity
-            android:name=".SettingsActivity"
+            android:name="com.yaozu.object.SettingsActivity"
             android:label="@string/title_activity_settings"
             android:parentActivityName="android.support.v7.app.AppCompatActivity">
             <meta-data
@@ -24,13 +26,12 @@
                 android:value="android.support.v7.app.AppCompatActivity" />
         </activity>
         <activity
-            android:name=".SettingsActivity2"
+            android:name="com.yaozu.object.SettingsActivity2"
             android:theme="@style/SwipeBackTheme" />
         <activity
-            android:name=".MainActivity"
+            android:name="com.yaozu.object.MainActivity"
             android:launchMode="singleTask"
-            android:screenOrientation="portrait"
-            android:theme="@style/AppTheme" />
+            android:screenOrientation="portrait" />
     </application>
 
 </manifest>
