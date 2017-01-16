@@ -2,7 +2,6 @@ package com.yaozu.object;
 
 import android.support.v7.app.ActionBar;
 
-import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
 
 public class SettingsActivity2 extends BaseActivity {
