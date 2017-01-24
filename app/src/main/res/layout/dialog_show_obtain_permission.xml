@@ -1,0 +1,53 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@drawable/white_conner_shape"
+    android:orientation="vertical">
+
+    <TextView
+        android:id="@+id/dialog_planunit_message"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="10dp"
+        android:layout_marginRight="10dp"
+        android:layout_marginTop="5dp"
+        android:padding="10dp"
+        android:text="获取联系人列表失败！\n可能是您没有授予应用权限，请转到系统设置中授予应用获取手机通讯录的权限"
+        android:textColor="@color/nomralblack"
+        android:textSize="16dp"
+        android:typeface="serif" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:padding="10dp">
+
+        <TextView
+            android:id="@+id/dialog_cancel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_toLeftOf="@+id/dialog_obtain"
+            android:background="@drawable/main_listview_selector"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="5dp"
+            android:text="取消"
+            android:textSize="16dp" />
+
+        <TextView
+            android:id="@+id/dialog_obtain"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:background="@drawable/main_listview_selector"
+            android:paddingBottom="5dp"
+            android:paddingLeft="15dp"
+            android:paddingRight="15dp"
+            android:paddingTop="5dp"
+            android:text="去开启"
+            android:textColor="@color/colorPrimaryDark"
+            android:textSize="16dp" />
+    </RelativeLayout>
+</LinearLayout>

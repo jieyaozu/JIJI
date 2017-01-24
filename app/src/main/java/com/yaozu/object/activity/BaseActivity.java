@@ -27,6 +27,9 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
         mHelper.onActivityCreate();
 
         setContentView();
+        initView();
+        initData();
+        setListener();
         Toolbar myToolbar = (Toolbar) findViewById(R.id.common_toolbar);
         setSupportActionBar(myToolbar);
         // Get a support ActionBar corresponding to this toolbar
@@ -61,6 +64,12 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
     protected abstract void setContentView();
 
     protected abstract void settingActionBar(ActionBar actionBar);
+
+    protected abstract void initView();
+
+    protected abstract void initData();
+
+    protected abstract void setListener();
 
     @Override
     public void finish() {

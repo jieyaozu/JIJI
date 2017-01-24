@@ -17,4 +17,19 @@ public class SettingsActivity2 extends BaseActivity {
         // Enable the Up button
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
+
+    @Override
+    protected void initView() {
+
+    }
+
+    @Override
+    protected void initData() {
+
+    }
+
+    @Override
+    protected void setListener() {
+
+    }
 }
