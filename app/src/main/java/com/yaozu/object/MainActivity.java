@@ -16,7 +16,6 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.ListView;
 import android.widget.TextView;
-import android.widget.Toast;
 
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.ContactsAdapter;
@@ -139,7 +138,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             }
 
             if (list.size() == 0) {
-                showDeleteConfirmDialog();
+                showObtainPermissionDialog();
             } else {
                 adapter.clearData();
                 adapter.setAddDataList(list);
@@ -162,7 +161,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             return "#";   //获取sort key的首个字符，如果是英文字母就直接返回，否则返回#。
     }
 
-    private void showDeleteConfirmDialog() {
+    private void showObtainPermissionDialog() {
         dialog = new Dialog(this, R.style.NobackDialog);
         View view = View.inflate(this, R.layout.dialog_show_obtain_permission, null);
         TextView cancel = (TextView) view.findViewById(R.id.dialog_cancel);
