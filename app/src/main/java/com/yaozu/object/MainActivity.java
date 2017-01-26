@@ -27,7 +27,7 @@ import java.util.ArrayList;
 import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
-    private Button btShowContacts;
+    private Button btShowContacts, btShareWinxin;
     private ListView listView;
     private List<ContactsInfo> list = new ArrayList<ContactsInfo>();
     private ContactsAdapter adapter;
@@ -50,6 +50,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initView() {
         btShowContacts = (Button) findViewById(R.id.activity_main_showcontacts);
+        btShareWinxin = (Button) findViewById(R.id.activity_main_sharewinxin);
         listView = (ListView) findViewById(R.id.activity_main_listview);
     }
 
@@ -62,6 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void setListener() {
         btShowContacts.setOnClickListener(this);
+        btShareWinxin.setOnClickListener(this);
     }
 
     @Override
@@ -112,6 +114,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 boolean status = Utils.selfPermissionGranted(MainActivity.this, android.Manifest.permission.READ_CONTACTS);
                 boolean isShould = ActivityCompat.shouldShowRequestPermissionRationale(MainActivity.this, android.Manifest.permission.READ_CONTACTS);
                 getContacts();
+                break;
+            case R.id.activity_main_sharewinxin:
+
                 break;
         }
     }

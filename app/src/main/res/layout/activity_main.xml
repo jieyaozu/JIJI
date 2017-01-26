@@ -9,11 +9,23 @@
 
     <include layout="@layout/activity_common_toolsbar" />
 
-    <Button
-        android:id="@+id/activity_main_showcontacts"
+    <LinearLayout
         android:layout_width="match_parent"
-        android:layout_height="200dp"
-        android:text="展示联系人列表" />
+        android:layout_height="wrap_content"
+        android:orientation="horizontal">
+
+        <Button
+            android:id="@+id/activity_main_showcontacts"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="展示联系人列表" />
+
+        <Button
+            android:id="@+id/activity_main_sharewinxin"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="分享到微信小程序" />
+    </LinearLayout>
 
     <TextView
         android:layout_width="wrap_content"

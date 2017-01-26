@@ -12,8 +12,8 @@
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
         <activity
-            android:name="com.yaozu.object.activity.SplashActivity"
-            android:theme="@style/NoTitleBar">
+            android:name="com.yaozu.object.MainActivity"
+            android:theme="@style/AppTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
 
@@ -32,7 +32,7 @@
             android:name="com.yaozu.object.SettingsActivity2"
             android:theme="@style/SwipeBackTheme" />
         <activity
-            android:name="com.yaozu.object.MainActivity"
+            android:name="com.yaozu.object.activity.SplashActivity"
             android:launchMode="singleTask"
             android:screenOrientation="portrait" />
     </application>
