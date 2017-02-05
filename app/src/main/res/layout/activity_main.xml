@@ -19,6 +19,13 @@
             android:layout_height="match_parent"
             android:layout_above="@+id/main_bottom_layout" />
 
+        <ImageView
+            android:id="@+id/main_actionbar_shadow"
+            android:layout_width="match_parent"
+            android:layout_height="1px"
+            android:layout_above="@+id/main_bottom_layout"
+            android:background="#447F7F7F" />
+
         <RelativeLayout
             android:id="@+id/main_bottom_layout"
             android:layout_width="match_parent"

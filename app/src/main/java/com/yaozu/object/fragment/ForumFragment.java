@@ -7,9 +7,11 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 
 import com.yaozu.object.R;
+import com.yaozu.object.utils.Utils;
 
 /**
  * Created by jxj42 on 2017/2/5.
@@ -65,6 +67,8 @@ public class ForumFragment extends Fragment {
             } else {
                 view = View.inflate(ForumFragment.this.getActivity(), R.layout.item_listview_forum, null);
             }
+            ImageView userIcon = (ImageView) view.findViewById(R.id.item_listview_forum_usericon);
+            Utils.setUserImg("", userIcon);
             return view;
         }
     }
