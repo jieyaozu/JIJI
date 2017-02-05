@@ -20,4 +20,8 @@
     <style name="NobackDialog" parent="@android:style/Theme.Dialog">
         <item name="android:windowBackground">@android:color/transparent</item>
     </style>
+
+    <style name="RippleBackground">
+        <item name="android:background">@android:color/transparent</item>
+    </style>
 </resources>

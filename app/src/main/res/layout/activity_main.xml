@@ -9,32 +9,55 @@
 
     <include layout="@layout/activity_common_toolsbar" />
 
-    <LinearLayout
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="horizontal">
+        android:layout_height="match_parent">
 
-        <Button
-            android:id="@+id/activity_main_showcontacts"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="展示联系人列表" />
+        <FrameLayout
+            android:id="@+id/fragment_container"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/main_bottom_layout" />
 
-        <Button
-            android:id="@+id/activity_main_sharewinxin"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:text="分享到微信小程序" />
-    </LinearLayout>
+        <RelativeLayout
+            android:id="@+id/main_bottom_layout"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:background="#ffffffff">
 
-    <TextView
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginLeft="5dp"
-        android:text="联系人:" />
+            <RadioGroup
+                android:id="@+id/main_bottom_layout_group"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
 
-    <ListView
-        android:id="@+id/activity_main_listview"
-        android:layout_width="match_parent"
-        android:layout_height="match_parent" />
+                <RadioButton
+                    android:id="@+id/main_bottom_raido_forum"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@drawable/actionbar_myplan_selector" />
+
+                <RadioButton
+                    android:id="@+id/main_bottom_raido_find"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@drawable/actionbar_find_selector"
+                    android:paddingLeft="0dp" />
+
+                <RadioButton
+                    android:id="@+id/main_bottom_raido_mine"
+                    android:layout_width="0dp"
+                    android:layout_height="match_parent"
+                    android:layout_weight="1"
+                    android:button="@null"
+                    android:drawableTop="@drawable/actionbar_mine_selector" />
+            </RadioGroup>
+        </RelativeLayout>
+    </RelativeLayout>
 </LinearLayout>
