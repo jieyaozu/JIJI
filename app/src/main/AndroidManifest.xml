@@ -40,6 +40,7 @@
         <activity
             android:name=".activity.SendPostActivity"
             android:theme="@style/SwipeBackTheme"
+            android:windowSoftInputMode="adjustResize"
             android:screenOrientation="portrait" />
     </application>
 

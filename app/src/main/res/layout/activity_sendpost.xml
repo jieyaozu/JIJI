@@ -5,4 +5,47 @@
     android:orientation="vertical">
 
     <include layout="@layout/activity_common_toolsbar" />
+
+    <EditText
+        android:id="@+id/activity_sendpost_edit_title"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@null"
+        android:gravity="top"
+        android:hint="标题"
+        android:maxLines="1"
+        android:padding="15dp"
+        android:paddingRight="10dp"
+        android:textColor="@color/nomralblack" />
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="1px"
+        android:background="@color/divider_background_color" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent">
+
+        <EditText
+            android:id="@+id/activity_sendpost_edit_content"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_above="@+id/activity_sendpost_edit_photo"
+            android:background="@null"
+            android:gravity="top"
+            android:padding="15dp"
+            android:textColor="@color/nomralblack"
+            android:textSize="14dp" />
+
+        <ImageView
+            android:id="@+id/activity_sendpost_edit_photo"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentBottom="true"
+            android:layout_alignParentRight="true"
+            android:layout_marginRight="10dp"
+            android:padding="10dp"
+            android:src="@drawable/compose_pic_selector" />
+    </RelativeLayout>
 </LinearLayout>
