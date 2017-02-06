@@ -36,9 +36,8 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
-                    android:layout_marginTop="5dp"
                     android:layout_toRightOf="@+id/item_listview_forum_usericon"
-                    android:text="name"
+                    android:text="混世大魔王"
                     android:textColor="@color/nomralblack"
                     android:textSize="14dp" />
 

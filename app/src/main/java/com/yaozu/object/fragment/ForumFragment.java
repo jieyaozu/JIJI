@@ -9,24 +9,37 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
+import android.widget.Toast;
 
 import com.yaozu.object.R;
+import com.yaozu.object.adapter.ForumListViewAdapter;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
+import com.yaozu.object.widget.NoScrollListView;
 
 /**
  * Created by jxj42 on 2017/2/5.
  */
 
-public class ForumFragment extends Fragment {
+public class ForumFragment extends Fragment implements View.OnClickListener {
     public static String TAG = "ForumFragment";
     private ListView mListView;
-    private ListViewAdapter listViewAdapter;
+    private ForumListViewAdapter listViewAdapter;
+    private View mViewHeader;
+    private NoScrollListView mHeaderListView;
+    private HeaderListViewAdapter mHeaderAdapter;
+    private ImageView ivButton;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        listViewAdapter = new ListViewAdapter();
+        listViewAdapter = new ForumListViewAdapter(this.getActivity());
         mListView.setAdapter(listViewAdapter);
+
+        mHeaderAdapter = new HeaderListViewAdapter();
+        mHeaderListView.setAdapter(mHeaderAdapter);
+
+        ivButton.setOnClickListener(this);
     }
 
     @Override
@@ -39,14 +52,28 @@ public class ForumFragment extends Fragment {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_forum, container, false);
         mListView = (ListView) view.findViewById(R.id.fragment_forum_listview);
+        mViewHeader = inflater.inflate(R.layout.header_list_forum, null);
+        ivButton = (ImageView) view.findViewById(R.id.fragment_forum_imageview);
+
+        mHeaderListView = (NoScrollListView) mViewHeader.findViewById(R.id.header_list_forum_listview);
+        mListView.addHeaderView(mViewHeader);
         return view;
     }
 
-    public class ListViewAdapter extends BaseAdapter {
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.fragment_forum_imageview:
+                IntentUtil.toSendPostActivity(this.getActivity());
+                break;
+        }
+    }
+
+    public class HeaderListViewAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
-            return 20;
+            return 5;
         }
 
         @Override
@@ -65,10 +92,8 @@ public class ForumFragment extends Fragment {
             if (convertView != null) {
                 view = convertView;
             } else {
-                view = View.inflate(ForumFragment.this.getActivity(), R.layout.item_listview_forum, null);
+                view = View.inflate(ForumFragment.this.getActivity(), R.layout.item_listview_header_forum, null);
             }
-            ImageView userIcon = (ImageView) view.findViewById(R.id.item_listview_forum_usericon);
-            Utils.setUserImg("", userIcon);
             return view;
         }
     }

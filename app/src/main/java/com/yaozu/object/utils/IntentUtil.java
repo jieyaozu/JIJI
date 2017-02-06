@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
+import com.yaozu.object.activity.SendPostActivity;
 
 /**
  * Created by jxj42 on 2016/12/22.
@@ -20,5 +21,11 @@ public class IntentUtil {
 
     private static void overridePendingTransition(Context context) {
         ((FragmentActivity) context).overridePendingTransition(R.anim.right_enter_page, R.anim.right_quit_page);
+    }
+
+    public static void toSendPostActivity(Context context) {
+        Intent setting = new Intent(context, SendPostActivity.class);
+        context.startActivity(setting);
+        overridePendingTransition(context);
     }
 }
