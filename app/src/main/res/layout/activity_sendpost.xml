@@ -40,8 +40,8 @@
                 android:layout_height="match_parent"
                 android:background="@null"
                 android:gravity="top"
-                android:padding="15dp"
                 android:minLines="20"
+                android:padding="15dp"
                 android:textColor="@color/nomralblack"
                 android:textSize="14dp" />
         </ScrollView>
@@ -81,6 +81,7 @@
                     android:layout_marginRight="5dp" />
 
                 <TextView
+                    android:id="@+id/activity_sendpost_edit_indicate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_horizontal"

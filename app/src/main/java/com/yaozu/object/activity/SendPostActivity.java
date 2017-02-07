@@ -12,8 +12,8 @@ import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.ScrollView;
+import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
@@ -43,6 +43,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     private final int REQUEST_RESULT_SELECT_ALBUM = 0;
 
     private HorizontalListView mHorizontalListView;
+    private TextView tvIndicate;
 
     @Override
     protected void setContentView() {
@@ -82,6 +83,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
         mHorizontalListView = (HorizontalListView) findViewById(R.id.activity_sendpost_edit_hlistview);
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
+        tvIndicate = (TextView) findViewById(R.id.activity_sendpost_edit_indicate);
     }
 
     @Override
@@ -137,7 +139,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.activity_sendpost_edit_photo:
                 hideSoftInput();
-                if(mListData.size() == 0){
+                if (mListData.size() == 0) {
                     Intent intent = new Intent(this, MyAlbumActivity.class);
                     intent.putExtra(IntentKey.INTENT_SELECT_ALBUM_SINGLE, false);
                     intent.putExtra(IntentKey.HAVE_SELECTED_COUNT, selectedCount);
@@ -161,6 +163,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
         @Override
         public int getCount() {
+            tvIndicate.setText(mListData.size() + "/6");
             return mListData.size() + 1;
         }
 
