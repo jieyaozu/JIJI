@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
+import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.SendPostActivity;
 
 /**
@@ -24,8 +25,14 @@ public class IntentUtil {
     }
 
     public static void toSendPostActivity(Context context) {
-        Intent setting = new Intent(context, SendPostActivity.class);
-        context.startActivity(setting);
+        Intent sendPost = new Intent(context, SendPostActivity.class);
+        context.startActivity(sendPost);
+        overridePendingTransition(context);
+    }
+
+    public static void toPostDetailActivity(Context context) {
+        Intent postDetail = new Intent(context, PostDetailActivity.class);
+        context.startActivity(postDetail);
         overridePendingTransition(context);
     }
 }

@@ -7,6 +7,7 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 
 import com.yaozu.object.R;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 
 /**
@@ -45,6 +46,12 @@ public class ForumListViewAdapter extends BaseAdapter {
         }
         ImageView userIcon = (ImageView) view.findViewById(R.id.item_listview_forum_usericon);
         Utils.setUserImg("", userIcon);
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toPostDetailActivity(mContext);
+            }
+        });
         return view;
     }
 }

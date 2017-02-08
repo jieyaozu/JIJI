@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <include layout="@layout/activity_common_toolsbar" />
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorWhite">
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/divider_background_color" />
+
+        <EditText
+            android:id="@+id/activity_postdetail_edit"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginBottom="7dp"
+            android:layout_marginLeft="5dp"
+            android:layout_marginRight="5dp"
+            android:layout_marginTop="7dp"
+            android:layout_toLeftOf="@+id/activity_postdetail_more_layout"
+            android:background="@drawable/edit_shape"
+            android:hint="说点什么吧..."
+            android:maxLines="4"
+            android:padding="8dp"
+            android:textColor="@color/nomralblack"
+            android:textSize="14dp" />
+
+        <LinearLayout
+            android:id="@+id/activity_postdetail_more_layout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:orientation="horizontal">
+
+            <ImageView
+                android:id="@+id/activity_postdetail_more"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_vertical"
+                android:padding="10dp"
+                android:src="@drawable/select_more_selector" />
+
+            <Button
+                android:id="@+id/activity_postdetail_send"
+                android:layout_width="60dp"
+                android:layout_height="35dp"
+                android:layout_gravity="center_vertical"
+                android:layout_marginRight="5dp"
+                android:background="@drawable/button_bg_selector"
+                android:text="发送"
+                android:visibility="gone" />
+        </LinearLayout>
+    </RelativeLayout>
+
+</RelativeLayout>

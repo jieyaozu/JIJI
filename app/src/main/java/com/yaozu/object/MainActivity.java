@@ -74,26 +74,26 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
-
-        MenuItem searchItem = menu.findItem(R.id.action_search);
-        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-
-        // Configure the search info and add any event listeners...
-
-        MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
-            @Override
-            public boolean onMenuItemActionExpand(MenuItem item) {
-                return false;
-            }
-
-            @Override
-            public boolean onMenuItemActionCollapse(MenuItem item) {
-                return false;
-            }
-        };
-        MenuItem menuItem = menu.findItem(R.id.action_share);
-        MenuItemCompat.setOnActionExpandListener(menuItem, expandListener);
+//        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
+//
+//        MenuItem searchItem = menu.findItem(R.id.action_search);
+//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
+//
+//        // Configure the search info and add any event listeners...
+//
+//        MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
+//            @Override
+//            public boolean onMenuItemActionExpand(MenuItem item) {
+//                return false;
+//            }
+//
+//            @Override
+//            public boolean onMenuItemActionCollapse(MenuItem item) {
+//                return false;
+//            }
+//        };
+//        MenuItem menuItem = menu.findItem(R.id.action_share);
+//        MenuItemCompat.setOnActionExpandListener(menuItem, expandListener);
         return true;
     }
 
