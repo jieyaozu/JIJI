@@ -104,7 +104,7 @@
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
             android:paddingTop="10dp"
-            android:text="这里是详细的内容"
+            android:text="这里是详细的内容,不知道啊"
             android:textColor="@color/nomralblack"
             android:textSize="14dp" />
 
@@ -117,6 +117,14 @@
             android:layout_marginRight="10dp"
             android:numColumns="3"
             android:visibility="visible" />
+
+        <ImageView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center_horizontal"
+            android:layout_marginBottom="15dp"
+            android:layout_marginTop="10dp"
+            android:src="@drawable/zhutie_good" />
     </LinearLayout>
 
     <View
