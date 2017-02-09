@@ -56,6 +56,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private ListView mListView;
     private View headerView;
     private PostDetailAdapter postDetailAdapter;
+    private ImageView ivSupport;
 
     @Override
     protected void setContentView() {
@@ -119,6 +120,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     private void initHeaderView(View headerView) {
         ImageView userIcon = (ImageView) headerView.findViewById(R.id.item_listview_forum_usericon);
+        ivSupport = (ImageView) headerView.findViewById(R.id.header_postdetail_support);
         Utils.setUserImg("", userIcon);
     }
 
@@ -135,6 +137,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     protected void setListener() {
         ivMore.setOnClickListener(this);
         etEditContent.setOnClickListener(this);
+        ivSupport.setOnClickListener(this);
         etEditContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
             @Override
             public void onFocusChange(View v, boolean hasFocus) {
@@ -202,6 +205,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 break;
             case R.id.activity_postdetail_edit:
                 llMoreLayout.setVisibility(View.GONE);
+                break;
+            case R.id.header_postdetail_support:
+                showToast("点赞");
                 break;
         }
     }

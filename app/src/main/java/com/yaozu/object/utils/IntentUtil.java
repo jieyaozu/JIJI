@@ -8,6 +8,8 @@ import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
 import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.SendPostActivity;
+import com.yaozu.object.activity.user.LoginActivity;
+import com.yaozu.object.activity.user.RegisterActivity;
 
 /**
  * Created by jxj42 on 2016/12/22.
@@ -32,6 +34,18 @@ public class IntentUtil {
 
     public static void toPostDetailActivity(Context context) {
         Intent postDetail = new Intent(context, PostDetailActivity.class);
+        context.startActivity(postDetail);
+        overridePendingTransition(context);
+    }
+
+    public static void toLoginActivity(Context context) {
+        Intent postDetail = new Intent(context, LoginActivity.class);
+        context.startActivity(postDetail);
+        overridePendingTransition(context);
+    }
+
+    public static void toRegisterActivity(Context context) {
+        Intent postDetail = new Intent(context, RegisterActivity.class);
         context.startActivity(postDetail);
         overridePendingTransition(context);
     }

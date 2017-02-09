@@ -51,7 +51,7 @@ public class AuthFailureError extends VolleyError {
     @Override
     public String getMessage() {
         if (mResolutionIntent != null) {
-            return "User needs to (re)enter credentials.";
+            return "LoginInfo needs to (re)enter credentials.";
         }
         return super.getMessage();
     }

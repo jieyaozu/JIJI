@@ -21,4 +21,16 @@ public class Constant {
     public static final DisplayImageOptions IMAGE_OPTIONS_FOR_PARTNER = new DisplayImageOptions.Builder()
             .bitmapConfig(Bitmap.Config.RGB_565).imageScaleType(ImageScaleType.EXACTLY)
             .cacheInMemory(true).cacheOnDisc(true).resetViewBeforeLoading(true).build();
+    public static final String LOGIN_MSG = "login_msg";
+    public static String CRASH_MSG = "crash_msg";
+    public static String SP_PLAN_MSG = "plan_msg";
+    public static String IS_LOGINING = "is_logining";
+    public static String USER_TOKEN = "user_token";
+    public static String USER_NAME = "user_name";
+    public static String USER_ICON = "user_icon";
+    public static String USER_FROM_DEVICE = "user_from_device";
+    public static String USER_SMALL_ICON = "user_small_icon";
+    public static String USER_LEVEL = "user_level";
+    public static String USER_VIP = "user_vip";
+    public static String USER_ACCOUNT = "user_account";
 }

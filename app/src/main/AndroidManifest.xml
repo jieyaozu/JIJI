@@ -32,6 +32,18 @@
                 android:name="android.support.PARENT_ACTIVITY"
                 android:value="android.support.v7.app.AppCompatActivity" />
         </activity>
+
+        <activity
+            android:name=".activity.user.LoginActivity"
+            android:launchMode="singleTask"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+
+        <activity
+            android:name=".activity.user.RegisterActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+
         <activity
             android:name="com.yaozu.object.SettingsActivity2"
             android:theme="@style/SwipeBackTheme" />

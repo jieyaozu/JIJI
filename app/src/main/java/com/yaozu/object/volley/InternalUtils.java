@@ -5,7 +5,7 @@ import java.security.MessageDigest;
 import java.security.NoSuchAlgorithmException;
 
 /**
- * User: mcxiaoke
+ * LoginInfo: mcxiaoke
  * Date: 15/3/17
  * Time: 14:47
  */

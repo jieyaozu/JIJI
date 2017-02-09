@@ -49,7 +49,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initData() {
         updateContent(0);
-        ((RadioButton)findViewById(R.id.main_bottom_raido_forum)).setChecked(true);
+        ((RadioButton) findViewById(R.id.main_bottom_raido_forum)).setChecked(true);
     }
 
     @Override
@@ -74,8 +74,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-//        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
-//
+        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
+
 //        MenuItem searchItem = menu.findItem(R.id.action_search);
 //        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
 //
@@ -100,11 +100,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
-            case R.id.action_settings:
-                IntentUtil.toSettingActivity(this);
-                return true;
             case android.R.id.home:
 
+                return true;
+            case R.id.action_login:
+                IntentUtil.toLoginActivity(this);
                 return true;
             default:
                 // If we got here, the user's action was not recognized.
