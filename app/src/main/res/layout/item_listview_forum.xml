@@ -35,11 +35,13 @@
                     android:id="@+id/item_listview_forum_username"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
+                    android:layout_above="@+id/item_listview_forum_time"
+                    android:layout_marginBottom="2dp"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/item_listview_forum_usericon"
                     android:text="混世大魔王"
                     android:textColor="@color/nomralblack"
-                    android:textSize="14dp" />
+                    android:textSize="12dp" />
 
                 <TextView
                     android:id="@+id/item_listview_forum_time"
@@ -95,11 +97,11 @@
                 android:id="@+id/item_listview_forum_container"
                 android:layout_width="243dp"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
                 android:layout_marginLeft="10dp"
                 android:layout_marginRight="10dp"
-                android:visibility="visible"
-                android:layout_marginBottom="10dp"
-                android:numColumns="3" />
+                android:numColumns="3"
+                android:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

@@ -9,12 +9,10 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.ListView;
-import android.widget.Toast;
 
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.ForumListViewAdapter;
 import com.yaozu.object.utils.IntentUtil;
-import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.NoScrollListView;
 
 /**
@@ -94,6 +92,12 @@ public class ForumFragment extends Fragment implements View.OnClickListener {
             } else {
                 view = View.inflate(ForumFragment.this.getActivity(), R.layout.item_listview_header_forum, null);
             }
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IntentUtil.toPostDetailActivity(ForumFragment.this.getActivity());
+                }
+            });
             return view;
         }
     }

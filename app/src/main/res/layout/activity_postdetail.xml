@@ -4,61 +4,130 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_common_toolsbar" />
+    <include
+        layout="@layout/activity_common_toolsbar" />
 
-    <RelativeLayout
+    <ListView
+        android:id="@+id/activity_postdetail_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_above="@+id/bottom_editlayout"
+        android:divider="@null"
+        android:layout_below="@+id/common_toolbar" />
+
+    <LinearLayout
+        android:id="@+id/bottom_editlayout"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_alignParentBottom="true"
-        android:background="@color/colorWhite">
+        android:orientation="vertical">
 
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="1dp"
-            android:background="@color/divider_background_color" />
-
-        <EditText
-            android:id="@+id/activity_postdetail_edit"
+        <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:layout_marginBottom="7dp"
-            android:layout_marginLeft="5dp"
-            android:layout_marginRight="5dp"
-            android:layout_marginTop="7dp"
-            android:layout_toLeftOf="@+id/activity_postdetail_more_layout"
-            android:background="@drawable/edit_shape"
-            android:hint="说点什么吧..."
-            android:maxLines="4"
-            android:padding="8dp"
-            android:textColor="@color/nomralblack"
-            android:textSize="14dp" />
+            android:background="@color/colorWhite">
 
-        <LinearLayout
-            android:id="@+id/activity_postdetail_more_layout"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_alignParentRight="true"
-            android:layout_centerVertical="true"
-            android:orientation="horizontal">
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:background="@color/divider_background_color" />
 
-            <ImageView
-                android:id="@+id/activity_postdetail_more"
+            <EditText
+                android:id="@+id/activity_postdetail_edit"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="7dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp"
+                android:layout_marginTop="7dp"
+                android:layout_toLeftOf="@+id/activity_postdetail_more_layout"
+                android:background="@drawable/edit_shape"
+                android:hint="说点什么吧..."
+                android:maxLines="4"
+                android:padding="8dp"
+                android:textColor="@color/nomralblack"
+                android:textSize="14dp" />
+
+            <LinearLayout
+                android:id="@+id/activity_postdetail_more_layout"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_gravity="center_vertical"
-                android:padding="10dp"
-                android:src="@drawable/select_more_selector" />
+                android:layout_alignParentRight="true"
+                android:layout_centerVertical="true"
+                android:orientation="horizontal">
 
-            <Button
-                android:id="@+id/activity_postdetail_send"
-                android:layout_width="60dp"
-                android:layout_height="35dp"
-                android:layout_gravity="center_vertical"
-                android:layout_marginRight="5dp"
-                android:background="@drawable/button_bg_selector"
-                android:text="发送"
-                android:visibility="gone" />
+                <RelativeLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="5dp">
+
+                    <ImageView
+                        android:id="@+id/activity_postdetail_more"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center_vertical"
+                        android:padding="10dp"
+                        android:src="@drawable/select_more_selector" />
+
+                    <TextView
+                        android:id="@+id/activity_postdetail_selectpic_count"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignRight="@+id/activity_postdetail_more"
+                        android:layout_marginRight="3dp"
+                        android:layout_marginTop="3dp"
+                        android:background="@drawable/red_round"
+                        android:paddingLeft="4dp"
+                        android:paddingRight="4dp"
+                        android:text="0"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp"
+                        android:visibility="gone" />
+                </RelativeLayout>
+
+                <Button
+                    android:id="@+id/activity_postdetail_send"
+                    android:layout_width="60dp"
+                    android:layout_height="35dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginRight="5dp"
+                    android:background="@drawable/button_bg_selector"
+                    android:text="发送"
+                    android:visibility="gone" />
+            </LinearLayout>
+        </RelativeLayout>
+
+        <LinearLayout
+            android:id="@+id/activity_postdetail_edit_piclayout"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:background="#10000000"
+            android:orientation="vertical"
+            android:paddingBottom="10dp"
+            android:paddingTop="10dp"
+            android:visibility="gone">
+
+            <com.yaozu.object.widget.HorizontalListView
+                android:id="@+id/activity_postdetail_edit_hlistview"
+                android:layout_width="match_parent"
+                android:layout_height="95dp"
+                android:layout_marginLeft="5dp"
+                android:layout_marginRight="5dp" />
+
+            <TextView
+                android:id="@+id/activity_postdetail_edit_indicate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:layout_marginTop="10dp"
+                android:text="0/6" />
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_gravity="center_horizontal"
+                android:text="最多可选择6张图片" />
         </LinearLayout>
-    </RelativeLayout>
+    </LinearLayout>
 
 </RelativeLayout>
