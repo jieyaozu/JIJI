@@ -2,7 +2,9 @@ package com.yaozu.object.activity;
 
 import android.content.Context;
 import android.content.Intent;
+import android.graphics.Bitmap;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -14,14 +16,27 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
 import android.widget.TextView;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.entity.MyImages;
+import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.entity.RequestData;
+import com.yaozu.object.httpmanager.ParamList;
+import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.listener.UploadListener;
 import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.EncodingConvert;
+import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
+import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.widget.HorizontalListView;
 
+import java.io.File;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -44,6 +59,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     private HorizontalListView mHorizontalListView;
     private TextView tvIndicate;
+    private String postid;
+    int count = 0;
 
     @Override
     protected void setContentView() {
@@ -67,7 +84,16 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_commit:
-                showToast("完成");
+                String title = etTitle.getText().toString().trim();
+                String content = etContent.getText().toString().trim();
+                if (TextUtils.isEmpty(title)) {
+                    showToast("标题不能为空");
+                    return true;
+                }
+                if (TextUtils.isEmpty(content)) {
+                    content = "";
+                }
+                sendPostRequest(title, content);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -81,6 +107,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         llPicLayout = (LinearLayout) findViewById(R.id.activity_sendpost_edit_piclayout);
         etTitle = (EditText) findViewById(R.id.activity_sendpost_edit_title);
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
+        etContent.setTypeface(typeface);
         mHorizontalListView = (HorizontalListView) findViewById(R.id.activity_sendpost_edit_hlistview);
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
         tvIndicate = (TextView) findViewById(R.id.activity_sendpost_edit_indicate);
@@ -126,6 +153,111 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 llPicLayout.setVisibility(View.GONE);
             }
         });
+    }
+
+    private void sendPostRequest(String title, String content) {
+        showBaseProgressDialog("发送中...");
+        String url = DataInterface.ADD_POST;
+        ParamList parameters = new ParamList();
+        postid = (System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "";
+        parameters.add(new ParamList.Parameter("postid", postid));
+        parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
+        parameters.add(new ParamList.Parameter("type", "1"));
+        parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
+        parameters.add(new ParamList.Parameter("title", title));
+        parameters.add(new ParamList.Parameter("content", content));
+
+        RequestManager.getInstance().postRequest(this, url, parameters, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        //图片的处理
+                        uploadImagesToServer();
+                        if (mListData == null || mListData.size() == 0) {
+                            closeBaseProgressDialog();
+                            finish();
+                        }
+                    } else {
+                        showToast(requestData.getBody().getMessage());
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                closeBaseProgressDialog();
+            }
+        });
+    }
+
+    /**
+     * 保存本地并上传图片
+     * 把发布的图片另存一份到指定的本地位置
+     * 然后在把图片上传到服务器上
+     */
+    private void uploadImagesToServer() {
+        for (int i = 0; i < mListData.size(); i++) {
+            final MyImages image = mListData.get(i);
+            //保存一份到本地
+            Bitmap bitmap = FileUtil.compressUserIcon(1200, image.getPath());
+            String savePath = getDir("images", MODE_PRIVATE).getPath();
+            String displayName = image.getDisplayName();
+            displayName = (System.currentTimeMillis() % 1000) + "_" + displayName;//保证唯一
+            if (EncodingConvert.isContainsChinese(displayName)) {
+                displayName = displayName.hashCode() + ".jpg";
+            } else if (displayName.length() > 64) {
+                int index = displayName.lastIndexOf(".");
+                String suffix = "";
+                if (index > 0) {
+                    suffix = displayName.substring(index, displayName.length());
+                }
+                displayName = "superplan_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
+            }
+            savePath = createSavePath(savePath, displayName);
+            FileUtil.saveOutput(bitmap, savePath);
+            //插入数据库
+            image.setUserid(LoginInfo.getInstance(this).getUserAccount());
+            image.setPostid(postid);
+            image.setPath(savePath);
+            image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
+            //上传到服务器
+            NetUtil.uploadImageFile(this, postid, image.getCreatetime(), image.getPath(), new UploadListener() {
+                @Override
+                public void uploadSuccess(String jsonstring) {
+                    com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(jsonstring);
+                    int code = jsonObject.getIntValue("code");
+                    String imageurl_1200 = jsonObject.getString("imageurl_big");
+                    String imageurl_400 = jsonObject.getString("imageurl_small");
+                    String width = jsonObject.getString("width");
+                    String height = jsonObject.getString("height");
+                    image.setImageurl_big(imageurl_1200);
+                    image.setImageurl_small(imageurl_400);
+                    image.setWidth(width);
+                    image.setHeight(height);
+                    if (code == 1) {
+                        count++;
+                    } else {
+                        Toast.makeText(SendPostActivity.this, "图片发布失败，请重新发送", Toast.LENGTH_SHORT).show();
+                    }
+                    if (count == mListData.size()) {
+                        //数据回传
+                        closeBaseProgressDialog();
+                        finish();
+                    }
+                }
+
+                @Override
+                public void uploadFailed() {
+                    Toast.makeText(SendPostActivity.this, "图片发布失败，请重新发送", Toast.LENGTH_SHORT).show();
+                }
+            });
+        }
+    }
+
+    private String createSavePath(String savePath, String displayName) {
+        return savePath + File.separator + displayName;
     }
 
     //隐藏键盘

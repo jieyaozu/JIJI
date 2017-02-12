@@ -26,11 +26,13 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.PostDetailAdapter;
-import com.yaozu.object.entity.MyImages;
+import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.Post;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.HorizontalListView;
+import com.yaozu.object.widget.NoScrollListView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -57,6 +59,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private View headerView;
     private PostDetailAdapter postDetailAdapter;
     private ImageView ivSupport;
+
+    private Post mPost;
 
     @Override
     protected void setContentView() {
@@ -104,6 +108,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initView() {
+        mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
         etEditContent = (EditText) findViewById(R.id.activity_postdetail_edit);
         ivMore = (ImageView) findViewById(R.id.activity_postdetail_more);
         btSend = (Button) findViewById(R.id.activity_postdetail_send);
@@ -120,8 +125,27 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     private void initHeaderView(View headerView) {
         ImageView userIcon = (ImageView) headerView.findViewById(R.id.item_listview_forum_usericon);
+        TextView userName = (TextView) headerView.findViewById(R.id.item_listview_forum_username);
+        TextView title = (TextView) headerView.findViewById(R.id.item_listview_forum_title);
+        TextView content = (TextView) headerView.findViewById(R.id.item_listview_forum_content);
+        TextView support = (TextView) headerView.findViewById(R.id.header_postdetail_support_tv);
+        TextView reply = (TextView) headerView.findViewById(R.id.header_postdetail_reply_tv);
+        content.setTypeface(typeface);
+        userName.setTypeface(typeface);
+        support.setTypeface(typeface);
+        reply.setTypeface(typeface);
+        TextView createTime = (TextView) headerView.findViewById(R.id.item_listview_forum_time);
         ivSupport = (ImageView) headerView.findViewById(R.id.header_postdetail_support);
-        Utils.setUserImg("", userIcon);
+        NoScrollListView noScrollListView = (NoScrollListView) headerView.findViewById(R.id.item_listview_forum_container);
+
+        userName.setText(mPost.getUserName());
+        title.setText(mPost.getTitle());
+        content.setText(mPost.getContent());
+        createTime.setText(mPost.getCreatetime());
+        Utils.setUserImg(mPost.getUserIcon(), userIcon);
+
+        NoScrollListViewAdapter noScrollListViewAdapter = new NoScrollListViewAdapter(mPost.getImages());
+        noScrollListView.setAdapter(noScrollListViewAdapter);
     }
 
     @Override
@@ -168,6 +192,44 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 }
             }
         });
+    }
+
+    private class NoScrollListViewAdapter extends BaseAdapter {
+        private List<MyImages> imagesList = new ArrayList<MyImages>();
+
+        public NoScrollListViewAdapter(List<MyImages> images) {
+            imagesList.addAll(images);
+        }
+
+        @Override
+        public int getCount() {
+            return imagesList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(final int position, View convertView, ViewGroup parent) {
+            View view = View.inflate(PostDetailActivity.this, R.layout.item_noscroll_listview, null);
+            final ImageView imageView = (ImageView) view.findViewById(R.id.item_noscroll_listview_image);
+            MyImages image = imagesList.get(position);
+            ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
+            imageView.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+
+                }
+            });
+            return view;
+        }
     }
 
     private AnimatorSet getEnterAnimtor(final View target) {

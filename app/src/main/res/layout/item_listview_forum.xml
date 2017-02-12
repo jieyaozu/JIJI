@@ -64,12 +64,14 @@
                     android:orientation="horizontal">
 
                     <TextView
+                        android:id="@+id/item_listview_forum_support"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:text="0赞"
                         android:textSize="12dp" />
 
                     <TextView
+                        android:id="@+id/item_listview_forum_reply"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginLeft="10dp"
@@ -80,9 +82,10 @@
 
 
             <TextView
-                android:id="@+id/item_listview_forum_content"
+                android:id="@+id/item_listview_forum_title"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginTop="10dp"
                 android:ellipsize="end"
                 android:lineSpacingExtra="5dp"
                 android:paddingBottom="5dp"
@@ -95,11 +98,12 @@
 
             <com.yaozu.object.widget.NoScrollGridView
                 android:id="@+id/item_listview_forum_container"
-                android:layout_width="243dp"
+                android:layout_width="300dp"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
-                android:layout_marginLeft="10dp"
+                android:layout_marginLeft="20dp"
                 android:layout_marginRight="10dp"
+                android:layout_marginTop="10dp"
                 android:numColumns="3"
                 android:visibility="visible" />
         </LinearLayout>

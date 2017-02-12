@@ -1,5 +1,7 @@
 package com.yaozu.object.activity;
 
+import android.app.ProgressDialog;
+import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
@@ -21,9 +23,12 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements SwipeBackActivityBase {
+    protected Typeface typeface;
+
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        typeface = Typeface.createFromAsset(getAssets(), "fonts/zhunyuan.ttf");
         mHelper = new SwipeBackActivityHelper(this);
         mHelper.onActivityCreate();
 
@@ -101,5 +106,21 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
     public void scrollToFinishActivity() {
         Utils.convertActivityToTranslucent(this);
         getSwipeBackLayout().scrollToFinishActivity();
+    }
+
+    private ProgressDialog progressDialog;
+
+    protected void showBaseProgressDialog(String message) {
+        if ((!isFinishing()) && (this.progressDialog == null)) {
+            this.progressDialog = new ProgressDialog(this);
+        }
+        this.progressDialog.setMessage(message);
+        this.progressDialog.setCanceledOnTouchOutside(false);
+        this.progressDialog.show();
+    }
+
+    protected void closeBaseProgressDialog() {
+        if (this.progressDialog != null)
+            this.progressDialog.dismiss();
     }
 }

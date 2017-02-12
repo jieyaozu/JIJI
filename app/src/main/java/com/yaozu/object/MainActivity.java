@@ -19,6 +19,7 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.fragment.FindFragment;
 import com.yaozu.object.fragment.ForumFragment;
 import com.yaozu.object.fragment.MineFragment;
@@ -63,10 +64,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         updateContent(0);
                         break;
                     case R.id.main_bottom_raido_find:
-                        updateContent(1);
+                        if (!LoginInfo.getInstance(MainActivity.this).isLogining()) {
+                            IntentUtil.toLoginActivity(MainActivity.this);
+                            RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
+                            radioButton.setChecked(true);
+                        } else {
+                            updateContent(1);
+                        }
                         break;
                     case R.id.main_bottom_raido_mine:
-                        updateContent(2);
+                        if (!LoginInfo.getInstance(MainActivity.this).isLogining()) {
+                            IntentUtil.toLoginActivity(MainActivity.this);
+                            RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
+                            radioButton.setChecked(true);
+                        } else {
+                            updateContent(2);
+                        }
                         break;
                 }
             }
@@ -75,7 +88,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
-        getMenuInflater().inflate(R.menu.main_activity_actions, menu);
+        //getMenuInflater().inflate(R.menu.main_activity_actions, menu);
 
 //        MenuItem searchItem = menu.findItem(R.id.action_search);
 //        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);

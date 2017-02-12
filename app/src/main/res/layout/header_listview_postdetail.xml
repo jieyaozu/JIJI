@@ -9,6 +9,7 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:layout_marginTop="10dp"
+        android:background="@color/colorWhite"
         android:orientation="vertical">
 
         <RelativeLayout
@@ -57,12 +58,14 @@
                 android:orientation="horizontal">
 
                 <TextView
+                    android:id="@+id/header_postdetail_support_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:text="0赞"
                     android:textSize="12dp" />
 
                 <TextView
+                    android:id="@+id/header_postdetail_reply_tv"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_marginLeft="10dp"
@@ -84,7 +87,7 @@
             android:paddingTop="10dp"
             android:text="内容"
             android:textColor="@color/nomralblack"
-            android:textSize="16dp"
+            android:textSize="18dp"
             android:textStyle="bold" />
 
         <View
@@ -106,15 +109,14 @@
             android:paddingTop="10dp"
             android:text="这里是详细的内容,不知道啊"
             android:textColor="@color/nomralblack"
-            android:textSize="14dp" />
+            android:textSize="16dp" />
 
         <com.yaozu.object.widget.NoScrollListView
             android:id="@+id/item_listview_forum_container"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginBottom="10dp"
-            android:layout_marginLeft="10dp"
-            android:layout_marginRight="10dp"
+            android:divider="@null"
             android:numColumns="3"
             android:visibility="visible" />
 

@@ -33,4 +33,7 @@ public class Constant {
     public static String USER_LEVEL = "user_level";
     public static String USER_VIP = "user_vip";
     public static String USER_ACCOUNT = "user_account";
+
+    public static final String SUCCESS = "1";
+    public static final String FAILED = "0";
 }

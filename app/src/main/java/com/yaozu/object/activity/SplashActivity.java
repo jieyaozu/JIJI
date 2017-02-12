@@ -8,6 +8,7 @@ import android.widget.TextView;
 
 import com.yaozu.object.MainActivity;
 import com.yaozu.object.R;
+import com.yaozu.object.entity.LoginInfo;
 
 /**
  * Created by jxj42 on 2017/1/16.
@@ -27,9 +28,13 @@ public class SplashActivity extends FragmentActivity {
         //设置当前窗体为全屏显示
         window.setFlags(flag, flag); //隐藏状态栏*/
         tvSplash = (TextView) findViewById(R.id.splash_tv);
+        final boolean islogin = LoginInfo.getInstance(this).isLogining();
         tvSplash.postDelayed(new Runnable() {
             @Override
             public void run() {
+                if (islogin) {
+                    LoginInfo.readUserInfoToMemory();
+                }
                 Intent intent = new Intent(SplashActivity.this, MainActivity.class);
                 startActivity(intent);
                 finish();

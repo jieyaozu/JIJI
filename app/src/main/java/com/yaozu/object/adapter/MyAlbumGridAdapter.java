@@ -18,8 +18,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.activity.MyAlbumActivity;
-import com.yaozu.object.entity.MyImages;
+import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.utils.Constant;
 
 import java.util.ArrayList;

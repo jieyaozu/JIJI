@@ -7,7 +7,6 @@ public class RequestData extends BaseEntity<RequestData.BodyEntity> {
 
 
     public class BodyEntity {
-
         private String code;
         private String message;
         private String status;

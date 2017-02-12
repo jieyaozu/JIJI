@@ -12,13 +12,17 @@ import android.widget.EditText;
 import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.MainActivity;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.entity.LoginReqData;
+import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.widget.RoundCornerImageView;
 
@@ -74,24 +78,6 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
         registerTextView.setOnClickListener(this);
         switchAccout.setOnClickListener(this);
         mLoginInfo = new LoginInfo(this);
-
-        boolean islogin = mLoginInfo.isLogining();
-        if (islogin) {
-            LoginInfo.readUserInfoToMemory();
-            Intent intent = new Intent(this, MainActivity.class);
-            intent.putExtra("token", mLoginInfo.getUserToken());
-            startActivity(intent);
-            finish();
-        } else {
-            String userId = mLoginInfo.getUserAccoutFromLocal();
-            if (!TextUtils.isEmpty(userId)) {
-                accoutLayout.setVisibility(View.GONE);
-                userIconLL.setVisibility(View.VISIBLE);
-                switchAccout.setVisibility(View.VISIBLE);
-                userIdView.setText(userId);
-                ImageLoader.getInstance().displayImage("file://" + LoginInfo.getSmallIconPath(), userIcon);
-            }
-        }
     }
 
     @Override
@@ -103,7 +89,18 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
     public void onClick(View view) {
         switch (view.getId()) {
             case R.id.login_login:
-
+                final String account = mAccout.getText().toString().trim();
+                final String password = mPassword.getText().toString().trim();
+                if (TextUtils.isEmpty(account)) {
+                    Toast.makeText(this, "账号不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                if (TextUtils.isEmpty(password)) {
+                    Toast.makeText(this, "密码不能为空", Toast.LENGTH_SHORT).show();
+                    return;
+                }
+                showProgressDialog();
+                loginRequest(account, password);
                 break;
             case R.id.activity_login_register:
                 IntentUtil.toRegisterActivity(this);
@@ -121,10 +118,31 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
      *
      * @param userid
      * @param password
-     * @param deviceid
      */
-    private void loginRequest(final String userid, String password, String deviceid) {
+    private void loginRequest(final String userid, String password) {
+        String url = DataInterface.LOGIN_URL + "userid=" + userid + "&password=" + password;
+        RequestManager.getInstance().getRequest(this, url, LoginReqData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    LoginReqData request = (LoginReqData) object;
+                    if (Constant.SUCCESS.equals(request.getBody().getCode())) {
+                        showToast(request.getBody().getMessage());
+                        mLoginInfo.storeLoginUserInfo(true, userid, request.getBody().getUsername(), request.getBody().getUsericon(), request.getBody().getUserSicon());
+                        finish();
+                    } else {
+                        mPassword.setText("");
+                        showToast(request.getBody().getMessage());
+                    }
+                }
+                closeProgressDialog();
+            }
 
+            @Override
+            public void onFailure(int code, String message) {
+                closeProgressDialog();
+            }
+        });
     }
 
     private void showProgressDialog() {

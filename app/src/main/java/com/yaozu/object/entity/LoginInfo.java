@@ -17,21 +17,30 @@ public class LoginInfo {
     private Context mContext;
     private static SharedPreferences preferences;
 
+    private static LoginInfo loginInfo;
+
+    public static LoginInfo getInstance(Context context) {
+        if (loginInfo != null) {
+            return loginInfo;
+        } else {
+            loginInfo = new LoginInfo(context);
+            return loginInfo;
+        }
+    }
+
     public LoginInfo(Context context) {
         this.mContext = context;
         preferences = mContext.getSharedPreferences(Constant.LOGIN_MSG, Context.MODE_PRIVATE);
     }
 
-    public void storeLoginUserInfo(boolean isLogin, String account, String userName, String icon, String smallicon, int level, String token) {
+    public void storeLoginUserInfo(boolean isLogin, String account, String userName, String icon, String smallicon) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear().commit();
         editor.putBoolean(Constant.IS_LOGINING, isLogin);
-        editor.putString(Constant.USER_TOKEN, token);
         editor.putString(Constant.USER_ACCOUNT, account);
         editor.putString(Constant.USER_NAME, userName);
         editor.putString(Constant.USER_ICON, icon);
         editor.putString(Constant.USER_SMALL_ICON, smallicon);
-        editor.putInt(Constant.USER_LEVEL, level);
         editor.commit();
         readUserInfoToMemory();
     }
@@ -63,7 +72,7 @@ public class LoginInfo {
         return preferences.getInt(Constant.USER_VIP, 0);
     }
 
-    public static String getUserAccount() {
+    public String getUserAccount() {
         if (TextUtils.isEmpty(mAccount)) {
             mAccount = preferences.getString(Constant.USER_ACCOUNT, "");
         }
@@ -84,14 +93,14 @@ public class LoginInfo {
         return mFromDevice;
     }
 
-    public static String getIconPath() {
+    public String getIconPath() {
         if (TextUtils.isEmpty(mIcon)) {
             mIcon = preferences.getString(Constant.USER_ICON, "");
         }
         return mIcon;
     }
 
-    public static String getSmallIconPath() {
+    public String getSmallIconPath() {
         if (TextUtils.isEmpty(mSmallIcon)) {
             mSmallIcon = preferences.getString(Constant.USER_SMALL_ICON, "");
         }

@@ -1,4 +1,4 @@
-package com.yaozu.object.entity;
+package com.yaozu.object.bean;
 
 import android.os.Parcel;
 import android.os.Parcelable;

@@ -10,6 +10,7 @@ import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
+import com.yaozu.object.bean.Post;
 
 /**
  * Created by jxj42 on 2016/12/22.
@@ -32,8 +33,9 @@ public class IntentUtil {
         overridePendingTransition(context);
     }
 
-    public static void toPostDetailActivity(Context context) {
+    public static void toPostDetailActivity(Context context, Post post) {
         Intent postDetail = new Intent(context, PostDetailActivity.class);
+        postDetail.putExtra(IntentKey.INTENT_POST, post);
         context.startActivity(postDetail);
         overridePendingTransition(context);
     }

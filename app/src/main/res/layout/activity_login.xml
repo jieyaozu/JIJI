@@ -64,7 +64,6 @@
                     android:layout_height="match_parent"
                     android:background="@null"
                     android:hint="手机号码"
-                    android:inputType="number"
                     android:paddingLeft="60dp"
                     android:textColor="@color/nomralblack"
                     android:textColorHint="@color/gray_white"
