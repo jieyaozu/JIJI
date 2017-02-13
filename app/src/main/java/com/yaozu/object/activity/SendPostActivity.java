@@ -162,7 +162,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         postid = (System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "";
         parameters.add(new ParamList.Parameter("postid", postid));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
-        parameters.add(new ParamList.Parameter("type", "1"));
+        parameters.add(new ParamList.Parameter("status", "0"));
         parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
         parameters.add(new ParamList.Parameter("title", title));
         parameters.add(new ParamList.Parameter("content", content));

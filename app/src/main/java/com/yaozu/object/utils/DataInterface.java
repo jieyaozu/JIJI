@@ -16,5 +16,7 @@ public class DataInterface {
     public static String UPLOAD_IMAGES = APP_HOST + "superplan/upload/image.do?method=upload&";
     public static String UPLOAD_USERICON = APP_HOST + "superplan/upload/usericon.do?method=upload&";
     public static String ADD_POST = APP_HOST + "superplan/post/post.do?method=add&";
+    public static String REPLY_ADD_POST = APP_HOST + "superplan/post/post.do?method=replypost&";
     public static String FIND_HOME_POST_LIST = APP_HOST + "superplan/post/post.do?method=findHomelist&";
+    public static String FIND_DETAIL_REPLY_POST_LIST = APP_HOST + "superplan/post/post.do?method=findreplypost&";
 }

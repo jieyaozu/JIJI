@@ -1,0 +1,112 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/plan_unit_item_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_listview_selector"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/RippleBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp">
+
+                <ImageView
+                    android:id="@+id/item_listview_replypost_usericon"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
+                    android:layout_marginLeft="10dp"
+                    android:src="@mipmap/ic_launcher" />
+
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/item_listview_replypost_time"
+                    android:layout_toRightOf="@+id/item_listview_replypost_usericon"
+                    android:orientation="horizontal">
+
+                    <TextView
+                        android:id="@+id/item_listview_replypost_username"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginBottom="2dp"
+                        android:layout_marginLeft="10dp"
+                        android:text="混"
+                        android:textColor="@color/nomralblack"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/item_listview_replypost_ismain"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="5dp"
+                        android:background="@drawable/hongzi_shape"
+                        android:paddingLeft="3dp"
+                        android:paddingRight="3dp"
+                        android:text="楼主"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="10dp"
+                        android:visibility="gone" />
+                </LinearLayout>
+
+                <TextView
+                    android:id="@+id/item_listview_replypost_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/item_listview_replypost_usericon"
+                    android:layout_toRightOf="@+id/item_listview_replypost_usericon"
+                    android:paddingLeft="10dp"
+                    android:text="2017-02-05"
+                    android:textColor="@color/gray_white"
+                    android:textSize="10dp" />
+            </RelativeLayout>
+
+
+            <TextView
+                android:id="@+id/item_listview_replypost_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="10dp"
+                android:text=""
+                android:textColor="@color/nomralblack"
+                android:textSize="16dp" />
+
+            <com.yaozu.object.widget.NoScrollListView
+                android:id="@+id/item_listview_replypost_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="55dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:numColumns="3"
+                android:visibility="visible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="45dp"
+                android:layout_marginRight="20dp"
+                android:background="@color/divider_background_color" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

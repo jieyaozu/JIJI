@@ -15,6 +15,7 @@ import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.NoScrollGridView;
@@ -90,8 +91,9 @@ public class ForumListViewAdapter extends BaseAdapter {
         final Post post = dataList.get(position);
         Utils.setUserImg(post.getUserIcon(), viewHolder.userIcon);
         viewHolder.userName.setText(post.getUserName());
-        viewHolder.createTime.setText(post.getCreatetime());
+        viewHolder.createTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
         viewHolder.title.setText(post.getTitle());
+        viewHolder.reply.setText(post.getReplyNum() + "回复");
 
         viewHolder.adapter.setData(post.getImages());
         viewHolder.noScrollGridView.setAdapter(viewHolder.adapter);

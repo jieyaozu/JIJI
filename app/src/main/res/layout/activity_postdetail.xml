@@ -4,16 +4,16 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include
-        layout="@layout/activity_common_toolsbar" />
+    <include layout="@layout/activity_common_toolsbar" />
 
-    <ListView
-        android:id="@+id/activity_postdetail_listview"
+    <RelativeLayout
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:layout_above="@+id/bottom_editlayout"
-        android:divider="@null"
-        android:layout_below="@+id/common_toolbar" />
+        android:layout_below="@+id/common_toolbar">
+
+        <include layout="@layout/common_refresh_layout" />
+    </RelativeLayout>
 
     <LinearLayout
         android:id="@+id/bottom_editlayout"

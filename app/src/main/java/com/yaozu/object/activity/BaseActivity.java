@@ -3,6 +3,7 @@ package com.yaozu.object.activity;
 import android.app.ProgressDialog;
 import android.graphics.Typeface;
 import android.os.Bundle;
+import android.support.v4.widget.SwipeRefreshLayout;
 import android.support.v7.app.ActionBar;
 import android.support.v7.app.AppCompatActivity;
 import android.support.v7.widget.Toolbar;
@@ -12,6 +13,7 @@ import android.widget.Toast;
 
 import com.yaozu.object.MainActivity;
 import com.yaozu.object.R;
+import com.yaozu.object.widget.RefreshLayout;
 
 import me.imid.swipebacklayout.lib.SwipeBackLayout;
 import me.imid.swipebacklayout.lib.Utils;
@@ -24,6 +26,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
 
 public abstract class BaseActivity extends AppCompatActivity implements SwipeBackActivityBase {
     protected Typeface typeface;
+    protected RefreshLayout refreshLayout;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -33,6 +36,24 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
         mHelper.onActivityCreate();
 
         setContentView();
+        refreshLayout = (RefreshLayout) findViewById(R.id.common_refresh);
+        if (refreshLayout != null) {
+            refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary),
+                    getResources().getColor(R.color.colorPrimaryDark),
+                    getResources().getColor(R.color.colorPrimary));
+            refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
+                @Override
+                public void onRefresh() {
+                    onIRefresh();
+                }
+            });
+            refreshLayout.setOnLoadListener(new RefreshLayout.OnLoadListener() {
+                @Override
+                public void onLoad() {
+                    onILoad();
+                }
+            });
+        }
         initView();
         initData();
         setListener();
@@ -41,6 +62,14 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
         // Get a support ActionBar corresponding to this toolbar
         ActionBar ab = getSupportActionBar();
         settingActionBar(ab);
+    }
+
+    protected void onIRefresh() {
+
+    }
+
+    protected void onILoad() {
+
     }
 
     @Override
