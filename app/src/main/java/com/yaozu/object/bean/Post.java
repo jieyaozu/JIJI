@@ -9,17 +9,37 @@ import java.util.List;
 
 public class Post implements Serializable {
     private String postid;
-    //帖子的类型，1是主贴，0是跟贴
-    private String type;
+    //如果是跟帖的话,parentid是主贴的postid，否则为空
+    private String parentid;
+    //帖子的状态，0是正常，1是精华，2是置顶，3是下沉
+    private String status;
     private String userIcon;
     private String userName;
     private String userid;
     private String createtime;
+    //更新时间(回复时或者自己更新的时间)
+    private String updatetime;
     private String title;
     private String content;
     private String supportNum;
     private String replyNum;
     private List<MyImages> images;
+
+    public String getUpdatetime() {
+        return updatetime;
+    }
+
+    public void setUpdatetime(String updatetime) {
+        this.updatetime = updatetime;
+    }
+
+    public String getParentid() {
+        return parentid;
+    }
+
+    public void setParentid(String parentid) {
+        this.parentid = parentid;
+    }
 
     public String getPostid() {
         return postid;
@@ -29,12 +49,12 @@ public class Post implements Serializable {
         this.postid = postid;
     }
 
-    public String getType() {
-        return type;
+    public String getStatus() {
+        return status;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setStatus(String status) {
+        this.status = status;
     }
 
     public String getUserIcon() {

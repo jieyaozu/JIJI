@@ -7,13 +7,14 @@
     <com.yaozu.object.widget.RefreshLayout
         android:id="@+id/common_refresh"
         android:layout_width="match_parent"
+        android:background="@color/colorWhite"
         android:layout_height="match_parent">
 
         <ListView
             android:id="@+id/common_refresh_listview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:background="@android:color/transparent"
+            android:background="#0b000000"
             android:cacheColorHint="#00000000"
             android:divider="@null"
             android:dividerHeight="0dp" />
