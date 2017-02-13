@@ -26,8 +26,8 @@
 
                 <ImageView
                     android:id="@+id/item_listview_forum_usericon"
-                    android:layout_width="40dp"
-                    android:layout_height="40dp"
+                    android:layout_width="30dp"
+                    android:layout_height="30dp"
                     android:layout_marginLeft="10dp"
                     android:src="@mipmap/ic_launcher" />
 
@@ -39,7 +39,7 @@
                     android:layout_marginBottom="2dp"
                     android:layout_marginLeft="10dp"
                     android:layout_toRightOf="@+id/item_listview_forum_usericon"
-                    android:text="混世大魔王"
+                    android:text="混"
                     android:textColor="@color/nomralblack"
                     android:textSize="12dp" />
 
@@ -48,7 +48,6 @@
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignBottom="@+id/item_listview_forum_usericon"
-                    android:layout_marginBottom="2dp"
                     android:layout_toRightOf="@+id/item_listview_forum_usericon"
                     android:paddingLeft="10dp"
                     android:text="2017-02-05"
@@ -92,17 +91,17 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
-                android:text="内容"
+                android:text=""
                 android:textColor="@color/nomralblack"
                 android:textSize="16dp" />
 
             <com.yaozu.object.widget.NoScrollGridView
                 android:id="@+id/item_listview_forum_container"
-                android:layout_width="300dp"
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="20dp"
-                android:layout_marginRight="10dp"
+                android:layout_marginRight="20dp"
                 android:layout_marginTop="10dp"
                 android:numColumns="3"
                 android:visibility="visible" />

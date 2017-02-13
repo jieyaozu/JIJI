@@ -6,10 +6,10 @@ package com.yaozu.object.utils;
 
 public class DataInterface {
     //生产地址
-    //public static String APP_HOST = "http://www.chaojijihua.com:8080/";
+    public static String APP_HOST = "http://www.chaojijihua.com:8080/";
     public static String SERVER_APP_HOST = "http://www.chaojijihua.com:8080/";
     //测试地址
-    public static String APP_HOST = "http://192.168.0.103:8080/";
+    //public static String APP_HOST = "http://192.168.0.103:8080/";
 
     public static String LOGIN_URL = APP_HOST + "superplan/login/login.do?method=dologin&";
     public static String REGISTER_URL = APP_HOST + "superplan/register/register.do?method=doregister&";

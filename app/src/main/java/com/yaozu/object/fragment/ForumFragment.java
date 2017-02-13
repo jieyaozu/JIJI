@@ -14,6 +14,7 @@ import com.yaozu.object.R;
 import com.yaozu.object.adapter.ForumListViewAdapter;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.HomeForumDataInfo;
+import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
@@ -112,7 +113,11 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fragment_forum_imageview:
-                IntentUtil.toSendPostActivity(this.getActivity());
+                if (LoginInfo.getInstance(this.getActivity()).isLogining()) {
+                    IntentUtil.toSendPostActivity(this.getActivity());
+                } else {
+                    IntentUtil.toLoginActivity(this.getActivity());
+                }
                 break;
         }
     }

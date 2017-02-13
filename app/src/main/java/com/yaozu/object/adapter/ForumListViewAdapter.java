@@ -6,6 +6,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
@@ -29,10 +30,13 @@ public class ForumListViewAdapter extends BaseAdapter {
     private Context mContext;
     private List<Post> dataList = new ArrayList<Post>();
     private Typeface typeface;
+    private int screenWidth, itemWidth;
 
     public ForumListViewAdapter(Context context) {
         mContext = context;
         typeface = Typeface.createFromAsset(context.getAssets(), "fonts/zhunyuan.ttf");
+        screenWidth = Utils.getScreenWidth(context);
+        itemWidth = (screenWidth - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2) / 3;
     }
 
     public void addData(List<Post> data) {
@@ -154,6 +158,10 @@ public class ForumListViewAdapter extends BaseAdapter {
                 view = View.inflate(mContext, R.layout.item_nogridview, null);
             }
             ImageView imageView = (ImageView) view.findViewById(R.id.item_nogridview_image);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+            params.width = itemWidth;
+            params.height = itemWidth;
+            imageView.setLayoutParams(params);
             MyImages image = imagesList.get(position);
             ImageLoader.getInstance().displayImage(image.getImageurl_small(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
             return view;

@@ -10,4 +10,5 @@ public class IntentKey {
     public static final String INTENT_ALBUM_IMAGES = "intent_album_images";
 
     public static final String INTENT_POST = "intent_post";
+    public static final String INTENT_ALBUM_IMAGES_INDEX = "intent_album_images_index";
 }
