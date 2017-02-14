@@ -2,6 +2,7 @@ package com.yaozu.object.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.text.TextUtils;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -78,12 +79,14 @@ public class ForumListViewAdapter extends BaseAdapter {
             viewHolder.userName = (TextView) view.findViewById(R.id.item_listview_forum_username);
             viewHolder.createTime = (TextView) view.findViewById(R.id.item_listview_forum_time);
             viewHolder.title = (TextView) view.findViewById(R.id.item_listview_forum_title);
+            viewHolder.content = (TextView) view.findViewById(R.id.item_listview_forum_content);
             viewHolder.support = (TextView) view.findViewById(R.id.item_listview_forum_support);
             viewHolder.reply = (TextView) view.findViewById(R.id.item_listview_forum_reply);
             viewHolder.title.setTypeface(typeface);
             viewHolder.userName.setTypeface(typeface);
             viewHolder.support.setTypeface(typeface);
             viewHolder.reply.setTypeface(typeface);
+            viewHolder.content.setTypeface(typeface);
             viewHolder.noScrollGridView = (NoScrollGridView) view.findViewById(R.id.item_listview_forum_container);
             viewHolder.adapter = new NoScrollGridViewAdapter();
             view.setTag(viewHolder);
@@ -93,6 +96,12 @@ public class ForumListViewAdapter extends BaseAdapter {
         viewHolder.userName.setText(post.getUserName());
         viewHolder.createTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
         viewHolder.title.setText(post.getTitle());
+        if (!TextUtils.isEmpty(post.getContent())) {
+            viewHolder.content.setText(post.getContent());
+            viewHolder.content.setVisibility(View.VISIBLE);
+        } else {
+            viewHolder.content.setVisibility(View.GONE);
+        }
         viewHolder.reply.setText(post.getReplyNum() + "回复");
 
         viewHolder.adapter.setData(post.getImages());
@@ -113,6 +122,7 @@ public class ForumListViewAdapter extends BaseAdapter {
         TextView support;
         TextView reply;
         TextView title;
+        TextView content;
         NoScrollGridView noScrollGridView;
         NoScrollGridViewAdapter adapter;
     }

@@ -91,9 +91,24 @@
                 android:paddingLeft="20dp"
                 android:paddingRight="20dp"
                 android:paddingTop="10dp"
-                android:text=""
+                android:maxLines="2"
+                android:text="ddddd"
                 android:textColor="@color/nomralblack"
                 android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/item_listview_forum_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5dp"
+                android:paddingLeft="20dp"
+                android:maxLines="3"
+                android:paddingRight="20dp"
+                android:visibility="gone"
+                android:text=""
+                android:textColor="@color/gray"
+                android:textSize="12dp" />
 
             <com.yaozu.object.widget.NoScrollGridView
                 android:id="@+id/item_listview_forum_container"

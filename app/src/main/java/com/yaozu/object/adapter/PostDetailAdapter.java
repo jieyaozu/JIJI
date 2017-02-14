@@ -70,15 +70,19 @@ public class PostDetailAdapter extends BaseAdapter {
         TextView time = (TextView) view.findViewById(R.id.item_listview_replypost_time);
         TextView content = (TextView) view.findViewById(R.id.item_listview_replypost_content);
         TextView isMain = (TextView) view.findViewById(R.id.item_listview_replypost_ismain);
-        NoScrollListView noScrollListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_container);
-        NoScrollListAdapter adapter = new NoScrollListAdapter();
-        noScrollListView.setAdapter(adapter);
+        TextView layerIndex = (TextView) view.findViewById(R.id.item_listview_replypost_layerindex);
+        TextView commentBt = (TextView) view.findViewById(R.id.item_listview_replypost_comment_bt);
+        NoScrollListView imageListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_container);
+        ImageListAdapter adapter = new ImageListAdapter();
+        imageListView.setAdapter(adapter);
+        NoScrollListView commentListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_comments);
 
         Post post = mListData.get(position);
         Utils.setUserImg(post.getUserIcon(), usericon);
         userName.setText(post.getUserName());
         time.setText(DateUtil.getRelativeTime(post.getCreatetime()));
         content.setText(post.getContent());
+        layerIndex.setText((position + 2) + "楼");
         adapter.setData(post.getImages());
         if (post.getUserid().equals(userid)) {
             isMain.setVisibility(View.VISIBLE);
@@ -87,10 +91,19 @@ public class PostDetailAdapter extends BaseAdapter {
         }
         userName.setTypeface(typeface);
         content.setTypeface(typeface);
+        commentBt.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        });
         return view;
     }
 
-    public class NoScrollListAdapter extends BaseAdapter {
+    /**
+     * 图片
+     */
+    public class ImageListAdapter extends BaseAdapter {
         private List<MyImages> imagesList = new ArrayList<>();
 
         public void setData(List<MyImages> images) {
@@ -123,6 +136,32 @@ public class PostDetailAdapter extends BaseAdapter {
             MyImages image = imagesList.get(position);
             ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
             return view;
+        }
+    }
+
+    /**
+     * 评论
+     */
+    public class CommentListAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return 0;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            return null;
         }
     }
 }

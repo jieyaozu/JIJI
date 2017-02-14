@@ -43,6 +43,7 @@ import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.HorizontalListView;
@@ -330,6 +331,10 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 showToast("点赞");
                 break;
             case R.id.activity_postdetail_send:
+                if (!LoginInfo.getInstance(this).isLogining()) {
+                    IntentUtil.toLoginActivity(this);
+                    return;
+                }
                 String content = etEditContent.getText().toString().trim();
                 if (TextUtils.isEmpty(content)) {
                     return;

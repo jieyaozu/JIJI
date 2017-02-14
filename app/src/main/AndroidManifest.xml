@@ -72,6 +72,12 @@
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
+
+        <activity
+            android:name=".activity.PostReplyDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme"
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
     </application>
 
 </manifest>
