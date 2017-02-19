@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
 import com.yaozu.object.activity.PostDetailActivity;
+import com.yaozu.object.activity.PostReplyDetailActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
@@ -36,6 +37,15 @@ public class IntentUtil {
     public static void toPostDetailActivity(Context context, Post post) {
         Intent postDetail = new Intent(context, PostDetailActivity.class);
         postDetail.putExtra(IntentKey.INTENT_POST, post);
+        context.startActivity(postDetail);
+        overridePendingTransition(context);
+    }
+
+    public static void toPostReplyDetailActivity(Context context, Post post, String mainuserid, int index) {
+        Intent postDetail = new Intent(context, PostReplyDetailActivity.class);
+        postDetail.putExtra(IntentKey.INTENT_POST, post);
+        postDetail.putExtra(IntentKey.INTENT_POST_POSITION, index);
+        postDetail.putExtra(IntentKey.INTENT_USERID, mainuserid);
         context.startActivity(postDetail);
         overridePendingTransition(context);
     }

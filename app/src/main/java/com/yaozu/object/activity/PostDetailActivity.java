@@ -220,12 +220,14 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void onIRefresh() {
         currentIndex = 1;
+        refreshLayout.setIsCanLoad(true);
         findReplyPostRequest(currentIndex, mPost.getPostid());
     }
 
     @Override
     protected void onILoad() {
-
+        currentIndex++;
+        findReplyPostRequest(currentIndex, mPost.getPostid());
     }
 
     private class NoScrollListViewAdapter extends BaseAdapter {
@@ -292,10 +294,14 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 if (object != null) {
                     headerView.setVisibility(View.VISIBLE);
                     DetailReplyPostListInfo postListInfo = (DetailReplyPostListInfo) object;
+                    List<Post> postList = postListInfo.getBody().getPostlist();
                     if (pageindex == 1) {
                         postDetailAdapter.clearData();
                     }
-                    postDetailAdapter.setAddData(postListInfo.getBody().getPostlist());
+                    postDetailAdapter.setAddData(postList);
+                    if (postList == null || postList.size() == 0) {
+                        refreshLayout.setIsCanLoad(false);
+                    }
                 }
             }
 

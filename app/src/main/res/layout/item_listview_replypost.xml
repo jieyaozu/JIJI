@@ -118,14 +118,14 @@
 
             <RelativeLayout
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp">
 
                 <TextView
                     android:id="@+id/item_listview_replypost_comment_bt"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_alignParentRight="true"
-                    android:layout_marginBottom="10dp"
                     android:layout_marginRight="20dp"
                     android:drawableLeft="@drawable/comment"
                     android:drawablePadding="5dp"
@@ -141,7 +141,9 @@
                 android:layout_marginBottom="10dp"
                 android:layout_marginLeft="55dp"
                 android:layout_marginRight="20dp"
-                android:visibility="gone" />
+                android:background="#10000000"
+                android:divider="@null"
+                android:visibility="visible" />
 
             <View
                 android:layout_width="match_parent"

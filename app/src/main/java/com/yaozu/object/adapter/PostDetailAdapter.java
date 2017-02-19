@@ -2,18 +2,26 @@ package com.yaozu.object.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.text.Spannable;
+import android.text.SpannableString;
+import android.text.TextPaint;
+import android.text.TextUtils;
+import android.text.method.LinkMovementMethod;
+import android.text.style.ClickableSpan;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.ImageSpan;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.Comment;
 import com.yaozu.object.bean.Post;
-import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.NoScrollListView;
 
@@ -28,6 +36,7 @@ public class PostDetailAdapter extends BaseAdapter {
     private Context mContext;
     protected Typeface typeface;
     private List<Post> mListData = new ArrayList<>();
+    //楼主的userid
     private String userid;
 
     public PostDetailAdapter(Context context, Typeface typeface, String userid) {
@@ -63,7 +72,7 @@ public class PostDetailAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
+    public View getView(final int position, View convertView, ViewGroup parent) {
         View view = View.inflate(mContext, R.layout.item_listview_replypost, null);
         ImageView usericon = (ImageView) view.findViewById(R.id.item_listview_replypost_usericon);
         TextView userName = (TextView) view.findViewById(R.id.item_listview_replypost_username);
@@ -73,17 +82,20 @@ public class PostDetailAdapter extends BaseAdapter {
         TextView layerIndex = (TextView) view.findViewById(R.id.item_listview_replypost_layerindex);
         TextView commentBt = (TextView) view.findViewById(R.id.item_listview_replypost_comment_bt);
         NoScrollListView imageListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_container);
-        ImageListAdapter adapter = new ImageListAdapter();
+        ImageListAdapter adapter = new ImageListAdapter(mContext);
         imageListView.setAdapter(adapter);
         NoScrollListView commentListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_comments);
+        CommentListAdapter commentListAdapter = new CommentListAdapter();
+        commentListView.setAdapter(commentListAdapter);
 
-        Post post = mListData.get(position);
+        final Post post = mListData.get(position);
         Utils.setUserImg(post.getUserIcon(), usericon);
         userName.setText(post.getUserName());
         time.setText(DateUtil.getRelativeTime(post.getCreatetime()));
         content.setText(post.getContent());
         layerIndex.setText((position + 2) + "楼");
         adapter.setData(post.getImages());
+        commentListAdapter.setDataList(post.getComments(), post, position + 2);
         if (post.getUserid().equals(userid)) {
             isMain.setVisibility(View.VISIBLE);
         } else {
@@ -91,32 +103,45 @@ public class PostDetailAdapter extends BaseAdapter {
         }
         userName.setTypeface(typeface);
         content.setTypeface(typeface);
+        time.setTypeface(typeface);
         commentBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                IntentUtil.toPostReplyDetailActivity(mContext, post, userid, position + 2);
+            }
+        });
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toPostReplyDetailActivity(mContext, post, userid, position + 2);
             }
         });
         return view;
     }
 
     /**
-     * 图片
+     * 评论
      */
-    public class ImageListAdapter extends BaseAdapter {
-        private List<MyImages> imagesList = new ArrayList<>();
+    public class CommentListAdapter extends BaseAdapter {
+        private List<Comment> commentList = new ArrayList<>();
+        private int indexofmain = 0;
+        private Post post;
 
-        public void setData(List<MyImages> images) {
-            if (images != null) {
-                imagesList.clear();
-                imagesList.addAll(images);
-                notifyDataSetChanged();
+        public void setDataList(List<Comment> comments, Post post, int position) {
+            if (comments != null) {
+                commentList.addAll(comments);
             }
+            this.post = post;
+            this.indexofmain = position;
         }
 
         @Override
         public int getCount() {
-            return imagesList.size();
+            int size = commentList.size();
+            if (size > 3) {
+                return 4;
+            }
+            return size;
         }
 
         @Override
@@ -131,37 +156,104 @@ public class PostDetailAdapter extends BaseAdapter {
 
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(mContext, R.layout.item_noscroll_listview_reply, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.item_noscroll_listview_reply_image);
-            MyImages image = imagesList.get(position);
-            ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
+            View view = null;
+            if (position == 3) {
+                view = View.inflate(mContext, R.layout.more_comment, null);
+                TextView textView = (TextView) view.findViewById(R.id.more_comment_text);
+                textView.setTypeface(typeface);
+                textView.setText("更多" + (commentList.size() - 3) + "条评论");
+                view.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        IntentUtil.toPostReplyDetailActivity(mContext, post, userid, indexofmain);
+                    }
+                });
+            } else {
+                view = View.inflate(mContext, R.layout.item_comment_listview, null);
+                TextView tvUsername = (TextView) view.findViewById(R.id.item_comment_content);
+                Comment comment = commentList.get(position);
+                Spannable spannable = getSpanned(comment, userid);
+                tvUsername.setTypeface(typeface);
+                tvUsername.setText(spannable);
+                tvUsername.setMovementMethod(LinkMovementMethod.getInstance());
+            }
             return view;
         }
     }
 
+    private Spannable getSpanned(Comment comment, String mainUserid) {
+        String contentstr = null;//userName + ":" + content;
+        String userName = comment.getUserName();
+        String replyName = comment.getReplyUserName();
+        String content = comment.getContent();
+        boolean isreply = false;
+        boolean hasMain = false;
+        if (TextUtils.isEmpty(replyName)) {
+            isreply = false;
+            contentstr = userName + " : " + content;
+            if (comment.getUserid().equals(mainUserid)) {
+                hasMain = true;
+                contentstr = userName + "楼主" + " : " + content;
+            }
+        } else {
+            isreply = true;
+            contentstr = userName + " 回复 " + replyName + " : " + content;
+            if (comment.getUserid().equals(mainUserid)) {
+                hasMain = true;
+                contentstr = userName + "楼主" + " 回复 " + replyName + " : " + content;
+            } else if (comment.getReplyUserid().equals(mainUserid)) {
+                hasMain = true;
+                contentstr = userName + " 回复 " + replyName + "楼主" + " : " + content;
+            }
+        }
+        Spannable spannable = new SpannableString(contentstr);
+        if (isreply) {
+            ForegroundColorSpan huifucolor = new ForegroundColorSpan(mContext.getResources().getColor(R.color.top_blue));
+            spannable.setSpan(huifucolor, contentstr.indexOf("回复"), contentstr.indexOf("回复") + "回复".length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+
+        View.OnClickListener nameclick = new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
+            }
+        };
+        spannable.setSpan(new Clickable(nameclick, userName), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new Clickable(nameclick, replyName), contentstr.indexOf(replyName), contentstr.indexOf(replyName) + replyName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        //图片
+        if (hasMain) {
+            Drawable drawable = mContext.getResources().getDrawable(R.drawable.author);
+            drawable.setBounds(0, 0, drawable.getIntrinsicWidth(), drawable.getIntrinsicHeight());
+            spannable.setSpan(new ImageSpan(drawable), contentstr.indexOf("楼主"), contentstr.indexOf("楼主") + "楼主".length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        }
+        return spannable;
+    }
+
+    private boolean isNameClick = false;
+
     /**
-     * 评论
+     * 内部类，用于截获点击富文本后的事件
      */
-    public class CommentListAdapter extends BaseAdapter {
+    class Clickable extends ClickableSpan implements View.OnClickListener {
+        private final View.OnClickListener mListener;
+        private String userName;
 
-        @Override
-        public int getCount() {
-            return 0;
+        public Clickable(View.OnClickListener mListener, String userName) {
+            this.mListener = mListener;
+            this.userName = userName;
         }
 
         @Override
-        public Object getItem(int position) {
-            return null;
+        public void onClick(View v) {
+            isNameClick = true;
+            v.setTag(userName);
+            mListener.onClick(v);
         }
 
         @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            return null;
+        public void updateDrawState(TextPaint ds) {
+            ds.setColor(mContext.getResources().getColor(R.color.gray_white));
+            ds.setUnderlineText(false);    //去除超链接的下划线
         }
     }
 }
