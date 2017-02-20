@@ -70,7 +70,7 @@
         <activity
             android:name=".activity.ScannerPictureActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SwipeBackTheme"
+            android:theme="@style/BlackTheme"
             android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
 
         <activity

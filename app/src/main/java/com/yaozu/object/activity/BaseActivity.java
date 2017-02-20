@@ -27,6 +27,7 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
 public abstract class BaseActivity extends AppCompatActivity implements SwipeBackActivityBase {
     protected Typeface typeface;
     protected RefreshLayout refreshLayout;
+    protected boolean swipeBackEnable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -116,7 +117,9 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
         if (this instanceof MainActivity) {
             return;
         }
-        overridePendingTransition(R.anim.right_enter_page, R.anim.right_quit_page);
+        if (swipeBackEnable) {
+            overridePendingTransition(R.anim.right_enter_page, R.anim.right_quit_page);
+        }
     }
 
     private SwipeBackActivityHelper mHelper;
@@ -128,6 +131,7 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
 
     @Override
     public void setSwipeBackEnable(boolean enable) {
+        swipeBackEnable = enable;
         getSwipeBackLayout().setEnableGesture(enable);
     }
 

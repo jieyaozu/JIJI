@@ -261,7 +261,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-
+                    IntentUtil.toScannerPictureActivity(PostDetailActivity.this, (ArrayList<MyImages>) imagesList, position);
                 }
             });
             return view;

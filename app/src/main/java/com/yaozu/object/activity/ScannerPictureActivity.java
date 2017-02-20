@@ -32,11 +32,21 @@ public class ScannerPictureActivity extends BaseActivity {
 
     private boolean isHide = false;
 
+    @Override
+    protected void setContentView() {
+        setContentView(R.layout.activity_scanner_pic);
+        setSwipeBackEnable(false);
+    }
 
     @Override
-    protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_scanner_pic);
+    protected void settingActionBar(ActionBar actionBar) {
+        actionBar.hide();
+        actionBar.setTitle("浏览");
+        actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void initView() {
         images = getIntent().getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
         intiImageViews();
         viewPager = (ViewPager) findViewById(R.id.scanner_viewpager);
@@ -45,21 +55,6 @@ public class ScannerPictureActivity extends BaseActivity {
 
         currentItem = getIntent().getIntExtra(IntentKey.INTENT_ALBUM_IMAGES_INDEX, 0);
         viewPager.setCurrentItem(currentItem);
-    }
-
-    @Override
-    protected void setContentView() {
-
-    }
-
-    @Override
-    protected void settingActionBar(ActionBar actionBar) {
-
-    }
-
-    @Override
-    protected void initView() {
-
     }
 
     @Override

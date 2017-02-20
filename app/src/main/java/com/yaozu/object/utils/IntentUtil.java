@@ -8,10 +8,14 @@ import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
 import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.PostReplyDetailActivity;
+import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
+import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.bean.Post;
+
+import java.util.ArrayList;
 
 /**
  * Created by jxj42 on 2016/12/22.
@@ -26,6 +30,13 @@ public class IntentUtil {
 
     private static void overridePendingTransition(Context context) {
         ((FragmentActivity) context).overridePendingTransition(R.anim.right_enter_page, R.anim.right_quit_page);
+    }
+
+    public static void toScannerPictureActivity(Context context, ArrayList<MyImages> imagesList, int position) {
+        Intent intent = new Intent(context, ScannerPictureActivity.class);
+        intent.putParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES, imagesList);
+        intent.putExtra(IntentKey.INTENT_ALBUM_IMAGES_INDEX, position);
+        context.startActivity(intent);
     }
 
     public static void toSendPostActivity(Context context) {
