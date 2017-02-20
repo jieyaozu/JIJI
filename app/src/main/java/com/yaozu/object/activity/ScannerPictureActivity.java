@@ -1,8 +1,5 @@
 package com.yaozu.object.activity;
 
-import android.annotation.TargetApi;
-import android.os.Build;
-import android.os.Bundle;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -14,10 +11,11 @@ import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentKey;
-import com.yaozu.object.widget.polites.GestureImageView;
 
 import java.util.ArrayList;
 import java.util.List;
+
+import uk.co.senab.photoview.PhotoView;
 
 /**
  * Created by jieyz on 2016/4/28.
@@ -27,7 +25,7 @@ public class ScannerPictureActivity extends BaseActivity {
     private List<MyImages> images;
     //当前显示的位置
     private int currentItem = 0;
-    private List<GestureImageView> imageViews = new ArrayList<GestureImageView>();
+    private List<PhotoView> imageViews = new ArrayList<PhotoView>();
     private ScannerViewPagerAdapder viewPagerAdapder;
 
     private boolean isHide = false;
@@ -48,7 +46,6 @@ public class ScannerPictureActivity extends BaseActivity {
     @Override
     protected void initView() {
         images = getIntent().getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
-        intiImageViews();
         viewPager = (ViewPager) findViewById(R.id.scanner_viewpager);
         viewPagerAdapder = new ScannerViewPagerAdapder();
         viewPager.setAdapter(viewPagerAdapder);
@@ -67,34 +64,20 @@ public class ScannerPictureActivity extends BaseActivity {
 
     }
 
-    /**
-     * 初始化ImageView
-     */
-    private void intiImageViews() {
-        for (int i = 0; i < images.size(); i++) {
-            GestureImageView imageView = createImageView();
-            imageViews.add(imageView);
-        }
-    }
-
     class ScannerViewPagerAdapder extends PagerAdapter {
         @Override
         public Object instantiateItem(ViewGroup container, int position) {
-            GestureImageView imageView = imageViews.get(position);
-            ImageLoader.getInstance().displayImage(images.get(position).getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
-            container.addView(imageView);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
+            PhotoView photoView = new PhotoView(container.getContext());
+            ImageLoader.getInstance().displayImage(images.get(position).getImageurl_big(), photoView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
 
-                }
-            });
-            return imageView;
+            // Now just add PhotoView to ViewPager and return it
+            container.addView(photoView, ViewGroup.LayoutParams.MATCH_PARENT, ViewGroup.LayoutParams.MATCH_PARENT);
+            return photoView;
         }
 
         @Override
         public void destroyItem(ViewGroup container, int position, Object object) {
-            GestureImageView imageView = imageViews.get(position);
+            PhotoView imageView = imageViews.get(position);
             container.removeView(imageView);
             imageView.setImageBitmap(null);
         }
@@ -108,12 +91,6 @@ public class ScannerPictureActivity extends BaseActivity {
         public boolean isViewFromObject(View view, Object object) {
             return view == object;
         }
-    }
-
-    @TargetApi(Build.VERSION_CODES.LOLLIPOP)
-    private GestureImageView createImageView() {
-        GestureImageView imageView = new GestureImageView(ScannerPictureActivity.this);
-        return imageView;
     }
 
     @Override
