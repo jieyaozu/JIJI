@@ -22,6 +22,7 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ListView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -80,6 +81,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private String replypostid;
     private int currentIndex = 1;
 
+    private int imageWidth = 0;
+
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_postdetail);
@@ -126,6 +129,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initView() {
+        imageWidth = Utils.getScreenWidth(this) - getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
+
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
         etEditContent = (EditText) findViewById(R.id.activity_postdetail_edit);
         ivMore = (ImageView) findViewById(R.id.activity_postdetail_more);
@@ -257,6 +262,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             View view = View.inflate(PostDetailActivity.this, R.layout.item_noscroll_listview, null);
             final ImageView imageView = (ImageView) view.findViewById(R.id.item_noscroll_listview_image);
             MyImages image = imagesList.get(position);
+            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
+            //params.width = imageWidth;
+            params.height = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
             ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
             imageView.setOnClickListener(new View.OnClickListener() {
                 @Override

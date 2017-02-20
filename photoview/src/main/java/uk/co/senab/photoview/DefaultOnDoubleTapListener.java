@@ -55,7 +55,7 @@ public class DefaultOnDoubleTapListener implements GestureDetector.OnDoubleTapLi
 
                     photoViewAttacher.getOnPhotoTapListener().onPhotoTap(imageView, xResult, yResult);
                     return true;
-                }else{
+                } else {
                     photoViewAttacher.getOnPhotoTapListener().onOutsidePhotoTap();
                 }
             }
@@ -77,11 +77,11 @@ public class DefaultOnDoubleTapListener implements GestureDetector.OnDoubleTapLi
             float x = ev.getX();
             float y = ev.getY();
 
-            if (scale < photoViewAttacher.getMediumScale()) {
-                photoViewAttacher.setScale(photoViewAttacher.getMediumScale(), x, y, true);
-            } else if (scale >= photoViewAttacher.getMediumScale() && scale < photoViewAttacher.getMaximumScale()) {
+            if (scale < photoViewAttacher.getMaximumScale()) {
                 photoViewAttacher.setScale(photoViewAttacher.getMaximumScale(), x, y, true);
-            } else {
+            }/* else if (scale >= photoViewAttacher.getMediumScale() && scale < photoViewAttacher.getMaximumScale()) {
+                photoViewAttacher.setScale(photoViewAttacher.getMaximumScale(), x, y, true);
+            } */ else {
                 photoViewAttacher.setScale(photoViewAttacher.getMinimumScale(), x, y, true);
             }
         } catch (ArrayIndexOutOfBoundsException e) {
