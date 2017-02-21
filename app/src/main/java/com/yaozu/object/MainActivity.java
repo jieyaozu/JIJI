@@ -29,6 +29,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Dialog dialog;
     private String currentContentFragmentTag = null;
     private RadioGroup mRadioGroup;
+    private ActionBar mActionbar;
 
     @Override
     protected void setContentView() {
@@ -38,6 +39,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     @Override
     protected void settingActionBar(ActionBar actionBar) {
+        mActionbar = actionBar;
         actionBar.setTitle("主页");
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_compass);
@@ -61,6 +63,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onCheckedChanged(RadioGroup group, int checkedId) {
                 switch (checkedId) {
                     case R.id.main_bottom_raido_forum:
+                        mActionbar.setTitle("主页");
                         updateContent(0);
                         break;
                     case R.id.main_bottom_raido_find:
@@ -69,6 +72,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
                             radioButton.setChecked(true);
                         } else {
+                            mActionbar.setTitle("发现");
                             updateContent(1);
                         }
                         break;
@@ -78,6 +82,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
                             radioButton.setChecked(true);
                         } else {
+                            mActionbar.setTitle("我");
                             updateContent(2);
                         }
                         break;

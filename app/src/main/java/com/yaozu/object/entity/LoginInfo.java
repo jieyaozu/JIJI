@@ -79,7 +79,7 @@ public class LoginInfo {
         return mAccount;
     }
 
-    public static String getUserName() {
+    public String getUserName() {
         if (TextUtils.isEmpty(mUserName)) {
             mUserName = preferences.getString(Constant.USER_NAME, "");
         }
