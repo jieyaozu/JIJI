@@ -532,6 +532,10 @@ public class GestureImageViewTouchListener {
     }
 
     protected void setFitScaleVertical(float fitScaleVertical) {
+        System.out.println("=============fitScaleVertical===============>" + fitScaleVertical);
+        if (fitScaleVertical < 2.0f) {
+            fitScaleVertical = 2.0f;
+        }
         this.fitScaleVertical = fitScaleVertical;
     }
 
