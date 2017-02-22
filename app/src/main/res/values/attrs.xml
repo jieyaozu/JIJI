@@ -8,6 +8,29 @@
         <attr name="android:requiresFadingEdge" />
         <attr name="android:fadingEdgeLength" />
     </declare-styleable>
+
+    <declare-styleable name="PagerSlidingTabStrip">
+        <attr name="pstsIndicatorColor" format="color" />
+        <attr name="pstsUnderlineColor" format="color" />
+        <!-- add by hangl begin -->
+        <attr name="pstsTextNormalColor" format="color" />
+        <attr name="pstsTextSelectedColor" format="color" />
+        <attr name="pstsTabPaddingVertical" format="dimension" />
+        <attr name="pstsExpandViewWidth" format="dimension" />
+        <attr name="tabTextSize" format="dimension" />
+        <attr name="tabTextColor" format="color" />
+        <!-- add by hangl end -->
+        <attr name="pstsDividerColor" format="color" />
+        <attr name="pstsIndicatorHeight" format="dimension" />
+        <attr name="pstsUnderlineHeight" format="dimension" />
+        <attr name="pstsDividerPadding" format="dimension" />
+        <attr name="pstsTabPaddingLeftRight" format="dimension" />
+        <attr name="pstsScrollOffset" format="dimension" />
+        <attr name="pstsTabBackground" format="reference" />
+        <attr name="pstsShouldExpand" format="boolean" />
+        <attr name="pstsTextAllCaps" format="boolean" />
+    </declare-styleable>
+
     <declare-styleable name="StickyListHeadersListView">
         <attr name="stickyListHeadersListViewStyle" format="reference" />
 

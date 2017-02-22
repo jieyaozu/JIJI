@@ -10,7 +10,8 @@ public class DataInterface {
     public static String SERVER_APP_HOST = "http://www.chaojijihua.com:8080/";
     //测试地址
     //public static String APP_HOST = "http://192.168.0.103:8080/";
-
+    //查询用户详情
+    public static String FIND_USERINFO = APP_HOST + "superplan/login/login.do?method=dologin&";
     public static String LOGIN_URL = APP_HOST + "superplan/login/login.do?method=dologin&";
     public static String REGISTER_URL = APP_HOST + "superplan/register/register.do?method=doregister&";
     public static String UPLOAD_IMAGES = APP_HOST + "superplan/upload/image.do?method=upload&";
@@ -26,6 +27,7 @@ public class DataInterface {
     //查找单个贴子详情
     public static String FIND_POST = APP_HOST + "superplan/post/post.do?method=findpost&";
 
+    //评论
     public static String ADD_POSTREPLY_COMMENT = APP_HOST + "superplan/post/comment.do?method=addcomment&";
     public static String FIND_POSTREPLY_COMMENT = APP_HOST + "superplan/post/comment.do?method=findPostreplyComments&";
 }

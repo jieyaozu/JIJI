@@ -171,6 +171,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
         NoScrollListViewAdapter noScrollListViewAdapter = new NoScrollListViewAdapter(mPost.getImages());
         noScrollListView.setAdapter(noScrollListViewAdapter);
+        userIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toUserInfoActivity(PostDetailActivity.this, mPost.getUserid());
+            }
+        });
     }
 
     @Override

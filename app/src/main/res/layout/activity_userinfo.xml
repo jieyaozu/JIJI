@@ -1,5 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:dog="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
@@ -27,6 +28,29 @@
             android:layout_marginTop="5dp"
             android:textColor="@color/colorWhite"
             android:textSize="18dp" />
+
+        <com.yaozu.object.widget.PagerSlidingTabStrip
+            android:id="@+id/userinfo_psts"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_alignParentBottom="true"
+            android:contentDescription="top_navigation_bar"
+            android:fillViewport="false"
+            dog:pstsExpandViewWidth="10dp"
+            dog:pstsIndicatorColor="@color/colorWhite"
+            dog:pstsIndicatorHeight="2dp"
+            dog:pstsTabPaddingLeftRight="14dp"
+            dog:pstsTextNormalColor="@color/gray_white"
+            dog:tabTextSize="14dp"
+            dog:pstsShouldExpand="true"
+            dog:pstsTextSelectedColor="@color/colorWhite"
+            dog:pstsUnderlineColor="@color/gray_white"
+            dog:pstsUnderlineHeight="0.5dp" />
     </RelativeLayout>
 
+    <android.support.v4.view.ViewPager
+        android:id="@+id/userinfo_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:layout_below="@+id/psts_actionbar" />
 </LinearLayout>

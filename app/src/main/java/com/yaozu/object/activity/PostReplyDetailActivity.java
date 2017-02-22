@@ -177,6 +177,12 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
                 return false;
             }
         });
+        ivUserIcon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toUserInfoActivity(PostReplyDetailActivity.this, mPost.getUserid());
+            }
+        });
     }
 
     private AnimatorSet getEnterAnimtor(final View target) {
@@ -332,7 +338,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
     }
 
     private Spannable getSpanned(Comment comment, String mainUserid) {
-        String contentstr = null;//userName + ":" + content;
+        String contentstr = null;//userId + ":" + content;
         String userName = comment.getUserName();
         String replyName = comment.getReplyUserName();
         String content = comment.getContent();
@@ -365,11 +371,12 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         View.OnClickListener nameclick = new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                showToast("点击了名字:" + v.getTag());
+                String userid = (String) v.getTag();
+                IntentUtil.toUserInfoActivity(PostReplyDetailActivity.this, userid);
             }
         };
-        spannable.setSpan(new Clickable(nameclick, userName), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        spannable.setSpan(new Clickable(nameclick, replyName), contentstr.indexOf(replyName), contentstr.indexOf(replyName) + replyName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new Clickable(nameclick, comment.getUserid()), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        spannable.setSpan(new Clickable(nameclick, comment.getReplyUserid()), contentstr.indexOf(replyName), contentstr.indexOf(replyName) + replyName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
         //图片
         if (hasMain) {
             Drawable drawable = getResources().getDrawable(R.drawable.author);
@@ -386,17 +393,17 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
      */
     class Clickable extends ClickableSpan implements View.OnClickListener {
         private final View.OnClickListener mListener;
-        private String userName;
+        private String userId;
 
-        public Clickable(View.OnClickListener mListener, String userName) {
+        public Clickable(View.OnClickListener mListener, String userid) {
             this.mListener = mListener;
-            this.userName = userName;
+            this.userId = userid;
         }
 
         @Override
         public void onClick(View v) {
             isNameClick = true;
-            v.setTag(userName);
+            v.setTag(userId);
             mListener.onClick(v);
         }
 

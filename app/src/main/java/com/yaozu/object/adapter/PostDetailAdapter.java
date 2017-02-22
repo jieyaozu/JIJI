@@ -73,38 +73,48 @@ public class PostDetailAdapter extends BaseAdapter {
 
     @Override
     public View getView(final int position, View convertView, ViewGroup parent) {
-        View view = View.inflate(mContext, R.layout.item_listview_replypost, null);
-        ImageView usericon = (ImageView) view.findViewById(R.id.item_listview_replypost_usericon);
-        TextView userName = (TextView) view.findViewById(R.id.item_listview_replypost_username);
-        TextView time = (TextView) view.findViewById(R.id.item_listview_replypost_time);
-        TextView content = (TextView) view.findViewById(R.id.item_listview_replypost_content);
-        TextView isMain = (TextView) view.findViewById(R.id.item_listview_replypost_ismain);
-        TextView layerIndex = (TextView) view.findViewById(R.id.item_listview_replypost_layerindex);
-        TextView commentBt = (TextView) view.findViewById(R.id.item_listview_replypost_comment_bt);
-        NoScrollListView imageListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_container);
+        View view = null;
+        ViewHolder viewHolder = null;
+        if (convertView == null) {
+            view = View.inflate(mContext, R.layout.item_listview_replypost, null);
+            viewHolder = new ViewHolder();
+            viewHolder.usericon = (ImageView) view.findViewById(R.id.item_listview_replypost_usericon);
+            viewHolder.userName = (TextView) view.findViewById(R.id.item_listview_replypost_username);
+            viewHolder.time = (TextView) view.findViewById(R.id.item_listview_replypost_time);
+            viewHolder.content = (TextView) view.findViewById(R.id.item_listview_replypost_content);
+            viewHolder.isMain = (TextView) view.findViewById(R.id.item_listview_replypost_ismain);
+            viewHolder.layerIndex = (TextView) view.findViewById(R.id.item_listview_replypost_layerindex);
+            viewHolder.commentBt = (TextView) view.findViewById(R.id.item_listview_replypost_comment_bt);
+            viewHolder.imageListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_container);
+            viewHolder.commentListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_comments);
+            view.setTag(viewHolder);
+        } else {
+            view = convertView;
+            viewHolder = (ViewHolder) view.getTag();
+        }
         ImageListAdapter adapter = new ImageListAdapter(mContext);
-        imageListView.setAdapter(adapter);
-        NoScrollListView commentListView = (NoScrollListView) view.findViewById(R.id.item_listview_replypost_comments);
+        viewHolder.imageListView.setAdapter(adapter);
+
         CommentListAdapter commentListAdapter = new CommentListAdapter();
-        commentListView.setAdapter(commentListAdapter);
+        viewHolder.commentListView.setAdapter(commentListAdapter);
 
         final Post post = mListData.get(position);
-        Utils.setUserImg(post.getUserIcon(), usericon);
-        userName.setText(post.getUserName());
-        time.setText(DateUtil.getRelativeTime(post.getCreatetime()));
-        content.setText(post.getContent());
-        layerIndex.setText((position + 2) + "楼");
+        Utils.setUserImg(post.getUserIcon(), viewHolder.usericon);
+        viewHolder.userName.setText(post.getUserName());
+        viewHolder.time.setText(DateUtil.getRelativeTime(post.getCreatetime()));
+        viewHolder.content.setText(post.getContent());
+        viewHolder.layerIndex.setText((position + 2) + "楼");
         adapter.setData(post.getImages());
         commentListAdapter.setDataList(post.getComments(), post, position + 2);
         if (post.getUserid().equals(userid)) {
-            isMain.setVisibility(View.VISIBLE);
+            viewHolder.isMain.setVisibility(View.VISIBLE);
         } else {
-            isMain.setVisibility(View.GONE);
+            viewHolder.isMain.setVisibility(View.GONE);
         }
-        userName.setTypeface(typeface);
-        content.setTypeface(typeface);
-        time.setTypeface(typeface);
-        commentBt.setOnClickListener(new View.OnClickListener() {
+        viewHolder.userName.setTypeface(typeface);
+        viewHolder.content.setTypeface(typeface);
+        viewHolder.time.setTypeface(typeface);
+        viewHolder.commentBt.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 IntentUtil.toPostReplyDetailActivity(mContext, post, userid, position + 2);
@@ -116,7 +126,25 @@ public class PostDetailAdapter extends BaseAdapter {
                 IntentUtil.toPostReplyDetailActivity(mContext, post, userid, position + 2);
             }
         });
+        viewHolder.usericon.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toUserInfoActivity(mContext, post.getUserid());
+            }
+        });
         return view;
+    }
+
+    class ViewHolder {
+        ImageView usericon;
+        TextView userName;
+        TextView time;
+        TextView content;
+        TextView isMain;
+        TextView layerIndex;
+        TextView commentBt;
+        NoScrollListView imageListView;
+        NoScrollListView commentListView;
     }
 
     /**
