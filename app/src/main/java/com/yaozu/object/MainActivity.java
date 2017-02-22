@@ -64,6 +64,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 switch (checkedId) {
                     case R.id.main_bottom_raido_forum:
                         mActionbar.setTitle("主页");
+                        if (Build.VERSION.SDK_INT >= 21) {
+                            mActionbar.setElevation(10);
+                        }
                         updateContent(0);
                         break;
                     case R.id.main_bottom_raido_find:
@@ -73,6 +76,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             radioButton.setChecked(true);
                         } else {
                             mActionbar.setTitle("发现");
+                            if (Build.VERSION.SDK_INT >= 21) {
+                                mActionbar.setElevation(10);
+                            }
                             updateContent(1);
                         }
                         break;
@@ -83,6 +89,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             radioButton.setChecked(true);
                         } else {
                             mActionbar.setTitle("我");
+                            if (Build.VERSION.SDK_INT >= 21) {
+                                mActionbar.setElevation(0);
+                            }
                             updateContent(2);
                         }
                         break;

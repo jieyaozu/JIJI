@@ -18,6 +18,7 @@ import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.widget.FloatingActionButton;
 import com.yaozu.object.widget.NoScrollListView;
 
 import java.util.ArrayList;
@@ -34,7 +35,7 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
     private View mViewHeader;
     private NoScrollListView mHeaderListView;
     private HeaderListViewAdapter mHeaderAdapter;
-    private ImageView ivButton;
+    private FloatingActionButton ivButton;
     private int currentPage = 1;
 
     @Override
@@ -62,7 +63,7 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
         View view = inflater.inflate(R.layout.fragment_forum, container, false);
         mListView = (ListView) view.findViewById(R.id.common_refresh_listview);
         mViewHeader = inflater.inflate(R.layout.header_list_forum, null);
-        ivButton = (ImageView) view.findViewById(R.id.fragment_forum_imageview);
+        ivButton = (FloatingActionButton) view.findViewById(R.id.fragment_forum_imageview);
 
         mHeaderListView = (NoScrollListView) mViewHeader.findViewById(R.id.header_list_forum_listview);
         mListView.addHeaderView(mViewHeader);
