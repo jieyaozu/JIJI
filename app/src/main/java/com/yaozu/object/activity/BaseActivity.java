@@ -103,13 +103,13 @@ public abstract class BaseActivity extends AppCompatActivity implements SwipeBac
 
     protected abstract void setContentView();
 
-    protected abstract void settingActionBar(ActionBar actionBar);
-
     protected abstract void initView();
 
     protected abstract void initData();
 
     protected abstract void setListener();
+
+    protected abstract void settingActionBar(ActionBar actionBar);
 
     @Override
     public void finish() {

@@ -78,6 +78,10 @@
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme"
             android:windowSoftInputMode="adjustResize" />
+        <activity
+            android:name=".activity.user.UserInfoActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
     </application>
 
 </manifest>

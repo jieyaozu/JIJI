@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 
 /**
@@ -26,6 +27,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     private TextView tvUsername;
 
     private CardView cardView2;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -40,6 +42,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         tvUsername.setTypeface(typeface);
 
         cardView2.setOnClickListener(this);
+        ivUsericon.setOnClickListener(this);
 
         Utils.setUserImg(LoginInfo.getInstance(this.getActivity()).getIconPath(), ivUsericon);
         tvUsername.setText(LoginInfo.getInstance(this.getActivity()).getUserName());
@@ -74,6 +77,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             case R.id.fragment_mine_comment:
                 break;
             case R.id.fragment_mine_collect:
+                break;
+            case R.id.fragment_usericon:
+                IntentUtil.toUserInfoActivity(this.getActivity(), LoginInfo.getInstance(this.getActivity()).getUserAccount());
                 break;
         }
     }

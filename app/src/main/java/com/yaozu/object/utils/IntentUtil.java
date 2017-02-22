@@ -12,6 +12,7 @@ import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
+import com.yaozu.object.activity.user.UserInfoActivity;
 import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.bean.Post;
 
@@ -70,6 +71,13 @@ public class IntentUtil {
     public static void toRegisterActivity(Context context) {
         Intent postDetail = new Intent(context, RegisterActivity.class);
         context.startActivity(postDetail);
+        overridePendingTransition(context);
+    }
+
+    public static void toUserInfoActivity(Context context, String userid) {
+        Intent intent = new Intent(context, UserInfoActivity.class);
+        intent.putExtra(IntentKey.INTENT_USERID, userid);
+        context.startActivity(intent);
         overridePendingTransition(context);
     }
 }
