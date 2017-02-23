@@ -51,7 +51,7 @@
             dog:pstsTextSelectedColor="@color/colorWhite"
             dog:pstsUnderlineColor="@color/gray_white"
             dog:pstsUnderlineHeight="0.5dp"
-            dog:tabTextSize="14dp" />
+            dog:tabTextSize="15dp" />
     </RelativeLayout>
 
     <include layout="@layout/activity_common_toolsbar" />

@@ -1,12 +1,15 @@
 package com.yaozu.object.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.annotation.RequiresApi;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AbsListView;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.activity.user.UserInfoActivity;
@@ -27,6 +30,13 @@ public class ThemeFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         themeAdapter = new ListThemeAdapter();
         listView.setAdapter(themeAdapter);
+
+        listView.setOnLoadListener(new StickyListView.OnLoadListener() {
+            @Override
+            public void onLoad() {
+                System.out.println("===========onLoad============>");
+            }
+        });
     }
 
     @Override
@@ -44,9 +54,25 @@ public class ThemeFragment extends BaseFragment {
         AbsListView.LayoutParams params = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UserInfoActivity.STICKY_HEIGHT2);
         viewspace.setLayoutParams(params);
         listView.addHeaderView(viewspace);
+        listView.invalidScroll();
         return view;
     }
 
+    public int getStickyHeight() {
+        int scrollHeight = listView.getFirstViewScrollTop();
+        if (scrollHeight > UserInfoActivity.STICKY_HEIGHT1) {
+            return UserInfoActivity.STICKY_HEIGHT1;
+        }
+        return scrollHeight;
+    }
+
+    @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+    public void setStickyH(int stickyH) {
+        if (Math.abs(stickyH - getStickyHeight()) < 5) {
+            return;
+        }
+        listView.setSelectionFromTop(0, -stickyH);
+    }
 
     public void setScrollCallBack(UserInfoActivity.StickyScrollCallBack scrollListener) {
         this.scrollListener = scrollListener;
@@ -87,6 +113,8 @@ public class ThemeFragment extends BaseFragment {
             } else {
                 view = convertView;
             }
+            TextView tvTitle = (TextView) view.findViewById(R.id.item_listview_theme_title);
+            tvTitle.setText("ddddd" + position);
             return view;
         }
     }

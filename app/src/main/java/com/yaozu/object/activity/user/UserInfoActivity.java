@@ -1,6 +1,8 @@
 package com.yaozu.object.activity.user;
 
 import android.annotation.SuppressLint;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
@@ -9,7 +11,6 @@ import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 
-import com.nineoldandroids.view.ViewHelper;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.UserinfoPagerAdapter;
@@ -37,6 +38,7 @@ public class UserInfoActivity extends BaseActivity {
     public static int STICKY_HEIGHT1; // height1是代表从顶部到tab的距离
     public static int STICKY_HEIGHT2; // height2是代表从顶部到viewpager的距离
     private StickyScrollCallBack scrollListener;
+    private ThemeFragment detailFragment1, detailFragment2;
 
     @Override
     protected void setContentView() {
@@ -90,16 +92,52 @@ public class UserInfoActivity extends BaseActivity {
         titles.add("主题");
         titles.add("跟贴");
         List<Fragment> fragments = new ArrayList<>();
-        ThemeFragment fragment1 = new ThemeFragment();
-        ThemeFragment fragment2 = new ThemeFragment();
-        fragments.add(fragment1);
-        fragments.add(fragment2);
-        fragment1.setScrollCallBack(scrollListener);
-        fragment2.setScrollCallBack(scrollListener);
+        detailFragment1 = new ThemeFragment();
+        detailFragment2 = new ThemeFragment();
+        fragments.add(detailFragment1);
+        fragments.add(detailFragment2);
+        detailFragment1.setScrollCallBack(scrollListener);
+        detailFragment2.setScrollCallBack(scrollListener);
         pagerAdapter = new UserinfoPagerAdapter(getSupportFragmentManager(), titles, fragments);
 
         viewPager.setAdapter(pagerAdapter);
         pagerSlidingTabStrip.setViewPager(viewPager);
+
+        ViewPager.OnPageChangeListener pageChangeListener = new ViewPager.OnPageChangeListener() {
+            @Override
+            public void onPageScrolled(int position, float positionOffset, int positionOffsetPixels) {
+
+            }
+
+            @Override
+            public void onPageSelected(int position) {
+
+            }
+
+            @RequiresApi(api = Build.VERSION_CODES.LOLLIPOP)
+            @Override
+            public void onPageScrollStateChanged(int state) {
+                if (state == ViewPager.SCROLL_STATE_DRAGGING) {
+                    if (scrollListener.getCurrentViewpagerItem() == 0) {
+                        int tempH1 = detailFragment1.getStickyHeight();
+                        int stickyH2 = 0;
+                        if (tempH1 > STICKY_HEIGHT1 / 2) {
+                            stickyH2 = STICKY_HEIGHT1;
+                        }
+                        detailFragment2.setStickyH(stickyH2);
+                    } else if (scrollListener.getCurrentViewpagerItem() == 1) {
+                        int tempH2 = detailFragment2.getStickyHeight();
+                        int stickyH1 = 0;
+                        if (tempH2 > STICKY_HEIGHT1 / 2) {
+                            stickyH1 = STICKY_HEIGHT1;
+                        }
+                        detailFragment1.setStickyH(stickyH1);
+                    }
+                }
+            }
+        };
+        viewPager.addOnPageChangeListener(pageChangeListener);
+        pagerSlidingTabStrip.setViewPagerStateListener(pageChangeListener);
     }
 
     @Override
@@ -108,6 +146,7 @@ public class UserInfoActivity extends BaseActivity {
     }
 
     private int lastProcessStickyTranslateY = 0;
+
     @SuppressLint("NewApi")
     private void processStickyTranslateY(int translateY) {
         if (translateY == Integer.MIN_VALUE || translateY == lastProcessStickyTranslateY) {
