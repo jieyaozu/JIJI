@@ -5,10 +5,12 @@ import android.support.annotation.Nullable;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.AbsListView;
 import android.widget.BaseAdapter;
-import android.widget.ListView;
 
 import com.yaozu.object.R;
+import com.yaozu.object.activity.user.UserInfoActivity;
+import com.yaozu.object.widget.StickyListView;
 
 /**
  * Created by jxj42 on 2017/2/22.
@@ -16,8 +18,9 @@ import com.yaozu.object.R;
 
 public class ThemeFragment extends BaseFragment {
     public static String TAG = "ThemeFragment";
-    public ListView listView;
+    public StickyListView listView;
     public ListThemeAdapter themeAdapter;
+    private UserInfoActivity.StickyScrollCallBack scrollListener;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -35,8 +38,18 @@ public class ThemeFragment extends BaseFragment {
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_theme, container, false);
-        listView = (ListView) view.findViewById(R.id.common_refresh_listview);
+        listView = (StickyListView) view.findViewById(R.id.userinfo_stickylistview);
+        listView.setScrollCallBack(scrollListener);
+        View viewspace = new View(getActivity());
+        AbsListView.LayoutParams params = new AbsListView.LayoutParams(ViewGroup.LayoutParams.MATCH_PARENT, UserInfoActivity.STICKY_HEIGHT2);
+        viewspace.setLayoutParams(params);
+        listView.addHeaderView(viewspace);
         return view;
+    }
+
+
+    public void setScrollCallBack(UserInfoActivity.StickyScrollCallBack scrollListener) {
+        this.scrollListener = scrollListener;
     }
 
     @Override

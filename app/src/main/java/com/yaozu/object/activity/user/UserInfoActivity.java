@@ -1,14 +1,20 @@
 package com.yaozu.object.activity.user;
 
+import android.annotation.SuppressLint;
+import android.support.v4.app.Fragment;
 import android.support.v4.view.ViewPager;
 import android.support.v7.app.ActionBar;
+import android.view.View;
 import android.widget.ImageView;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
+import com.nineoldandroids.view.ViewHelper;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.UserinfoPagerAdapter;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.fragment.ThemeFragment;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.PagerSlidingTabStrip;
@@ -27,6 +33,10 @@ public class UserInfoActivity extends BaseActivity {
     private PagerSlidingTabStrip pagerSlidingTabStrip;
     private ViewPager viewPager;
     private UserinfoPagerAdapter pagerAdapter;
+    private RelativeLayout stickyView;
+    public static int STICKY_HEIGHT1; // height1是代表从顶部到tab的距离
+    public static int STICKY_HEIGHT2; // height2是代表从顶部到viewpager的距离
+    private StickyScrollCallBack scrollListener;
 
     @Override
     protected void setContentView() {
@@ -47,6 +57,28 @@ public class UserInfoActivity extends BaseActivity {
         tvUserName = (TextView) findViewById(R.id.activity_userinfo_username);
         viewPager = (ViewPager) findViewById(R.id.userinfo_viewpager);
         pagerSlidingTabStrip = (PagerSlidingTabStrip) findViewById(R.id.userinfo_psts);
+        pagerSlidingTabStrip.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        stickyView = (RelativeLayout) findViewById(R.id.sticky_view);
+        stickyView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+
+        STICKY_HEIGHT2 = stickyView.getMeasuredHeight();
+        STICKY_HEIGHT1 = STICKY_HEIGHT2 - pagerSlidingTabStrip.getMeasuredHeight();
+
+        System.out.println("LeiTest" + "height1=" + STICKY_HEIGHT1 + " height2=" + STICKY_HEIGHT2);
+
+        // 这是一个回调 滚动条滑动的时候，会调用onScrollChanged函数
+        scrollListener = new StickyScrollCallBack() {
+
+            @Override
+            public void onScrollChanged(int scrollY) {
+                processStickyTranslateY(scrollY);
+            }
+
+            @Override
+            public int getCurrentViewpagerItem() {
+                return viewPager.getCurrentItem();
+            }
+        };
 
         Utils.setUserImg(LoginInfo.getInstance(this).getIconPath(), ivUserIcon);
         tvUserName.setText(LoginInfo.getInstance(this).getUserName());
@@ -57,7 +89,15 @@ public class UserInfoActivity extends BaseActivity {
         List<String> titles = new ArrayList<String>();
         titles.add("主题");
         titles.add("跟贴");
-        pagerAdapter = new UserinfoPagerAdapter(getSupportFragmentManager(), titles);
+        List<Fragment> fragments = new ArrayList<>();
+        ThemeFragment fragment1 = new ThemeFragment();
+        ThemeFragment fragment2 = new ThemeFragment();
+        fragments.add(fragment1);
+        fragments.add(fragment2);
+        fragment1.setScrollCallBack(scrollListener);
+        fragment2.setScrollCallBack(scrollListener);
+        pagerAdapter = new UserinfoPagerAdapter(getSupportFragmentManager(), titles, fragments);
+
         viewPager.setAdapter(pagerAdapter);
         pagerSlidingTabStrip.setViewPager(viewPager);
     }
@@ -66,4 +106,47 @@ public class UserInfoActivity extends BaseActivity {
     protected void setListener() {
 
     }
+
+    private int lastProcessStickyTranslateY = 0;
+    @SuppressLint("NewApi")
+    private void processStickyTranslateY(int translateY) {
+        if (translateY == Integer.MIN_VALUE || translateY == lastProcessStickyTranslateY) {
+            return;
+        }
+        lastProcessStickyTranslateY = translateY;
+        stickyView.setTranslationY(translateY);
+
+/*        if (navBottomPos == 0 || locTvTopPosY == 0) {
+            locTvTopPosX = titleLocTv.getLeft();
+            locTvTopPosY = titleLocTv.getTop();
+            navBottomPos = navLayout.getBottom();
+            titleHeight = titleLocTv.getMeasuredHeight();
+        }
+
+        int locationX = location[0];
+
+        int locationY = location[1] - PixValue.dip.valueOf(50)
+                + notifyBarHeight;
+        if (locationY < locTvTopPosY) {
+            locationY = locTvTopPosY;
+        }
+
+        if (locationY < navBottomPos - titleHeight) {
+            locationX = locationX
+                    - ((navBottomPos - titleHeight - locationY) * 2);
+            if (locationX < locTvTopPosX) {
+                locationX = locTvTopPosX;
+            }
+        }
+
+        ViewHelper.setX(maskTv, locationX);
+        ViewHelper.setY(maskTv, locationY);*/
+    }
+
+    public interface StickyScrollCallBack {
+        public void onScrollChanged(int scrollY);
+
+        public int getCurrentViewpagerItem();
+    }
+
 }

@@ -4,5 +4,9 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/common_refresh_layout" />
+    <com.yaozu.object.widget.StickyListView
+        android:id="@+id/userinfo_stickylistview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null" />
 </LinearLayout>

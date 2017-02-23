@@ -5,9 +5,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentPagerAdapter;
 
-import com.yaozu.object.fragment.FindFragment;
-import com.yaozu.object.fragment.ThemeFragment;
-
+import java.util.ArrayList;
 import java.util.List;
 
 /**
@@ -16,20 +14,17 @@ import java.util.List;
 
 public class UserinfoPagerAdapter extends FragmentPagerAdapter {
     private List<String> titles;
+    private List<Fragment> fragmentList = new ArrayList<>();
 
-    public UserinfoPagerAdapter(FragmentManager fm, List<String> titles) {
+    public UserinfoPagerAdapter(FragmentManager fm, List<String> titles, List<Fragment> fragmentList) {
         super(fm);
         this.titles = titles;
+        this.fragmentList.addAll(fragmentList);
     }
 
     @Override
     public Fragment getItem(int position) {
-        Fragment fragment = null;
-        if (position == 0) {
-            fragment = new ThemeFragment();
-        } else {
-            fragment = new ThemeFragment();
-        }
+        Fragment fragment = fragmentList.get(position);
         Bundle jumpBundle = new Bundle();
         fragment.setArguments(jumpBundle);
         return fragment;
