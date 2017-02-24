@@ -2,7 +2,9 @@ package com.yaozu.object.adapter;
 
 import android.content.Context;
 import android.graphics.Typeface;
+import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
@@ -28,7 +30,7 @@ import java.util.List;
  * Created by jxj42 on 2017/2/6.
  */
 
-public class ForumListViewAdapter extends BaseAdapter {
+public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdapter.MyViewHolder> {
     private Context mContext;
     private List<Post> dataList = new ArrayList<Post>();
     private Typeface typeface;
@@ -51,13 +53,40 @@ public class ForumListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public int getCount() {
-        return dataList.size();
+    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
+        MyViewHolder viewHolder = new MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_listview_forum, parent, false));
+        return viewHolder;
     }
 
     @Override
-    public Object getItem(int position) {
-        return null;
+    public void onBindViewHolder(MyViewHolder holder, int position) {
+        holder.title.setTypeface(typeface);
+        holder.userName.setTypeface(typeface);
+        holder.support.setTypeface(typeface);
+        holder.reply.setTypeface(typeface);
+        holder.content.setTypeface(typeface);
+
+        final Post post = dataList.get(position);
+        Utils.setUserImg(post.getUserIcon(), holder.userIcon);
+        holder.userName.setText(post.getUserName());
+        holder.createTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
+        holder.title.setText(post.getTitle());
+        if (!TextUtils.isEmpty(post.getContent())) {
+            holder.content.setText(post.getContent());
+            holder.content.setVisibility(View.VISIBLE);
+        } else {
+            holder.content.setVisibility(View.GONE);
+        }
+        holder.reply.setText(post.getReplyNum() + "回复");
+        NoScrollGridViewAdapter adapter = new NoScrollGridViewAdapter();
+        adapter.setData(post.getImages());
+        holder.noScrollGridView.setAdapter(adapter);
+        holder.itemView.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toPostDetailActivity(mContext, post);
+            }
+        });
     }
 
     @Override
@@ -66,56 +95,11 @@ public class ForumListViewAdapter extends BaseAdapter {
     }
 
     @Override
-    public View getView(int position, View convertView, ViewGroup parent) {
-        View view;
-        ViewHolder viewHolder;
-        if (convertView != null) {
-            view = convertView;
-            viewHolder = (ViewHolder) view.getTag();
-        } else {
-            viewHolder = new ViewHolder();
-            view = View.inflate(mContext, R.layout.item_listview_forum, null);
-            viewHolder.userIcon = (ImageView) view.findViewById(R.id.item_listview_forum_usericon);
-            viewHolder.userName = (TextView) view.findViewById(R.id.item_listview_forum_username);
-            viewHolder.createTime = (TextView) view.findViewById(R.id.item_listview_forum_time);
-            viewHolder.title = (TextView) view.findViewById(R.id.item_listview_forum_title);
-            viewHolder.content = (TextView) view.findViewById(R.id.item_listview_forum_content);
-            viewHolder.support = (TextView) view.findViewById(R.id.item_listview_forum_support);
-            viewHolder.reply = (TextView) view.findViewById(R.id.item_listview_forum_reply);
-            viewHolder.title.setTypeface(typeface);
-            viewHolder.userName.setTypeface(typeface);
-            viewHolder.support.setTypeface(typeface);
-            viewHolder.reply.setTypeface(typeface);
-            viewHolder.content.setTypeface(typeface);
-            viewHolder.noScrollGridView = (NoScrollGridView) view.findViewById(R.id.item_listview_forum_container);
-            viewHolder.adapter = new NoScrollGridViewAdapter();
-            view.setTag(viewHolder);
-        }
-        final Post post = dataList.get(position);
-        Utils.setUserImg(post.getUserIcon(), viewHolder.userIcon);
-        viewHolder.userName.setText(post.getUserName());
-        viewHolder.createTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
-        viewHolder.title.setText(post.getTitle());
-        if (!TextUtils.isEmpty(post.getContent())) {
-            viewHolder.content.setText(post.getContent());
-            viewHolder.content.setVisibility(View.VISIBLE);
-        } else {
-            viewHolder.content.setVisibility(View.GONE);
-        }
-        viewHolder.reply.setText(post.getReplyNum() + "回复");
-
-        viewHolder.adapter.setData(post.getImages());
-        viewHolder.noScrollGridView.setAdapter(viewHolder.adapter);
-        view.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-                IntentUtil.toPostDetailActivity(mContext, post);
-            }
-        });
-        return view;
+    public int getItemCount() {
+        return dataList.size();
     }
 
-    private class ViewHolder {
+    public class MyViewHolder extends RecyclerView.ViewHolder {
         ImageView userIcon;
         TextView userName;
         TextView createTime;
@@ -124,7 +108,20 @@ public class ForumListViewAdapter extends BaseAdapter {
         TextView title;
         TextView content;
         NoScrollGridView noScrollGridView;
-        NoScrollGridViewAdapter adapter;
+        View itemView;
+
+        public MyViewHolder(View itemView) {
+            super(itemView);
+            this.itemView = itemView;
+            noScrollGridView = (NoScrollGridView) itemView.findViewById(R.id.item_listview_forum_container);
+            userIcon = (ImageView) itemView.findViewById(R.id.item_listview_forum_usericon);
+            userName = (TextView) itemView.findViewById(R.id.item_listview_forum_username);
+            createTime = (TextView) itemView.findViewById(R.id.item_listview_forum_time);
+            title = (TextView) itemView.findViewById(R.id.item_listview_forum_title);
+            content = (TextView) itemView.findViewById(R.id.item_listview_forum_content);
+            support = (TextView) itemView.findViewById(R.id.item_listview_forum_support);
+            reply = (TextView) itemView.findViewById(R.id.item_listview_forum_reply);
+        }
     }
 
     private class NoScrollGridViewAdapter extends BaseAdapter {

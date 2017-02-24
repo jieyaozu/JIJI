@@ -7,6 +7,9 @@ import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.support.v7.app.ActionBar;
+import android.support.v7.widget.DefaultItemAnimator;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
@@ -72,7 +75,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private boolean isCollection = false;
     private Button btSend;
 
-    private ListView mListView;
+    private RecyclerView mListView;
     private View headerView;
     private PostDetailAdapter postDetailAdapter;
     private ImageView ivSupport;
@@ -140,11 +143,10 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         tvIndicate = (TextView) findViewById(R.id.activity_postdetail_edit_indicate);
         tvSelectCount = (TextView) findViewById(R.id.activity_postdetail_selectpic_count);
 
-        mListView = (ListView) findViewById(R.id.common_refresh_listview);
+        mListView = (RecyclerView) findViewById(R.id.common_refresh_recyclerview);
         headerView = View.inflate(this, R.layout.header_listview_postdetail, null);
         headerView.setVisibility(View.GONE);
         initHeaderView(headerView);
-        mListView.addHeaderView(headerView);
     }
 
     private void initHeaderView(View headerView) {
@@ -185,6 +187,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         mHorizontalListView.setAdapter(horizontalListViewAdapter);
 
         postDetailAdapter = new PostDetailAdapter(this, typeface, mPost.getUserid());
+        mListView.setLayoutManager(new LinearLayoutManager(this));
+        mListView.setItemAnimator(new DefaultItemAnimator());
+        postDetailAdapter.addHeaderView(headerView);
         mListView.setAdapter(postDetailAdapter);
 
         refreshLayout.doRefreshing();

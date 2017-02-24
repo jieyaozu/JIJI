@@ -10,8 +10,8 @@
         android:background="@color/colorWhite"
         android:layout_height="match_parent">
 
-        <ListView
-            android:id="@+id/common_refresh_listview"
+        <android.support.v7.widget.RecyclerView
+            android:id="@+id/common_refresh_recyclerview"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
             android:background="#0b000000"

@@ -36,4 +36,8 @@ public class Constant {
 
     public static final String SUCCESS = "1";
     public static final String FAILED = "0";
+
+    public static final int VIEWTYPE_HEADER = 0;
+    public static final int VIEWTYPE_LIST = 1;
+    public static final int VIEWTYPE_FOOTER = 2;
 }

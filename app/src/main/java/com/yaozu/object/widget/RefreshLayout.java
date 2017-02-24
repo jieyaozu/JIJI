@@ -2,24 +2,23 @@ package com.yaozu.object.widget;
 
 import android.content.Context;
 import android.support.v4.widget.SwipeRefreshLayout;
+import android.support.v7.widget.LinearLayoutManager;
+import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
-import android.widget.AbsListView;
-import android.widget.ListView;
 
 import com.yaozu.object.R;
-import com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView;
 
 /**
  * 继承自SwipeRefreshLayout,从而实现滑动到底部时上拉加载更多的功能.
  *
  * @author mrsimple
  */
-public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnScrollListener {
+public class RefreshLayout extends SwipeRefreshLayout {
 
     /**
      * 滑动到最下面时的上拉操作
@@ -29,9 +28,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
     /**
      * listview实例
      */
-    private ListView mListView;
-
-    private StickyListHeadersListView mStickListView;
+    private RecyclerView mRecyclerView;
 
     /**
      * 上拉监听器, 到了最底部的上拉加载操作
@@ -58,6 +55,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
      */
     private boolean isLoading = false;
     private boolean isCanLoad = true;
+    private LinearLayoutManager layoutManager;
 
     /**
      * @param context
@@ -82,10 +80,12 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
         super.onLayout(changed, left, top, right, bottom);
 
         // 初始化ListView对象
-        if (mListView == null && mStickListView == null) {
+        if (mRecyclerView == null) {
             getListView();
         }
     }
+
+    int lastVisibleItem;
 
     /**
      * 获取ListView对象
@@ -95,17 +95,28 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
         if (childs > 0) {
             for (int i = 0; i < childs; i++) {
                 View childView = getChildAt(i);
-                if (childView instanceof ListView) {
-                    mListView = (ListView) childView;
-                    mListView.addFooterView(mListViewFooter);
+                if (childView instanceof RecyclerView) {
+                    mRecyclerView = (RecyclerView) childView;
                     // 设置滚动监听器给ListView, 使得滚动的情况下也可以自动加载
-                    mListView.setOnScrollListener(this);
-                    Log.d(VIEW_LOG_TAG, "### 找到listview");
-                } else if (childView instanceof StickyListHeadersListView) {
-                    mStickListView = (StickyListHeadersListView) childView;
-                    mStickListView.addFooterView(mListViewFooter);
-                    mStickListView.setOnScrollListener(this);
-                    Log.d(VIEW_LOG_TAG, "### 找到mStickListView");
+                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                        @Override
+                        public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                            super.onScrollStateChanged(recyclerView, newState);
+                            if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == recyclerView.getAdapter().getItemCount()) {
+                                System.out.println("==========onload=============>");
+                            }
+                        }
+
+                        @Override
+                        public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                            super.onScrolled(recyclerView, dx, dy);
+                            layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
+                            if (layoutManager != null) {
+                                lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                            }
+                        }
+                    });
+                    Log.d(VIEW_LOG_TAG, "### 找到RecyclerView");
                 }
             }
         }
@@ -136,9 +147,9 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
 
             case MotionEvent.ACTION_UP:
                 // 抬起
-                if (canLoad() && isOverLayout) {
-                    loadData();
-                }
+//                if (canLoad() && isOverLayout) {
+//                    loadData();
+//                }
                 break;
             default:
                 break;
@@ -158,7 +169,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
 
     public void completeRefresh() {
         setRefreshing(false);
-        setLoading(false);
+//        setLoading(false);
     }
 
     OnRefreshListener mListener;
@@ -180,11 +191,7 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
      * 判断是否到了最底部
      */
     private boolean isBottom() {
-        if (mListView != null && mListView.getAdapter() != null) {
-            return mListView.getLastVisiblePosition() == (mListView.getAdapter().getCount() - 1);
-        } else if (mStickListView != null && mStickListView.getAdapter() != null) {
-            return mStickListView.getLastVisiblePosition() == (mStickListView.getAdapter().getCount() - 1);
-        }
+
         return false;
     }
 
@@ -203,31 +210,31 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
     private void loadData() {
         if (mOnLoadListener != null) {
             // 设置状态
-            setLoading(true);
+            //setLoading(true);
             //
             mOnLoadListener.onLoad();
         }
     }
 
-    /**
-     * @param loading
-     */
-    public void setLoading(boolean loading) {
-        isLoading = loading;
-        if (isLoading) {
-            if (mListViewFooterRl != null) {
-                mListViewFooterRl.setVisibility(VISIBLE);
-            }
-        } else {
-            if (mListView != null && mListViewFooterRl != null) {
-                mListViewFooterRl.setVisibility(GONE);
-            } else if (mStickListView != null && mListViewFooterRl != null) {
-                mListViewFooterRl.setVisibility(GONE);
-            }
-            mYDown = 0;
-            mLastY = 0;
-        }
-    }
+//    /**
+//     * @param loading
+//     */
+//    public void setLoading(boolean loading) {
+//        isLoading = loading;
+//        if (isLoading) {
+//            if (mListViewFooterRl != null) {
+//                mListViewFooterRl.setVisibility(VISIBLE);
+//            }
+//        } else {
+//            if (mListView != null && mListViewFooterRl != null) {
+//                mListViewFooterRl.setVisibility(GONE);
+//            } else if (mStickListView != null && mListViewFooterRl != null) {
+//                mListViewFooterRl.setVisibility(GONE);
+//            }
+//            mYDown = 0;
+//            mLastY = 0;
+//        }
+//    }
 
     /**
      * @param loadListener
@@ -236,22 +243,22 @@ public class RefreshLayout extends SwipeRefreshLayout implements AbsListView.OnS
         mOnLoadListener = loadListener;
     }
 
-    @Override
-    public void onScrollStateChanged(AbsListView view, int scrollState) {
-
-    }
-
-    @Override
-    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
-                         int totalItemCount) {
-        // 滚动时到了最底部也可以加载更多
-        if (visibleItemCount < totalItemCount && canLoad()) {
-            isOverLayout = true;
-            loadData();
-        } else {
-            isOverLayout = false;
-        }
-    }
+//    @Override
+//    public void onScrollStateChanged(AbsListView view, int scrollState) {
+//
+//    }
+//
+//    @Override
+//    public void onScroll(AbsListView view, int firstVisibleItem, int visibleItemCount,
+//                         int totalItemCount) {
+//        // 滚动时到了最底部也可以加载更多
+//        if (visibleItemCount < totalItemCount && canLoad()) {
+//            isOverLayout = true;
+//            //loadData();
+//        } else {
+//            isOverLayout = false;
+//        }
+//    }
 
     private boolean isOverLayout = false;
 
