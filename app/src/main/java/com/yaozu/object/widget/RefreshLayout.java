@@ -103,7 +103,9 @@ public class RefreshLayout extends SwipeRefreshLayout {
                         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                             super.onScrollStateChanged(recyclerView, newState);
                             if (newState == RecyclerView.SCROLL_STATE_IDLE && lastVisibleItem + 1 == recyclerView.getAdapter().getItemCount()) {
-                                System.out.println("==========onload=============>");
+                                if (canLoad()) {
+                                    loadData();
+                                }
                             }
                         }
 
@@ -113,6 +115,11 @@ public class RefreshLayout extends SwipeRefreshLayout {
                             layoutManager = (LinearLayoutManager) mRecyclerView.getLayoutManager();
                             if (layoutManager != null) {
                                 lastVisibleItem = layoutManager.findLastVisibleItemPosition();
+                                if (lastVisibleItem + 1 == recyclerView.getAdapter().getItemCount()) {
+                                    if (canLoad()) {
+                                        loadData();
+                                    }
+                                }
                             }
                         }
                     });
@@ -164,12 +171,12 @@ public class RefreshLayout extends SwipeRefreshLayout {
      * @return
      */
     private boolean canLoad() {
-        return isBottom() && !isRefreshing() && !isLoading && isPullUp() && isCanLoad;
+        return !isRefreshing() && !isLoading && isPullUp() && isCanLoad;
     }
 
     public void completeRefresh() {
         setRefreshing(false);
-//        setLoading(false);
+        setLoading(false);
     }
 
     OnRefreshListener mListener;
@@ -208,33 +215,29 @@ public class RefreshLayout extends SwipeRefreshLayout {
      * 如果到了最底部,而且是上拉操作.那么执行onLoad方法
      */
     private void loadData() {
+        System.out.println("==========onload=============>");
         if (mOnLoadListener != null) {
             // 设置状态
-            //setLoading(true);
+            setLoading(true);
             //
             mOnLoadListener.onLoad();
         }
     }
 
-//    /**
-//     * @param loading
-//     */
-//    public void setLoading(boolean loading) {
-//        isLoading = loading;
-//        if (isLoading) {
-//            if (mListViewFooterRl != null) {
-//                mListViewFooterRl.setVisibility(VISIBLE);
-//            }
-//        } else {
-//            if (mListView != null && mListViewFooterRl != null) {
-//                mListViewFooterRl.setVisibility(GONE);
-//            } else if (mStickListView != null && mListViewFooterRl != null) {
-//                mListViewFooterRl.setVisibility(GONE);
-//            }
-//            mYDown = 0;
-//            mLastY = 0;
-//        }
-//    }
+    /**
+     * @param loading
+     */
+    public void setLoading(boolean loading) {
+        isLoading = loading;
+        if (isLoading) {
+            if (mListViewFooterRl != null) {
+                mListViewFooterRl.setVisibility(VISIBLE);
+            }
+        } else {
+            mYDown = 0;
+            mLastY = 0;
+        }
+    }
 
     /**
      * @param loadListener
