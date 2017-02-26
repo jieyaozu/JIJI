@@ -152,6 +152,17 @@
 
     <View
         android:layout_width="match_parent"
-        android:layout_height="10dp"
-        android:background="#10000000" />
+        android:layout_height="1dp"
+        android:background="@color/divider_background_color" />
+
+    <TextView
+        android:id="@+id/header_nodata"
+        android:layout_width="match_parent"
+        android:layout_height="180dp"
+        android:background="@color/colorWhite"
+        android:drawablePadding="15dp"
+        android:drawableTop="@drawable/pic_nocomment"
+        android:gravity="center_horizontal"
+        android:paddingTop="40dp"
+        android:text="暂无评论，来抢沙发吧" />
 </LinearLayout>

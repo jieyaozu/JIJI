@@ -107,7 +107,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         llPicLayout = (LinearLayout) findViewById(R.id.activity_sendpost_edit_piclayout);
         etTitle = (EditText) findViewById(R.id.activity_sendpost_edit_title);
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
-        etContent.setTypeface(typeface);
         mHorizontalListView = (HorizontalListView) findViewById(R.id.activity_sendpost_edit_hlistview);
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
         tvIndicate = (TextView) findViewById(R.id.activity_sendpost_edit_indicate);

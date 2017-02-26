@@ -37,15 +37,13 @@ import java.util.List;
 
 public class PostDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHolder> {
     private Context mContext;
-    protected Typeface typeface;
     private List<Post> mListData = new ArrayList<>();
     //楼主的userid
-    private String userid;
+    public String userid;
     private View headerView;
 
-    public PostDetailAdapter(Context context, Typeface typeface, String userid) {
+    public PostDetailAdapter(Context context, String userid) {
         mContext = context;
-        this.typeface = typeface;
         this.userid = userid;
     }
 
@@ -161,9 +159,6 @@ public class PostDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             } else {
                 isMain.setVisibility(View.GONE);
             }
-            userName.setTypeface(typeface);
-            content.setTypeface(typeface);
-            time.setTypeface(typeface);
             commentBt.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
@@ -226,7 +221,6 @@ public class PostDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             if (position == 3) {
                 view = View.inflate(mContext, R.layout.more_comment, null);
                 TextView textView = (TextView) view.findViewById(R.id.more_comment_text);
-                textView.setTypeface(typeface);
                 textView.setText("更多" + (commentList.size() - 3) + "条评论");
                 view.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -239,10 +233,15 @@ public class PostDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
                 TextView tvUsername = (TextView) view.findViewById(R.id.item_comment_content);
                 Comment comment = commentList.get(position);
                 Spannable spannable = getSpanned(comment, userid);
-                tvUsername.setTypeface(typeface);
                 tvUsername.setText(spannable);
                 tvUsername.setMovementMethod(LinkMovementMethod.getInstance());
             }
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IntentUtil.toPostReplyDetailActivity(mContext, post, userid, indexofmain);
+                }
+            });
             return view;
         }
     }

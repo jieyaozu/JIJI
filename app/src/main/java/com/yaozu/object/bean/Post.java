@@ -11,6 +11,7 @@ public class Post implements Serializable {
     private String postid;
     //如果是跟帖的话,parentid是主贴的postid，否则为空
     private String parentid;
+    private String parenttitle;
     //帖子的状态，0是正常，1是精华，2是置顶，3是下沉
     private String status;
     private String userIcon;
@@ -25,6 +26,14 @@ public class Post implements Serializable {
     private String replyNum;
     private List<MyImages> images;
     private List<Comment> comments;
+
+    public String getParenttitle() {
+        return parenttitle;
+    }
+
+    public void setParenttitle(String parenttitle) {
+        this.parenttitle = parenttitle;
+    }
 
     public List<Comment> getComments() {
         return comments;

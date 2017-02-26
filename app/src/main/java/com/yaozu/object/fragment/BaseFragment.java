@@ -18,7 +18,6 @@ import com.yaozu.object.widget.RefreshLayout;
 
 public class BaseFragment extends Fragment {
     protected RefreshLayout refreshLayout;
-    protected Typeface typeface;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -54,7 +53,6 @@ public class BaseFragment extends Fragment {
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        typeface = Typeface.createFromAsset(getActivity().getAssets(), "fonts/zhunyuan.ttf");
     }
 
     @Nullable

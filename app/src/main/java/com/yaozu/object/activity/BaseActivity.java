@@ -25,14 +25,12 @@ import me.imid.swipebacklayout.lib.app.SwipeBackActivityHelper;
  */
 
 public abstract class BaseActivity extends AppCompatActivity implements SwipeBackActivityBase {
-    protected Typeface typeface;
     protected RefreshLayout refreshLayout;
     protected boolean swipeBackEnable = true;
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        typeface = Typeface.createFromAsset(getAssets(), "fonts/zhunyuan.ttf");
         mHelper = new SwipeBackActivityHelper(this);
         mHelper.onActivityCreate();
 

@@ -18,11 +18,53 @@
             android:layout_height="match_parent"
             android:orientation="vertical">
 
+            <TextView
+                android:id="@+id/item_listview_theme_title"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5dp"
+                android:maxLines="2"
+                android:paddingBottom="5dp"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:paddingTop="10dp"
+                android:text="ddddd"
+                android:textColor="@color/nomralblack"
+                android:textSize="16dp"
+                android:textStyle="bold" />
+
+            <TextView
+                android:id="@+id/item_listview_theme_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5dp"
+                android:maxLines="3"
+                android:paddingLeft="20dp"
+                android:paddingRight="20dp"
+                android:text="ddcccccccccccccc"
+                android:textColor="@color/gray"
+                android:textSize="14dp"
+                android:visibility="visible" />
+
+            <com.yaozu.object.widget.NoScrollGridView
+                android:id="@+id/item_listview_theme_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:numColumns="3"
+                android:visibility="visible" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
+                android:layout_marginBottom="5dp"
                 android:layout_marginLeft="10dp"
-                android:layout_marginTop="10dp">
+                android:layout_marginTop="5dp">
 
                 <TextView
                     android:id="@+id/item_listview_theme_time"
@@ -59,47 +101,6 @@
                         android:textSize="12dp" />
                 </LinearLayout>
             </RelativeLayout>
-
-
-            <TextView
-                android:id="@+id/item_listview_theme_title"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:lineSpacingExtra="5dp"
-                android:maxLines="2"
-                android:paddingBottom="5dp"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:paddingTop="10dp"
-                android:text="ddddd"
-                android:textColor="@color/nomralblack"
-                android:textSize="16dp" />
-
-            <TextView
-                android:id="@+id/item_listview_theme_content"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:ellipsize="end"
-                android:lineSpacingExtra="5dp"
-                android:maxLines="3"
-                android:paddingLeft="20dp"
-                android:paddingRight="20dp"
-                android:text="ddcccccccccccccc"
-                android:textColor="@color/gray"
-                android:textSize="12dp"
-                android:visibility="visible" />
-
-            <com.yaozu.object.widget.NoScrollGridView
-                android:id="@+id/item_listview_theme_container"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_marginBottom="10dp"
-                android:layout_marginLeft="20dp"
-                android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
-                android:numColumns="3"
-                android:visibility="visible" />
         </LinearLayout>
     </LinearLayout>
 </LinearLayout>

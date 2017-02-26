@@ -14,8 +14,14 @@ import android.widget.TextView;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.UserinfoPagerAdapter;
+import com.yaozu.object.bean.UserInfo;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.entity.UserInfoData;
+import com.yaozu.object.fragment.ReplyFragment;
 import com.yaozu.object.fragment.ThemeFragment;
+import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.PagerSlidingTabStrip;
@@ -38,7 +44,8 @@ public class UserInfoActivity extends BaseActivity {
     public static int STICKY_HEIGHT1; // height1是代表从顶部到tab的距离
     public static int STICKY_HEIGHT2; // height2是代表从顶部到viewpager的距离
     private StickyScrollCallBack scrollListener;
-    private ThemeFragment detailFragment1, detailFragment2;
+    private ThemeFragment detailFragment1;
+    private ReplyFragment detailFragment2;
 
     @Override
     protected void setContentView() {
@@ -82,8 +89,7 @@ public class UserInfoActivity extends BaseActivity {
             }
         };
 
-        Utils.setUserImg(LoginInfo.getInstance(this).getIconPath(), ivUserIcon);
-        tvUserName.setText(LoginInfo.getInstance(this).getUserName());
+        requestFindUserinfo(userid);
     }
 
     @Override
@@ -92,8 +98,8 @@ public class UserInfoActivity extends BaseActivity {
         titles.add("主题");
         titles.add("跟贴");
         List<Fragment> fragments = new ArrayList<>();
-        detailFragment1 = new ThemeFragment();
-        detailFragment2 = new ThemeFragment();
+        detailFragment1 = ThemeFragment.newInstance(userid);
+        detailFragment2 = ReplyFragment.newInstance(userid);
         fragments.add(detailFragment1);
         fragments.add(detailFragment2);
         detailFragment1.setScrollCallBack(scrollListener);
@@ -143,6 +149,25 @@ public class UserInfoActivity extends BaseActivity {
     @Override
     protected void setListener() {
 
+    }
+
+    private void requestFindUserinfo(String userid) {
+        String url = DataInterface.FIND_USERINFO + "userid=" + userid;
+        RequestManager.getInstance().getRequest(this, url, UserInfoData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    UserInfoData userInfo = (UserInfoData) object;
+                    tvUserName.setText(userInfo.getBody().getUserinfo().getUsername());
+                    Utils.setUserImg(userInfo.getBody().getUserinfo().getIconpath(), ivUserIcon);
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
     }
 
     private int lastProcessStickyTranslateY = 0;

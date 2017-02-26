@@ -6,6 +6,7 @@ import android.support.v4.app.FragmentActivity;
 
 import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
+import com.yaozu.object.activity.CollectActivity;
 import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.PostReplyDetailActivity;
 import com.yaozu.object.activity.ScannerPictureActivity;
@@ -53,6 +54,13 @@ public class IntentUtil {
         overridePendingTransition(context);
     }
 
+    public static void toPostDetailActivity(Context context, String postid) {
+        Intent postDetail = new Intent(context, PostDetailActivity.class);
+        postDetail.putExtra(IntentKey.INTENT_POST_ID, postid);
+        context.startActivity(postDetail);
+        overridePendingTransition(context);
+    }
+
     public static void toPostReplyDetailActivity(Context context, Post post, String mainuserid, int index) {
         Intent postDetail = new Intent(context, PostReplyDetailActivity.class);
         postDetail.putExtra(IntentKey.INTENT_POST, post);
@@ -77,6 +85,12 @@ public class IntentUtil {
     public static void toUserInfoActivity(Context context, String userid) {
         Intent intent = new Intent(context, UserInfoActivity.class);
         intent.putExtra(IntentKey.INTENT_USERID, userid);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    public static void toCollectActivity(Context context) {
+        Intent intent = new Intent(context, CollectActivity.class);
         context.startActivity(intent);
         overridePendingTransition(context);
     }

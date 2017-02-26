@@ -18,7 +18,7 @@ import com.yaozu.object.R;
 import com.yaozu.object.activity.user.UserInfoActivity;
 import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.bean.Post;
-import com.yaozu.object.entity.HomeForumDataInfo;
+import com.yaozu.object.entity.DetailReplyPostListInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
@@ -26,27 +26,28 @@ import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.NoScrollGridView;
+import com.yaozu.object.widget.NoScrollListView;
 import com.yaozu.object.widget.StickyListView;
 
 import java.util.ArrayList;
 import java.util.List;
 
 /**
- * Created by jxj42 on 2017/2/22.
+ * Created by jxj42 on 2017/2/25.
  */
 
-public class ThemeFragment extends BaseFragment {
+public class ReplyFragment extends BaseFragment {
     public static String TAG = "ThemeFragment";
     public StickyListView listView;
-    public ListThemeAdapter themeAdapter;
+    public ListReplyAdapter themeAdapter;
     private UserInfoActivity.StickyScrollCallBack scrollListener;
     private List<Post> postList = new ArrayList<>();
     private String userid;
     private int currentPage = 1;
     private int itemWidth;
 
-    public static ThemeFragment newInstance(String userid) {
-        ThemeFragment fragment = new ThemeFragment();
+    public static ReplyFragment newInstance(String userid) {
+        ReplyFragment fragment = new ReplyFragment();
         fragment.setUserid(userid);
         return fragment;
     }
@@ -58,7 +59,7 @@ public class ThemeFragment extends BaseFragment {
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
-        themeAdapter = new ListThemeAdapter();
+        themeAdapter = new ListReplyAdapter();
         listView.setAdapter(themeAdapter);
 
         listView.setOnLoadListener(new StickyListView.OnLoadListener() {
@@ -123,13 +124,13 @@ public class ThemeFragment extends BaseFragment {
     }
 
     private void requestData(String userid, int page) {
-        String url = DataInterface.FIND_USER_POST_LIST + "userid=" + userid + "&pageindex=" + page;
-        RequestManager.getInstance().getRequest(this.getActivity(), url, HomeForumDataInfo.class, new RequestManager.OnResponseListener() {
+        String url = DataInterface.FIND_USER_REPLYPOST_LIST + "userid=" + userid + "&pageindex=" + page;
+        RequestManager.getInstance().getRequest(this.getActivity(), url, DetailReplyPostListInfo.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
                 listView.setLoading(false);
                 if (object != null) {
-                    HomeForumDataInfo homeForumDataInfo = (HomeForumDataInfo) object;
+                    DetailReplyPostListInfo homeForumDataInfo = (DetailReplyPostListInfo) object;
                     List<Post> listData = homeForumDataInfo.getBody().getPostlist();
                     if (listData != null) {
                         postList.addAll(listData);
@@ -148,7 +149,7 @@ public class ThemeFragment extends BaseFragment {
         });
     }
 
-    class ListThemeAdapter extends BaseAdapter {
+    class ListReplyAdapter extends BaseAdapter {
 
         @Override
         public int getCount() {
@@ -168,48 +169,52 @@ public class ThemeFragment extends BaseFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = null;
-            ThemeViewHolder viewHolder = null;
+            ReplyViewHolder viewHolder = null;
             if (convertView == null) {
-                viewHolder = new ThemeViewHolder();
-                view = View.inflate(getActivity(), R.layout.item_listview_theme, null);
-                viewHolder.tvTime = (TextView) view.findViewById(R.id.item_listview_theme_time);
-                viewHolder.tvSupporu = (TextView) view.findViewById(R.id.item_listview_theme_support);
-                viewHolder.tvReply = (TextView) view.findViewById(R.id.item_listview_theme_reply);
-                viewHolder.tvTitle = (TextView) view.findViewById(R.id.item_listview_theme_title);
-                viewHolder.tvContent = (TextView) view.findViewById(R.id.item_listview_theme_content);
-                viewHolder.noScrollGridView = (NoScrollGridView) view.findViewById(R.id.item_listview_theme_container);
+                viewHolder = new ReplyViewHolder();
+                view = View.inflate(getActivity(), R.layout.item_listview_user_replypost, null);
+                viewHolder.tvTime = (TextView) view.findViewById(R.id.item_listview_user_replypost_time);
+                viewHolder.tvparentTitle = (TextView) view.findViewById(R.id.item_listview_user_replypost_parenttitle);
+                viewHolder.titleLayout = (RelativeLayout) view.findViewById(R.id.item_listview_user_replypost_parenttitle_rl);
+                viewHolder.tvContent = (TextView) view.findViewById(R.id.item_listview_user_replypost_content);
+                viewHolder.imageListview = (NoScrollGridView) view.findViewById(R.id.item_listview_user_replypost_container);
+                viewHolder.commentListview = (NoScrollListView) view.findViewById(R.id.item_listview_user_replypost_comments);
                 view.setTag(viewHolder);
             } else {
                 view = convertView;
-                viewHolder = (ThemeViewHolder) view.getTag();
+                viewHolder = (ReplyViewHolder) view.getTag();
             }
 
             final Post post = postList.get(position);
             viewHolder.tvTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
-            viewHolder.tvSupporu.setText(post.getSupportNum() + "赞");
-            viewHolder.tvReply.setText(post.getReplyNum() + "回复");
-            viewHolder.tvTitle.setText(post.getTitle());
+            viewHolder.tvparentTitle.setText(post.getParenttitle());
             viewHolder.tvContent.setText(post.getContent());
             NoScrollGridViewAdapter adapter = new NoScrollGridViewAdapter();
             adapter.setData(post.getImages());
-            viewHolder.noScrollGridView.setAdapter(adapter);
+            viewHolder.imageListview.setAdapter(adapter);
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IntentUtil.toPostDetailActivity(ThemeFragment.this.getActivity(), post);
+                    IntentUtil.toPostReplyDetailActivity(ReplyFragment.this.getActivity(), post, "", 1);
+                }
+            });
+            viewHolder.titleLayout.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    IntentUtil.toPostDetailActivity(ReplyFragment.this.getActivity(), post.getParentid());
                 }
             });
             return view;
         }
     }
 
-    class ThemeViewHolder {
+    class ReplyViewHolder {
         TextView tvTime;
-        TextView tvSupporu;
-        TextView tvReply;
-        TextView tvTitle;
+        TextView tvparentTitle;
         TextView tvContent;
-        NoScrollGridView noScrollGridView;
+        NoScrollGridView imageListview;
+        NoScrollListView commentListview;
+        RelativeLayout titleLayout;
     }
 
     private class NoScrollGridViewAdapter extends BaseAdapter {
@@ -252,7 +257,7 @@ public class ThemeFragment extends BaseFragment {
             if (convertView != null) {
                 view = convertView;
             } else {
-                view = View.inflate(ThemeFragment.this.getActivity(), R.layout.item_nogridview, null);
+                view = View.inflate(ReplyFragment.this.getActivity(), R.layout.item_nogridview, null);
             }
             ImageView imageView = (ImageView) view.findViewById(R.id.item_nogridview_image);
             RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageView.getLayoutParams();

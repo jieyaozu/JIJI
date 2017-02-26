@@ -7,16 +7,16 @@
     <RelativeLayout
         android:id="@+id/listview_footer_rl"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
+        android:layout_height="40dp"
         android:paddingBottom="8dip"
         android:paddingTop="5dip"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <ProgressBar
             android:id="@+id/pull_to_refresh_load_progress"
-            style="@style/mProgress_circle"
+            style="@android:style/Widget.DeviceDefault.Light.ProgressBar"
             android:layout_width="wrap_content"
-            android:layout_height="20dp"
+            android:layout_height="30dp"
             android:layout_centerHorizontal="true"
             android:layout_centerVertical="true"
             android:indeterminate="true"
@@ -24,14 +24,17 @@
 
         <TextView
             android:id="@+id/pull_to_refresh_loadmore_text"
-            android:layout_width="fill_parent"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
+            android:layout_centerInParent="true"
             android:layout_centerVertical="true"
-            android:layout_gravity="center"
-            android:gravity="center"
             android:text="加载中"
             android:textAppearance="?android:attr/textAppearanceMedium"
             android:textColor="@android:color/darker_gray"
             android:textSize="12sp" />
     </RelativeLayout>
+    <View
+        android:id="@+id/pull_to_refresh_loadmore_tag"
+        android:layout_width="match_parent"
+        android:layout_height="10dp" />
 </RelativeLayout>

@@ -33,12 +33,10 @@ import java.util.List;
 public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdapter.MyViewHolder> {
     private Context mContext;
     private List<Post> dataList = new ArrayList<Post>();
-    private Typeface typeface;
     private int screenWidth, itemWidth;
 
     public ForumListViewAdapter(Context context) {
         mContext = context;
-        typeface = Typeface.createFromAsset(context.getAssets(), "fonts/zhunyuan.ttf");
         screenWidth = Utils.getScreenWidth(context);
         itemWidth = (screenWidth - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2) / 3;
     }
@@ -60,12 +58,6 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        holder.title.setTypeface(typeface);
-        holder.userName.setTypeface(typeface);
-        holder.support.setTypeface(typeface);
-        holder.reply.setTypeface(typeface);
-        holder.content.setTypeface(typeface);
-
         final Post post = dataList.get(position);
         Utils.setUserImg(post.getUserIcon(), holder.userIcon);
         holder.userName.setText(post.getUserName());
@@ -77,6 +69,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         } else {
             holder.content.setVisibility(View.GONE);
         }
+        holder.support.setText(post.getSupportNum() + "赞");
         holder.reply.setText(post.getReplyNum() + "回复");
         NoScrollGridViewAdapter adapter = new NoScrollGridViewAdapter();
         adapter.setData(post.getImages());

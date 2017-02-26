@@ -189,6 +189,10 @@ public class StickyListView extends ListView {
         return false;
     }
 
+    public void setCanLoad(boolean isCanLoad) {
+        this.isCanLoad = isCanLoad;
+    }
+
     /**
      * 是否可以加载更多, 条件是到了最底部, listview不在加载中, 且为上拉操作.
      *

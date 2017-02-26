@@ -1,0 +1,116 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/plan_unit_item_rl"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:background="@drawable/main_listview_selector"
+        android:orientation="vertical">
+
+        <LinearLayout
+            style="@style/RippleBackground"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:orientation="vertical">
+
+            <RelativeLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:layout_marginTop="10dp">
+
+                <TextView
+                    android:id="@+id/item_listview_user_replypost_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="5dp"
+                    android:text="2017-02-05"
+                    android:textColor="@color/gray_white"
+                    android:textSize="10dp" />
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/item_listview_user_replypost_parenttitle_rl"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="15dp"
+                android:layout_marginRight="15dp"
+                android:layout_marginTop="5dp"
+                android:background="@drawable/main_transparent_listview_selector"
+                android:orientation="vertical"
+                android:padding="5dp">
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:src="@drawable/yinyong1" />
+
+                <TextView
+                    android:id="@+id/item_listview_user_replypost_parenttitle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:paddingLeft="20dp"
+                    android:paddingRight="20dp"
+                    android:text="这是个标题"
+                    android:textColor="@color/gray_white"
+                    android:textSize="18dp" />
+
+                <ImageView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignBottom="@+id/item_listview_user_replypost_parenttitle"
+                    android:layout_alignRight="@+id/item_listview_user_replypost_parenttitle"
+                    android:src="@drawable/yinyong2" />
+            </RelativeLayout>
+
+            <TextView
+                android:id="@+id/item_listview_user_replypost_content"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="5dp"
+                android:ellipsize="end"
+                android:lineSpacingExtra="5dp"
+                android:paddingBottom="5dp"
+                android:paddingTop="5dp"
+                android:text="ccccccccccccc"
+                android:textColor="@color/nomralblack"
+                android:textSize="15dp" />
+
+            <com.yaozu.object.widget.NoScrollGridView
+                android:id="@+id/item_listview_user_replypost_container"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="20dp"
+                android:layout_marginRight="20dp"
+                android:layout_marginTop="10dp"
+                android:numColumns="3"
+                android:visibility="visible" />
+
+            <com.yaozu.object.widget.NoScrollListView
+                android:id="@+id/item_listview_user_replypost_comments"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginBottom="10dp"
+                android:layout_marginLeft="55dp"
+                android:layout_marginRight="20dp"
+                android:background="#10000000"
+                android:divider="@null"
+                android:visibility="visible" />
+
+            <View
+                android:layout_width="match_parent"
+                android:layout_height="1dp"
+                android:layout_alignParentBottom="true"
+                android:layout_marginLeft="10dp"
+                android:layout_marginRight="10dp"
+                android:background="@color/divider_background_color" />
+        </LinearLayout>
+    </LinearLayout>
+</LinearLayout>

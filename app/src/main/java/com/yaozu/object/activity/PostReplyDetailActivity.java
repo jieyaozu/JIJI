@@ -92,13 +92,10 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         scrollView = (ScrollView) findViewById(R.id.activity_postreply_scrollview);
         ivUserIcon = (ImageView) findViewById(R.id.item_listview_replypost_usericon);
         tvUserName = (TextView) findViewById(R.id.item_listview_replypost_username);
-        tvUserName.setTypeface(typeface);
         tvIsMain = (TextView) findViewById(R.id.item_listview_replypost_ismain);
         tvLayerIndex = (TextView) findViewById(R.id.item_listview_replypost_layerindex);
         tvTime = (TextView) findViewById(R.id.item_listview_replypost_time);
-        tvTime.setTypeface(typeface);
         tvContent = (TextView) findViewById(R.id.item_listview_replypost_content);
-        tvContent.setTypeface(typeface);
         etEditContent = (EditText) findViewById(R.id.activity_postdetail_edit);
         btSend = (Button) findViewById(R.id.activity_postdetail_send);
         nlCommentListview = (NoScrollListView) findViewById(R.id.item_listview_replypost_comments);
@@ -239,7 +236,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
                         etEditContent.setText("");
                         hideSoftInput();
                         //发表完以后刷新一下
-                        findpostRequest(postid);
+                        findReplypostRequest(postid);
                     } else {
                         showToast(requestData.getBody().getMessage());
                     }
@@ -253,8 +250,8 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         });
     }
 
-    private void findpostRequest(String postid) {
-        String url = DataInterface.FIND_POST + "postid=" + postid;
+    private void findReplypostRequest(String postid) {
+        String url = DataInterface.FIND_REPLY_POST + "postid=" + postid;
         RequestManager.getInstance().getRequest(this, url, Post.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
@@ -311,7 +308,6 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
             TextView tvContent = (TextView) view.findViewById(R.id.item_comment_content);
             final Comment comment = commentList.get(position);
             Spannable spannable = getSpanned(comment, mainUserid);
-            tvContent.setTypeface(typeface);
             tvContent.setText(spannable);
             tvContent.setMovementMethod(LinkMovementMethod.getInstance());
             tvContent.setOnClickListener(new View.OnClickListener() {

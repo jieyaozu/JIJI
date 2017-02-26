@@ -6,12 +6,18 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.AttributeSet;
 import android.util.Log;
+import android.view.GestureDetector;
 import android.view.LayoutInflater;
 import android.view.MotionEvent;
 import android.view.View;
 import android.view.ViewConfiguration;
+import android.widget.RelativeLayout;
+import android.widget.Scroller;
+import android.widget.TextView;
 
 import com.yaozu.object.R;
+import com.yaozu.object.widget.swiperefreshendless.EndlessRecyclerOnScrollListener;
+import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
 
 /**
  * 继承自SwipeRefreshLayout,从而实现滑动到底部时上拉加载更多的功能.
@@ -20,6 +26,9 @@ import com.yaozu.object.R;
  */
 public class RefreshLayout extends SwipeRefreshLayout {
 
+    private final Scroller mScroller;
+    private final PanelOnGestureListener mGestureListener;
+    private final GestureDetector mGestureDetector;
     /**
      * 滑动到最下面时的上拉操作
      */
@@ -38,9 +47,8 @@ public class RefreshLayout extends SwipeRefreshLayout {
     /**
      * ListView的加载中footer
      */
-    private View mListViewFooter;
-
-    private View mListViewFooterRl;
+    private View loadMoreView;
+    private RelativeLayout loadMoreProgressBar;
 
     /**
      * 按下时的y坐标
@@ -68,11 +76,12 @@ public class RefreshLayout extends SwipeRefreshLayout {
         super(context, attrs);
 
         mTouchSlop = ViewConfiguration.get(context).getScaledTouchSlop();
-
-        mListViewFooter = LayoutInflater.from(context).inflate(R.layout.listview_footer, null,
-                false);
-        mListViewFooterRl = mListViewFooter.findViewById(R.id.listview_footer_rl);
-
+        loadMoreView = LayoutInflater.from(context).inflate(R.layout.listview_footer, null, false);
+        loadMoreProgressBar = (RelativeLayout) loadMoreView.findViewById(R.id.listview_footer_rl);
+        setLoadMorViewVisibility(INVISIBLE);
+        mScroller = new Scroller(context);
+        mGestureListener = new PanelOnGestureListener();
+        mGestureDetector = new GestureDetector(mGestureListener);
     }
 
     @Override
@@ -85,7 +94,14 @@ public class RefreshLayout extends SwipeRefreshLayout {
         }
     }
 
-    int lastVisibleItem;
+    private LinearLayoutManager linearLayoutManager;
+    private HeaderViewRecyclerAdapter stringAdapter;
+
+    public void attachLayoutManagerAndHeaderAdapter(LinearLayoutManager layoutManager, HeaderViewRecyclerAdapter adapter) {
+        linearLayoutManager = layoutManager;
+        stringAdapter = adapter;
+        stringAdapter.addFooterView(loadMoreView);
+    }
 
     /**
      * 获取ListView对象
@@ -98,7 +114,18 @@ public class RefreshLayout extends SwipeRefreshLayout {
                 if (childView instanceof RecyclerView) {
                     mRecyclerView = (RecyclerView) childView;
                     // 设置滚动监听器给ListView, 使得滚动的情况下也可以自动加载
-                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+                    mRecyclerView.addOnScrollListener(new EndlessRecyclerOnScrollListener(linearLayoutManager) {
+                        @Override
+                        public void onLoadMore(int currentPage) {
+                            if (canLoad()) {
+                                setLoadMorViewVisibility(VISIBLE);
+                                loadData();
+                            } else {
+                                setLoadMorViewVisibility(GONE);
+                            }
+                        }
+                    });
+/*                    mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
                         @Override
                         public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
                             super.onScrollStateChanged(recyclerView, newState);
@@ -122,7 +149,7 @@ public class RefreshLayout extends SwipeRefreshLayout {
                                 }
                             }
                         }
-                    });
+                    });*/
                     Log.d(VIEW_LOG_TAG, "### 找到RecyclerView");
                 }
             }
@@ -131,6 +158,9 @@ public class RefreshLayout extends SwipeRefreshLayout {
 
     public void setIsCanLoad(boolean isCanLoad) {
         this.isCanLoad = isCanLoad;
+        if (isCanLoad) {
+            setLoadMorViewVisibility(INVISIBLE);
+        }
     }
 
     /*
@@ -162,7 +192,8 @@ public class RefreshLayout extends SwipeRefreshLayout {
                 break;
         }
 
-        return super.dispatchTouchEvent(event);
+        super.dispatchTouchEvent(event);
+        return mGestureDetector.onTouchEvent(event);
     }
 
     /**
@@ -195,14 +226,6 @@ public class RefreshLayout extends SwipeRefreshLayout {
     }
 
     /**
-     * 判断是否到了最底部
-     */
-    private boolean isBottom() {
-
-        return false;
-    }
-
-    /**
      * 是否是上拉操作
      *
      * @return
@@ -215,12 +238,15 @@ public class RefreshLayout extends SwipeRefreshLayout {
      * 如果到了最底部,而且是上拉操作.那么执行onLoad方法
      */
     private void loadData() {
-        System.out.println("==========onload=============>");
         if (mOnLoadListener != null) {
             // 设置状态
             setLoading(true);
-            //
-            mOnLoadListener.onLoad();
+            mRecyclerView.postDelayed(new Runnable() {
+                @Override
+                public void run() {
+                    mOnLoadListener.onLoad();
+                }
+            }, 500);
         }
     }
 
@@ -230,13 +256,20 @@ public class RefreshLayout extends SwipeRefreshLayout {
     public void setLoading(boolean loading) {
         isLoading = loading;
         if (isLoading) {
-            if (mListViewFooterRl != null) {
-                mListViewFooterRl.setVisibility(VISIBLE);
-            }
+            loadMoreView.findViewById(R.id.pull_to_refresh_load_progress).setVisibility(VISIBLE);
+            TextView textView = (TextView) loadMoreView.findViewById(R.id.pull_to_refresh_loadmore_text);
+            textView.setText("加载中");
         } else {
+            loadMoreView.findViewById(R.id.pull_to_refresh_load_progress).setVisibility(GONE);
+            TextView textView = (TextView) loadMoreView.findViewById(R.id.pull_to_refresh_loadmore_text);
+            textView.setText("目前只有这么多了");
             mYDown = 0;
             mLastY = 0;
         }
+    }
+
+    public void setLoadMorViewVisibility(int visibility) {
+        loadMoreProgressBar.setVisibility(visibility);
     }
 
     /**
@@ -246,7 +279,7 @@ public class RefreshLayout extends SwipeRefreshLayout {
         mOnLoadListener = loadListener;
     }
 
-//    @Override
+    //    @Override
 //    public void onScrollStateChanged(AbsListView view, int scrollState) {
 //
 //    }
@@ -262,8 +295,44 @@ public class RefreshLayout extends SwipeRefreshLayout {
 //            isOverLayout = false;
 //        }
 //    }
+    public class PanelOnGestureListener implements GestureDetector.OnGestureListener {
 
-    private boolean isOverLayout = false;
+        @Override
+        public boolean onDown(MotionEvent e) {
+            return true;
+        }
+
+        @Override
+        public void onShowPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onSingleTapUp(MotionEvent e) {
+            return false;
+        }
+
+        @Override
+        public boolean onScroll(MotionEvent e1, MotionEvent e2, float distanceX, float distanceY) {
+            return true;
+        }
+
+        @Override
+        public void onLongPress(MotionEvent e) {
+
+        }
+
+        @Override
+        public boolean onFling(MotionEvent e1, MotionEvent e2, float velocityX, float velocityY) {
+            return false;
+        }
+    }
+
+    @Override
+    public void onMeasure(int widthMeasureSpec, int heightMeasureSpec) {
+        loadMoreView.measure(View.MeasureSpec.UNSPECIFIED, View.MeasureSpec.UNSPECIFIED);
+        super.onMeasure(widthMeasureSpec, heightMeasureSpec);
+    }
 
     /**
      * 加载更多的监听器

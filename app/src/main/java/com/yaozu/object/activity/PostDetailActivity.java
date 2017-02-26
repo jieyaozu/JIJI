@@ -13,6 +13,7 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -24,7 +25,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.ListView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -52,6 +52,7 @@ import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.HorizontalListView;
 import com.yaozu.object.widget.NoScrollListView;
+import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -75,16 +76,24 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private boolean isCollection = false;
     private Button btSend;
 
-    private RecyclerView mListView;
+    private RecyclerView mRecyclerView;
     private View headerView;
     private PostDetailAdapter postDetailAdapter;
     private ImageView ivSupport;
 
     private Post mPost;
     private String replypostid;
+    //主题贴id
+    private String postid;
     private int currentIndex = 1;
 
     private int imageWidth = 0;
+    private LinearLayoutManager linearLayoutManager;
+    private HeaderViewRecyclerAdapter stringAdapter;
+    private View nodataLayout;
+    private TextView tvNoData;
+
+    private Menu mMenu;
 
     @Override
     protected void setContentView() {
@@ -101,6 +110,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     public boolean onCreateOptionsMenu(Menu menu) {
+        mMenu = menu;
         getMenuInflater().inflate(R.menu.postdetail_activity_actions, menu);
         return true;
     }
@@ -109,13 +119,17 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_collection:
+                if (!LoginInfo.getInstance(this).isLogining()) {
+                    IntentUtil.toLoginActivity(this);
+                    return true;
+                }
                 if (!isCollection) {
                     isCollection = true;
-                    showToast("收藏成功");
+                    requestCollect(mPost.getPostid(), item);
                     item.setIcon(R.drawable.navigationbar_collect_highlighted);
                 } else {
                     isCollection = false;
-                    showToast("取消收藏成功");
+                    requestCancelCollect(mPost.getPostid(), item);
                     item.setIcon(R.drawable.navigationbar_collect);
                 }
                 return true;
@@ -130,11 +144,84 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         }
     }
 
+    //收藏
+    private void requestCollect(String postid, final MenuItem item) {
+        String url = DataInterface.ADD_COLLECT + "userid=" + LoginInfo.getInstance(this).getUserAccount() + "&postid=" + postid;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    showToast(requestData.getBody().getMessage());
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        item.setIcon(R.drawable.navigationbar_collect_highlighted);
+                    } else {
+                        item.setIcon(R.drawable.navigationbar_collect);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    //取消收藏
+    private void requestCancelCollect(String postid, final MenuItem item) {
+        String url = DataInterface.REMOVE_COLLECT + "userid=" + LoginInfo.getInstance(this).getUserAccount() + "&postid=" + postid;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    showToast(requestData.getBody().getMessage());
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        item.setIcon(R.drawable.navigationbar_collect);
+                    } else {
+                        item.setIcon(R.drawable.navigationbar_collect_highlighted);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    private void requestIsCollect(String postid) {
+        String url = DataInterface.IS_COLLECT + "userid=" + LoginInfo.getInstance(this).getUserAccount() + "&postid=" + postid;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        isCollection = true;
+                        mMenu.findItem(R.id.action_collection).setIcon(R.drawable.navigationbar_collect_highlighted);
+                    } else {
+                        isCollection = false;
+                        mMenu.findItem(R.id.action_collection).setIcon(R.drawable.navigationbar_collect);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
     @Override
     protected void initView() {
         imageWidth = Utils.getScreenWidth(this) - getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
 
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
+        postid = getIntent().getStringExtra(IntentKey.INTENT_POST_ID);
         etEditContent = (EditText) findViewById(R.id.activity_postdetail_edit);
         ivMore = (ImageView) findViewById(R.id.activity_postdetail_more);
         btSend = (Button) findViewById(R.id.activity_postdetail_send);
@@ -143,10 +230,36 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         tvIndicate = (TextView) findViewById(R.id.activity_postdetail_edit_indicate);
         tvSelectCount = (TextView) findViewById(R.id.activity_postdetail_selectpic_count);
 
-        mListView = (RecyclerView) findViewById(R.id.common_refresh_recyclerview);
+        mRecyclerView = (RecyclerView) findViewById(R.id.common_refresh_recyclerview);
         headerView = View.inflate(this, R.layout.header_listview_postdetail, null);
+        tvNoData = (TextView) headerView.findViewById(R.id.header_nodata);
+        ivSupport = (ImageView) headerView.findViewById(R.id.header_postdetail_support);
         headerView.setVisibility(View.GONE);
-        initHeaderView(headerView);
+        if (mPost != null) {
+            initHeaderView(headerView);
+        } else {
+            requestFindPostByid(postid);
+        }
+    }
+
+    private void requestFindPostByid(String postid) {
+        String url = DataInterface.FIND_THEME_POST + "postid=" + postid;
+        RequestManager.getInstance().getRequest(this, url, Post.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    mPost = (Post) object;
+                    initHeaderView(headerView);
+                    postDetailAdapter.userid = mPost.getUserid();
+                    refreshLayout.doRefreshing();
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
     }
 
     private void initHeaderView(View headerView) {
@@ -156,12 +269,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         TextView content = (TextView) headerView.findViewById(R.id.item_listview_forum_content);
         TextView support = (TextView) headerView.findViewById(R.id.header_postdetail_support_tv);
         TextView reply = (TextView) headerView.findViewById(R.id.header_postdetail_reply_tv);
-        content.setTypeface(typeface);
-        userName.setTypeface(typeface);
-        support.setTypeface(typeface);
-        reply.setTypeface(typeface);
         TextView createTime = (TextView) headerView.findViewById(R.id.item_listview_forum_time);
-        ivSupport = (ImageView) headerView.findViewById(R.id.header_postdetail_support);
         NoScrollListView noScrollListView = (NoScrollListView) headerView.findViewById(R.id.item_listview_forum_container);
 
         userName.setText(mPost.getUserName());
@@ -169,6 +277,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         content.setText(mPost.getContent());
         createTime.setText(mPost.getCreatetime());
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
+        support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
 
         NoScrollListViewAdapter noScrollListViewAdapter = new NoScrollListViewAdapter(mPost.getImages());
@@ -179,20 +288,29 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 IntentUtil.toUserInfoActivity(PostDetailActivity.this, mPost.getUserid());
             }
         });
+        //是否收藏
+        requestIsCollect(mPost.getPostid());
     }
+
+    ;
 
     @Override
     protected void initData() {
         horizontalListViewAdapter = new HorizontalListViewAdapter();
         mHorizontalListView.setAdapter(horizontalListViewAdapter);
 
-        postDetailAdapter = new PostDetailAdapter(this, typeface, mPost.getUserid());
-        mListView.setLayoutManager(new LinearLayoutManager(this));
-        mListView.setItemAnimator(new DefaultItemAnimator());
+        postDetailAdapter = new PostDetailAdapter(this, mPost != null ? mPost.getUserid() : "");
+        stringAdapter = new HeaderViewRecyclerAdapter(postDetailAdapter);
+        linearLayoutManager = new LinearLayoutManager(this);
+        mRecyclerView.setLayoutManager(linearLayoutManager);
+        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         postDetailAdapter.addHeaderView(headerView);
-        mListView.setAdapter(postDetailAdapter);
+        mRecyclerView.setAdapter(stringAdapter);
+        refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
 
-        refreshLayout.doRefreshing();
+        if (mPost != null) {
+            refreshLayout.doRefreshing();
+        }
     }
 
     @Override
@@ -318,8 +436,11 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                         postDetailAdapter.clearData();
                     }
                     postDetailAdapter.setAddData(postList);
-                    if (postList == null || postList.size() == 0) {
+                    if (postList == null || postList.size() < Constant.PAGE_SIZE) {
                         refreshLayout.setIsCanLoad(false);
+                    }
+                    if (postList != null && postList.size() > 0) {
+                        tvNoData.setVisibility(View.GONE);
                     }
                 }
             }
@@ -353,7 +474,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 llMoreLayout.setVisibility(View.GONE);
                 break;
             case R.id.header_postdetail_support:
-                showToast("点赞");
+                requestAddPraise(LoginInfo.getInstance(this).getUserAccount(), mPost.getPostid());
                 break;
             case R.id.activity_postdetail_send:
                 if (!LoginInfo.getInstance(this).isLogining()) {
@@ -367,6 +488,29 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 replyPostRequest(content, mPost.getPostid());
                 break;
         }
+    }
+
+    private void requestAddPraise(String userid, String postid) {
+        String url = DataInterface.ADD_POST_PRAISE;
+        ParamList paramList = new ParamList();
+        paramList.add(new ParamList.Parameter("userid", userid));
+        paramList.add(new ParamList.Parameter("postid", postid));
+        paramList.add(new ParamList.Parameter("publictime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
+        paramList.add(new ParamList.Parameter("unread", "1"));
+        RequestManager.getInstance().postRequest(this, url, paramList, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    showToast(requestData.getBody().getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
     }
 
     private void replyPostRequest(String content, String parentid) {
@@ -466,6 +610,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     if (count == mListData.size()) {
                         //数据回传
                         closeBaseProgressDialog();
+                        mListData.clear();
+                        horizontalListViewAdapter.notifyDataSetChanged();
+                        llMoreLayout.setVisibility(View.GONE);
                     }
                 }
 

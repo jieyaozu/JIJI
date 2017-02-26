@@ -82,6 +82,10 @@
             android:name=".activity.user.UserInfoActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.CollectActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
     </application>
 
 </manifest>

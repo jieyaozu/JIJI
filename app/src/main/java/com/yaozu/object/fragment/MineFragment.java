@@ -32,15 +32,9 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         tvTheme.setOnClickListener(this);
-        tvTheme.setTypeface(typeface);
         tvReplyPost.setOnClickListener(this);
-        tvReplyPost.setTypeface(typeface);
         tvComment.setOnClickListener(this);
-        tvComment.setTypeface(typeface);
         tvCollect.setOnClickListener(this);
-        tvCollect.setTypeface(typeface);
-        tvUsername.setTypeface(typeface);
-
         cardView2.setOnClickListener(this);
         ivUsericon.setOnClickListener(this);
 
@@ -77,6 +71,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
             case R.id.fragment_mine_comment:
                 break;
             case R.id.fragment_mine_collect:
+                IntentUtil.toCollectActivity(this.getActivity());
                 break;
             case R.id.fragment_usericon:
                 IntentUtil.toUserInfoActivity(this.getActivity(), LoginInfo.getInstance(this.getActivity()).getUserAccount());
