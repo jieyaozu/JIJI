@@ -1,9 +1,7 @@
 package com.yaozu.object.fragment;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v4.app.Fragment;
 import android.support.v7.widget.CardView;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -65,6 +63,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.fragment_mine_theme:
+                IntentUtil.toThemePostActivity(this.getActivity(), LoginInfo.getInstance(this.getActivity()).getUserAccount());
                 break;
             case R.id.fragment_mine_replypost:
                 break;

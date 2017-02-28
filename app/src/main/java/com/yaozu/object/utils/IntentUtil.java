@@ -11,6 +11,7 @@ import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.PostReplyDetailActivity;
 import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
+import com.yaozu.object.activity.ThemePostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
 import com.yaozu.object.activity.user.UserInfoActivity;
@@ -91,6 +92,13 @@ public class IntentUtil {
 
     public static void toCollectActivity(Context context) {
         Intent intent = new Intent(context, CollectActivity.class);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    public static void toThemePostActivity(Context context, String userid) {
+        Intent intent = new Intent(context, ThemePostActivity.class);
+        intent.putExtra(IntentKey.INTENT_USERID, userid);
         context.startActivity(intent);
         overridePendingTransition(context);
     }
