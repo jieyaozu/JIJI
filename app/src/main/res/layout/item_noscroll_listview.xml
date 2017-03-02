@@ -11,6 +11,7 @@
         android:layout_marginLeft="20dp"
         android:layout_marginRight="20dp"
         android:layout_marginTop="5dp"
+        android:background="@color/gray_little"
         android:scaleType="centerCrop"
         android:src="@mipmap/ic_launcher" />
 </RelativeLayout>
