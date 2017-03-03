@@ -22,7 +22,7 @@
         <ImageView
             android:id="@+id/main_actionbar_shadow"
             android:layout_width="match_parent"
-            android:layout_height="1px"
+            android:layout_height="1dp"
             android:layout_above="@+id/main_bottom_layout"
             android:background="#447F7F7F" />
 
@@ -46,7 +46,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableTop="@drawable/actionbar_myplan_selector" />
+                    android:gravity="bottom|center_horizontal"
+                    android:paddingBottom="5dp"
+                    android:paddingTop="6dp"
+                    android:text="论坛"
+                    android:textColor="@color/gray"
+                    android:textSize="12dp" />
 
                 <RadioButton
                     android:id="@+id/main_bottom_raido_find"
@@ -54,8 +59,12 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableTop="@drawable/actionbar_find_selector"
-                    android:paddingLeft="0dp" />
+                    android:gravity="bottom|center_horizontal"
+                    android:paddingBottom="5dp"
+                    android:paddingLeft="0dp"
+                    android:text="简文"
+                    android:textColor="@color/gray"
+                    android:textSize="12dp" />
 
                 <RadioButton
                     android:id="@+id/main_bottom_raido_mine"
@@ -63,7 +72,11 @@
                     android:layout_height="match_parent"
                     android:layout_weight="1"
                     android:button="@null"
-                    android:drawableTop="@drawable/actionbar_mine_selector" />
+                    android:gravity="bottom|center_horizontal"
+                    android:paddingBottom="5dp"
+                    android:text="我"
+                    android:textColor="@color/gray"
+                    android:textSize="12dp" />
             </RadioGroup>
         </RelativeLayout>
     </RelativeLayout>

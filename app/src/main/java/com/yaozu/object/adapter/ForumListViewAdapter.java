@@ -1,7 +1,6 @@
 package com.yaozu.object.adapter;
 
 import android.content.Context;
-import android.graphics.Typeface;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -11,12 +10,12 @@ import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.bean.Post;
-import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.IntentUtil;
@@ -69,11 +68,20 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         } else {
             holder.content.setVisibility(View.GONE);
         }
+        if (false) {
+            holder.delete.setVisibility(View.VISIBLE);
+        }
         holder.support.setText(post.getSupportNum() + "赞");
         holder.reply.setText(post.getReplyNum() + "回复");
         NoScrollGridViewAdapter adapter = new NoScrollGridViewAdapter();
         adapter.setData(post.getImages());
         holder.noScrollGridView.setAdapter(adapter);
+        holder.delete.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "删除", Toast.LENGTH_SHORT).show();
+            }
+        });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -100,6 +108,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         TextView reply;
         TextView title;
         TextView content;
+        TextView delete;
         NoScrollGridView noScrollGridView;
         View itemView;
 
@@ -114,6 +123,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
             content = (TextView) itemView.findViewById(R.id.item_listview_forum_content);
             support = (TextView) itemView.findViewById(R.id.item_listview_forum_support);
             reply = (TextView) itemView.findViewById(R.id.item_listview_forum_reply);
+            delete = (TextView) itemView.findViewById(R.id.forum_delete);
         }
     }
 

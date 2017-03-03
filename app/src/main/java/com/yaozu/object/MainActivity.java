@@ -30,6 +30,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     private String currentContentFragmentTag = null;
     private RadioGroup mRadioGroup;
     private ActionBar mActionbar;
+    private RadioButton rbForum, rbArticle, rbMine;
 
     @Override
     protected void setContentView() {
@@ -54,6 +55,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     protected void initData() {
         updateContent(0);
         ((RadioButton) findViewById(R.id.main_bottom_raido_forum)).setChecked(true);
+        rbForum = (RadioButton) findViewById(R.id.main_bottom_raido_forum);
+        rbArticle = (RadioButton) findViewById(R.id.main_bottom_raido_find);
+        rbMine = (RadioButton) findViewById(R.id.main_bottom_raido_mine);
+
+        rbForum.setTextColor(getResources().getColor(R.color.colorPrimary));
     }
 
     @Override
@@ -68,6 +74,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             mActionbar.setElevation(10);
                         }
                         updateContent(0);
+                        rbForum.setTextColor(getResources().getColor(R.color.colorPrimary));
+                        rbArticle.setTextColor(getResources().getColor(R.color.gray));
+                        rbMine.setTextColor(getResources().getColor(R.color.gray));
                         break;
                     case R.id.main_bottom_raido_find:
                         if (!LoginInfo.getInstance(MainActivity.this).isLogining()) {
@@ -80,6 +89,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 mActionbar.setElevation(10);
                             }
                             updateContent(1);
+                            rbForum.setTextColor(getResources().getColor(R.color.gray));
+                            rbArticle.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            rbMine.setTextColor(getResources().getColor(R.color.gray));
                         }
                         break;
                     case R.id.main_bottom_raido_mine:
@@ -93,6 +105,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                                 mActionbar.setElevation(0);
                             }
                             updateContent(2);
+                            rbForum.setTextColor(getResources().getColor(R.color.gray));
+                            rbArticle.setTextColor(getResources().getColor(R.color.gray));
+                            rbMine.setTextColor(getResources().getColor(R.color.colorPrimary));
                         }
                         break;
                 }

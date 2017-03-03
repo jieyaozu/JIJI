@@ -1,13 +1,20 @@
 package com.yaozu.object.fragment;
 
+import android.os.Build;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.view.ViewCompat;
+import android.support.v4.view.ViewPropertyAnimatorListener;
+import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.view.animation.Interpolator;
 import android.widget.BaseAdapter;
 
 import com.yaozu.object.R;
@@ -41,6 +48,9 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
     private HeaderViewRecyclerAdapter stringAdapter;
     private LinearLayoutManager linearLayoutManager;
 
+    private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
+    private boolean mIsAnimatingOut = false;
+
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
@@ -57,6 +67,27 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
 
         ivButton.setOnClickListener(this);
         refreshLayout.doRefreshing();
+
+        mRecyclerView.setOnScrollListener(new RecyclerView.OnScrollListener() {
+            @Override
+            public void onScrollStateChanged(RecyclerView recyclerView, int newState) {
+                super.onScrollStateChanged(recyclerView, newState);
+
+            }
+
+            @Override
+            public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
+                super.onScrolled(recyclerView, dx, dy);
+                if (dy > 0 && !mIsAnimatingOut && ivButton.getVisibility() == View.VISIBLE) {
+                    // User scrolled down and the FAB is currently visible -> hide the FAB
+                    animateOut(ivButton);
+                } else if (dy < 0 && ivButton.getVisibility() != View.VISIBLE) {
+                    // User scrolled up and the FAB is currently not visible -> show the FAB
+                    animateIn(ivButton);
+                }
+
+            }
+        });
     }
 
     @Override
@@ -170,6 +201,60 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
                 }
             });
             return view;
+        }
+    }
+
+    private void animateOut(final FloatingActionButton button) {
+        if (Build.VERSION.SDK_INT >= 14) {
+            ViewCompat.animate(button).scaleX(0.0F).scaleY(0.0F).alpha(0.0F).setInterpolator(INTERPOLATOR).withLayer()
+                    .setListener(new ViewPropertyAnimatorListener() {
+                        public void onAnimationStart(View view) {
+                            mIsAnimatingOut = true;
+                        }
+
+                        public void onAnimationCancel(View view) {
+                            mIsAnimatingOut = false;
+                        }
+
+                        public void onAnimationEnd(View view) {
+                            mIsAnimatingOut = false;
+                            view.setVisibility(View.GONE);
+                        }
+                    }).start();
+        } else {
+            Animation anim = AnimationUtils.loadAnimation(button.getContext(), R.anim.fab_out);
+            anim.setInterpolator(INTERPOLATOR);
+            anim.setDuration(200L);
+            anim.setAnimationListener(new Animation.AnimationListener() {
+                public void onAnimationStart(Animation animation) {
+                    mIsAnimatingOut = true;
+                }
+
+                public void onAnimationEnd(Animation animation) {
+                    mIsAnimatingOut = false;
+                    button.setVisibility(View.GONE);
+                }
+
+                @Override
+                public void onAnimationRepeat(final Animation animation) {
+                }
+            });
+            button.startAnimation(anim);
+        }
+    }
+
+    // Same animation that FloatingActionButton.Behavior uses to show the FAB when the AppBarLayout enters
+    private void animateIn(FloatingActionButton button) {
+        button.setVisibility(View.VISIBLE);
+        if (Build.VERSION.SDK_INT >= 14) {
+            ViewCompat.animate(button).scaleX(1.0F).scaleY(1.0F).alpha(1.0F)
+                    .setInterpolator(INTERPOLATOR).withLayer().setListener(null)
+                    .start();
+        } else {
+            Animation anim = AnimationUtils.loadAnimation(button.getContext(), R.anim.fab_in);
+            anim.setDuration(200L);
+            anim.setInterpolator(INTERPOLATOR);
+            button.startAnimation(anim);
         }
     }
 }
