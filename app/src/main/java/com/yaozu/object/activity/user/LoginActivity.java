@@ -128,7 +128,7 @@ public class LoginActivity extends BaseActivity implements View.OnClickListener 
                     LoginReqData request = (LoginReqData) object;
                     if (Constant.SUCCESS.equals(request.getBody().getCode())) {
                         showToast(request.getBody().getMessage());
-                        mLoginInfo.storeLoginUserInfo(true, userid, request.getBody().getUsername(), request.getBody().getUsericon(), request.getBody().getUserSicon());
+                        mLoginInfo.storeLoginUserInfo(true, request.getBody().getAccountType(), userid, request.getBody().getUsername(), request.getBody().getUsericon(), request.getBody().getUserSicon());
                         finish();
                     } else {
                         mPassword.setText("");

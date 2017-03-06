@@ -11,6 +11,8 @@ import com.yaozu.object.utils.Constant;
  */
 public class LoginInfo {
     private static String mAccount, mUserName, mToken, mIcon, mSmallIcon, mFromDevice;
+    //用户账户类型 0普通用户1版主2超级管理员
+    private static String mAccountType;
     public static String userMaixm = null;
     private static int level;
     private static int VIP = 0;//0是普通用户，1是VIP用户
@@ -33,7 +35,7 @@ public class LoginInfo {
         preferences = mContext.getSharedPreferences(Constant.LOGIN_MSG, Context.MODE_PRIVATE);
     }
 
-    public void storeLoginUserInfo(boolean isLogin, String account, String userName, String icon, String smallicon) {
+    public void storeLoginUserInfo(boolean isLogin, String type, String account, String userName, String icon, String smallicon) {
         SharedPreferences.Editor editor = preferences.edit();
         editor.clear().commit();
         editor.putBoolean(Constant.IS_LOGINING, isLogin);
@@ -41,6 +43,7 @@ public class LoginInfo {
         editor.putString(Constant.USER_NAME, userName);
         editor.putString(Constant.USER_ICON, icon);
         editor.putString(Constant.USER_SMALL_ICON, smallicon);
+        editor.putString(Constant.USER_TYPE, type);
         editor.commit();
         readUserInfoToMemory();
     }
@@ -77,6 +80,13 @@ public class LoginInfo {
             mAccount = preferences.getString(Constant.USER_ACCOUNT, "");
         }
         return mAccount;
+    }
+
+    public String getAccountType() {
+        if (TextUtils.isEmpty(mAccountType)) {
+            mAccountType = preferences.getString(Constant.USER_TYPE, "0");
+        }
+        return mAccountType;
     }
 
     public String getUserName() {

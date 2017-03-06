@@ -10,7 +10,17 @@ public class LoginReqData extends BaseEntity<LoginReqData.BodyEntity> {
         private String message;
         private String username;
         private String usericon;
+        //账户类型
+        private String accountType;
         private String userSicon;
+
+        public String getAccountType() {
+            return accountType;
+        }
+
+        public void setAccountType(String accountType) {
+            this.accountType = accountType;
+        }
 
         public String getCode() {
             return code;

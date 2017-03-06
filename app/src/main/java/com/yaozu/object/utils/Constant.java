@@ -29,6 +29,7 @@ public class Constant {
     public static String USER_TOKEN = "user_token";
     public static String USER_NAME = "user_name";
     public static String USER_ICON = "user_icon";
+    public static String USER_TYPE = "user_type";
     public static String USER_FROM_DEVICE = "user_from_device";
     public static String USER_SMALL_ICON = "user_small_icon";
     public static String USER_LEVEL = "user_level";

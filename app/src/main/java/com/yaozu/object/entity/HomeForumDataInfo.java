@@ -12,15 +12,15 @@ public class HomeForumDataInfo extends BaseEntity<HomeForumDataInfo.BodyEntity> 
     public class BodyEntity {
         private String code;
         private String message;
-        private List<Post> toppostlist;
+        private List<Post> toplist;
         private List<Post> postlist;
 
-        public List<Post> getToppostlist() {
-            return toppostlist;
+        public List<Post> getToplist() {
+            return toplist;
         }
 
-        public void setToppostlist(List<Post> toppostlist) {
-            this.toppostlist = toppostlist;
+        public void setToplist(List<Post> toplist) {
+            this.toplist = toplist;
         }
 
         public String getCode() {

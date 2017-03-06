@@ -112,6 +112,13 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     public boolean onCreateOptionsMenu(Menu menu) {
         mMenu = menu;
         getMenuInflater().inflate(R.menu.postdetail_activity_actions, menu);
+        if (!"0".equals(LoginInfo.getInstance(this).getAccountType())) {
+            menu.findItem(R.id.action_post_delete).setVisible(true);
+            menu.findItem(R.id.action_post_xiachen).setVisible(true);
+        }
+        if (mPost != null && mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
+            menu.findItem(R.id.action_post_delete).setVisible(true);
+        }
         return true;
     }
 
@@ -138,6 +145,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 return true;
             case R.id.action_sort:
                 showToast("排序");
+                return true;
+            case R.id.action_post_delete:
+                showToast("删除");
+                return true;
+            case R.id.action_post_xiachen:
+                showToast("下沉");
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -290,6 +303,11 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         });
         //是否收藏
         requestIsCollect(mPost.getPostid());
+        //是否可以显示删除按钮
+        if (mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
+            if (mMenu != null)
+                mMenu.findItem(R.id.action_post_delete).setVisible(true);
+        }
     }
 
     ;

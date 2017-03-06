@@ -19,6 +19,16 @@ public class UserInfo {
     public int level;
     public int epvalue;
     public String maxim;
+    //账户类型 0普通1版主2超级管理员
+    public int type;
+
+    public int getType() {
+        return type;
+    }
+
+    public void setType(int type) {
+        this.type = type;
+    }
 
     public String getMaxim() {
         return maxim;

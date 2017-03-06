@@ -8,6 +8,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -16,6 +17,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.bean.Post;
+import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.IntentUtil;
@@ -68,8 +70,8 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         } else {
             holder.content.setVisibility(View.GONE);
         }
-        if (false) {
-            holder.delete.setVisibility(View.VISIBLE);
+        if (!"0".equals(LoginInfo.getInstance(mContext).getAccountType())) {
+            holder.superOperator.setVisibility(View.VISIBLE);
         }
         holder.support.setText(post.getSupportNum() + "赞");
         holder.reply.setText(post.getReplyNum() + "回复");
@@ -80,6 +82,12 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
             @Override
             public void onClick(View v) {
                 Toast.makeText(mContext, "删除", Toast.LENGTH_SHORT).show();
+            }
+        });
+        holder.xiachen.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                Toast.makeText(mContext, "下沉", Toast.LENGTH_SHORT).show();
             }
         });
         holder.itemView.setOnClickListener(new View.OnClickListener() {
@@ -109,6 +117,8 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         TextView title;
         TextView content;
         TextView delete;
+        TextView xiachen;
+        LinearLayout superOperator;
         NoScrollGridView noScrollGridView;
         View itemView;
 
@@ -124,6 +134,8 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
             support = (TextView) itemView.findViewById(R.id.item_listview_forum_support);
             reply = (TextView) itemView.findViewById(R.id.item_listview_forum_reply);
             delete = (TextView) itemView.findViewById(R.id.forum_delete);
+            xiachen = (TextView) itemView.findViewById(R.id.forum_xiachen);
+            superOperator = (LinearLayout) itemView.findViewById(R.id.forum_superadmin_operator);
         }
     }
 

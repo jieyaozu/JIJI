@@ -48,4 +48,6 @@ public class DataInterface {
     public static String IS_COLLECT = APP_HOST + "superplan/post/collect.do?method=iscollect&";
     //查找用户收藏的贴子
     public static String FIND_COLLECT_POST = APP_HOST + "superplan/post/collect.do?method=findcollectpost&";
+    //修改用户账户类型 userid,type
+    public static String CHANGE_ACCOUNT_TYPE = APP_HOST + "superplan/user/finduser.do?method=updateusertype&";
 }

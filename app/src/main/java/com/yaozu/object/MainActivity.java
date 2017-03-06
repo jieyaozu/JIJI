@@ -7,9 +7,7 @@ import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
-import android.support.v4.view.MenuItemCompat;
 import android.support.v7.app.ActionBar;
-import android.support.v7.widget.SearchView;
 import android.view.KeyEvent;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -19,10 +17,14 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.bean.UserInfo;
 import com.yaozu.object.entity.LoginInfo;
-import com.yaozu.object.fragment.FindFragment;
+import com.yaozu.object.entity.UserInfoData;
+import com.yaozu.object.fragment.ArticleFragment;
 import com.yaozu.object.fragment.ForumFragment;
 import com.yaozu.object.fragment.MineFragment;
+import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
@@ -60,6 +62,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         rbMine = (RadioButton) findViewById(R.id.main_bottom_raido_mine);
 
         rbForum.setTextColor(getResources().getColor(R.color.colorPrimary));
+
+        //检查用户信息
+        requestFindUserinfo(LoginInfo.getInstance(this).getUserAccount());
     }
 
     @Override
@@ -185,12 +190,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 fragment = new ForumFragment();
             }
         } else if (checkedId == 1) {
-            tag = FindFragment.TAG;
+            tag = ArticleFragment.TAG;
             final Fragment foundFragment = fm.findFragmentByTag(tag);
             if (foundFragment != null) {
                 fragment = foundFragment;
             } else {
-                fragment = new FindFragment();
+                fragment = new ArticleFragment();
             }
         } else if (checkedId == 2) {
             tag = MineFragment.TAG;
@@ -212,6 +217,25 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         }
         tr.commit();
         currentContentFragmentTag = tag;
+    }
+
+    private void requestFindUserinfo(String userid) {
+        String url = DataInterface.FIND_USERINFO + "userid=" + userid;
+        RequestManager.getInstance().getRequest(this, url, UserInfoData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    UserInfoData userInfo = (UserInfoData) object;
+                    UserInfo user = userInfo.getBody().getUserinfo();
+                    LoginInfo.getInstance(MainActivity.this).storeLoginUserInfo(true, user.getType() + "", user.getUserid(), user.getUsername(), user.getIconpath(), user.getSiconpath());
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
     }
 
     @Override

@@ -16,6 +16,7 @@ import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.Interpolator;
 import android.widget.BaseAdapter;
+import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.ForumListViewAdapter;
@@ -59,6 +60,7 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         stringAdapter = new HeaderViewRecyclerAdapter(listViewAdapter);
+        stringAdapter.addHeaderView(mViewHeader);
         mRecyclerView.setAdapter(stringAdapter);
         refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
 
@@ -130,7 +132,7 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
                     HomeForumDataInfo postDataInfo = (HomeForumDataInfo) object;
                     if (pageIndex == 1) {
                         listViewAdapter.clearData();
-                        mHeaderAdapter.setData(postDataInfo.getBody().getToppostlist());
+                        mHeaderAdapter.setData(postDataInfo.getBody().getToplist());
                     }
                     List<Post> postList = postDataInfo.getBody().getPostlist();
                     listViewAdapter.addData(postList);
@@ -194,10 +196,13 @@ public class ForumFragment extends BaseFragment implements View.OnClickListener 
             } else {
                 view = View.inflate(ForumFragment.this.getActivity(), R.layout.item_listview_header_forum, null);
             }
+            TextView tvTitle = (TextView) view.findViewById(R.id.home_toppost_title);
+            final Post post = mDataList.get(position);
+            tvTitle.setText(post.getTitle());
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IntentUtil.toPostDetailActivity(ForumFragment.this.getActivity(), new Post());
+                    IntentUtil.toPostDetailActivity(ForumFragment.this.getActivity(), post.getPostid());
                 }
             });
             return view;
