@@ -5,7 +5,22 @@
     android:background="#05000000"
     android:orientation="vertical">
 
-    <include layout="@layout/common_refresh_layout" />
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="首页"
+            android:textSize="16dp"
+            android:textColor="@color/colorWhite" />
+
+        <include layout="@layout/common_refresh_layout" />
+    </LinearLayout>
 
     <com.yaozu.object.widget.FloatingActionButton
         android:id="@+id/fragment_forum_imageview"

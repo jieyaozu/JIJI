@@ -8,7 +8,9 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
+import android.view.Gravity;
 import android.view.KeyEvent;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -43,6 +45,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void settingActionBar(ActionBar actionBar) {
         mActionbar = actionBar;
+        mActionbar.setElevation(0);
+        mActionbar.hide();
         actionBar.setTitle("主页");
         actionBar.setDisplayHomeAsUpEnabled(false);
         actionBar.setHomeAsUpIndicator(android.R.drawable.ic_menu_compass);
@@ -75,9 +79,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 switch (checkedId) {
                     case R.id.main_bottom_raido_forum:
                         mActionbar.setTitle("主页");
-                        if (Build.VERSION.SDK_INT >= 21) {
-                            mActionbar.setElevation(10);
-                        }
                         updateContent(0);
                         rbForum.setTextColor(getResources().getColor(R.color.colorPrimary));
                         rbArticle.setTextColor(getResources().getColor(R.color.gray));
@@ -89,10 +90,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
                             radioButton.setChecked(true);
                         } else {
-                            mActionbar.setTitle("发现");
-                            if (Build.VERSION.SDK_INT >= 21) {
-                                mActionbar.setElevation(10);
-                            }
+                            mActionbar.setTitle("简文");
                             updateContent(1);
                             rbForum.setTextColor(getResources().getColor(R.color.gray));
                             rbArticle.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -106,9 +104,6 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             radioButton.setChecked(true);
                         } else {
                             mActionbar.setTitle("我");
-                            if (Build.VERSION.SDK_INT >= 21) {
-                                mActionbar.setElevation(0);
-                            }
                             updateContent(2);
                             rbForum.setTextColor(getResources().getColor(R.color.gray));
                             rbArticle.setTextColor(getResources().getColor(R.color.gray));
