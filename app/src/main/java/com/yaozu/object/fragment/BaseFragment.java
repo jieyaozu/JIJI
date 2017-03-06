@@ -1,6 +1,5 @@
 package com.yaozu.object.fragment;
 
-import android.graphics.Typeface;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
 import android.support.v4.app.Fragment;
@@ -24,9 +23,9 @@ public class BaseFragment extends Fragment {
         super.onViewCreated(view, savedInstanceState);
         refreshLayout = (RefreshLayout) view.findViewById(R.id.common_refresh);
         if (refreshLayout != null) {
-            refreshLayout.setColorSchemeColors(getResources().getColor(R.color.colorPrimary),
-                    getResources().getColor(R.color.colorPrimaryDark),
-                    getResources().getColor(R.color.colorPrimary));
+            refreshLayout.setColorSchemeColors(getResources().getColor(R.color.gray),
+                    getResources().getColor(R.color.gray_white),
+                    getResources().getColor(R.color.gray));
             refreshLayout.setOnRefreshListener(new SwipeRefreshLayout.OnRefreshListener() {
                 @Override
                 public void onRefresh() {
