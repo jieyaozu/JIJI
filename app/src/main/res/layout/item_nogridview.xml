@@ -9,5 +9,6 @@
         android:layout_width="90dp"
         android:layout_height="90dp"
         android:layout_margin="1dp"
+        android:background="@color/gray_little"
         android:scaleType="centerCrop" />
 </RelativeLayout>
