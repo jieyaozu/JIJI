@@ -3,8 +3,13 @@ package com.yaozu.object.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.net.Uri;
 import android.support.v7.app.ActionBar;
+import android.text.Editable;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ImageSpan;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -21,8 +26,8 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.ParamList;
 import com.yaozu.object.httpmanager.RequestManager;
@@ -121,6 +126,22 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
         horizontalListViewAdapter = new HorizontalListViewAdapter();
         mHorizontalListView.setAdapter(horizontalListViewAdapter);
+    }
+
+    private SpannableString getBitmapMime(Bitmap pic, Uri uri) {
+        String path = uri.getPath();
+        SpannableString ss = new SpannableString(path);
+        ImageSpan span = new ImageSpan(this, pic);
+        ss.setSpan(span, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+        return ss;
+    }
+
+    private void insertIntoEditText(SpannableString ss) {
+        Editable et = etContent.getText();// 先获取Edittext中的内容
+        int start = etContent.getSelectionStart();
+        et.insert(start, ss);// 设置ss要添加的位置
+        etContent.setText(et);// 把et添加到Edittext中
+        etContent.setSelection(start + ss.length());// 设置Edittext中光标在最后面显示
     }
 
     @Override
@@ -318,6 +339,11 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             if (position < mListData.size()) {
                 final MyImages image = mListData.get(position);
                 ImageLoader.getInstance().displayImage("file://" + image.getPath(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
+
+//                String path = image.getPath();
+//                Bitmap originalBitmap = BitmapFactory.decodeFile(path);
+//                insertIntoEditText(getBitmapMime(originalBitmap, Uri.parse(path)));
+
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
