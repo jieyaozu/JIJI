@@ -3,9 +3,11 @@ package com.yaozu.object.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.drawable.Drawable;
 import android.net.Uri;
 import android.support.v7.app.ActionBar;
 import android.text.Editable;
+import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.TextUtils;
@@ -339,7 +341,9 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             if (position < mListData.size()) {
                 final MyImages image = mListData.get(position);
                 ImageLoader.getInstance().displayImage("file://" + image.getPath(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
-
+                //方法二
+                //etContent.append(Html.fromHtml("<img src='" + image.getPath() + "'/>", imageGetter, null));
+                //方法一
 //                String path = image.getPath();
 //                Bitmap originalBitmap = BitmapFactory.decodeFile(path);
 //                insertIntoEditText(getBitmapMime(originalBitmap, Uri.parse(path)));
@@ -387,4 +391,14 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 break;
         }
     }
+
+    //第二种方法
+    private Html.ImageGetter imageGetter = new Html.ImageGetter() {
+        @Override
+        public Drawable getDrawable(String source) {
+            Drawable d = Drawable.createFromPath(source);
+            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
+            return d;
+        }
+    };
 }
