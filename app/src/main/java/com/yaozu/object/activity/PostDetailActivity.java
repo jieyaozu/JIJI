@@ -140,6 +140,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     item.setIcon(R.drawable.navigationbar_collect);
                 }
                 return true;
+            case R.id.action_webview:
+                IntentUtil.toWebViewActivity(this, mPost.getPostid());
+                return true;
             case R.id.action_share:
                 showToast("分享");
                 return true;
