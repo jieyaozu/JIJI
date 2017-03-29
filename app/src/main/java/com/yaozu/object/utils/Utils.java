@@ -27,10 +27,10 @@ import android.view.View;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.ImageView;
 
-import com.yaozu.object.R;
-import com.yaozu.object.activity.BaseActivity;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
+import com.yaozu.object.R;
+import com.yaozu.object.activity.BaseActivity;
 
 import java.io.BufferedReader;
 import java.io.File;
@@ -41,6 +41,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.io.InputStreamReader;
 import java.io.OutputStream;
+import java.lang.reflect.Method;
 import java.math.BigDecimal;
 import java.net.HttpURLConnection;
 import java.net.URL;
@@ -48,6 +49,7 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
+import java.util.Random;
 
 /**
  * Created by wangfang on 2016/7/26.
@@ -721,4 +723,42 @@ public class Utils {
         }
         return version;
     }
+
+    /***
+     * encode by Base64
+     */
+    public static String encodeBase64(byte[] input) throws Exception {
+        Class clazz = Class.forName("com.sun.org.apache.xerces.internal.impl.dv.util.Base64");
+        Method mainMethod = clazz.getMethod("encode", byte[].class);
+        mainMethod.setAccessible(true);
+        Object retObj = mainMethod.invoke(null, new Object[]{input});
+        return (String) retObj;
+    }
+
+    /***
+     * decode by Base64
+     */
+    public static byte[] decodeBase64(String input) throws Exception {
+        Class clazz = Class.forName("com.sun.org.apache.xerces.internal.impl.dv.util.Base64");
+        Method mainMethod = clazz.getMethod("decode", String.class);
+        mainMethod.setAccessible(true);
+        Object retObj = mainMethod.invoke(null, input);
+        return (byte[]) retObj;
+    }
+
+    private static String baseChars = "qwertyuiopasdfghjklzxcvbnm0123456789";
+    private static Random mRandom = new Random();
+
+    public static String getRandomChar(int len) {
+        String chars = "";
+        for (int i = 0; i < len; i++) {
+            int baseIndex = mRandom.nextInt(baseChars.length());
+            if (baseIndex >= baseChars.length()) {
+                baseIndex = baseChars.length() - 1;
+            }
+            chars += baseChars.charAt(baseIndex);
+        }
+        return chars.toUpperCase();
+    }
+
 }

@@ -41,6 +41,7 @@ import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.NetUtil;
+import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.HorizontalListView;
 
 import java.io.File;
@@ -181,7 +182,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POST;
         ParamList parameters = new ParamList();
-        postid = (System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "";
+        postid = Utils.getRandomChar(4) + ((System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "");
         parameters.add(new ParamList.Parameter("postid", postid));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("status", "0"));
