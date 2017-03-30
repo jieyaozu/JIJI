@@ -13,11 +13,21 @@ import android.text.Html;
 import android.text.Spannable;
 import android.text.SpannableString;
 import android.text.style.ImageSpan;
+import android.util.Log;
+import android.view.View;
 import android.widget.EditText;
+import android.widget.ImageView;
+import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
+import com.yaozu.object.activity.PostDetailActivity;
+import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.widget.UrlImageSpan;
+
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jieyaozu on 2017/3/30.
@@ -53,27 +63,81 @@ public class EditContentImageUtil {
         insertIntoEditText(editText, spannableString);
     }
 
-    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void conbineEditText(Context context, TextView content, String imageUrl, String tag) {
-        Uri uri = Uri.parse(imageUrl);
-        Bitmap defaultbmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.navigationbar_collect);
-        int targetWidth = (int) (context.getResources().getDisplayMetrics().widthPixels);
-        Matrix matrix = new Matrix();
+    private static Bitmap getDefaultbgBitmap(Context context, MyImages images) {
+        Bitmap defaultbmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_bg);
         // 获得图片的宽高
         int width = defaultbmp.getWidth();
         int height = defaultbmp.getHeight();
+        //目标宽高
+        int targetWidth = (int) (context.getResources().getDisplayMetrics().widthPixels);
+        int targetHeight = (int) ((Float.parseFloat(images.getHeight()) / Float.parseFloat(images.getWidth())) * targetWidth);
         // 计算缩放比例
+        Matrix matrix = new Matrix();
         float scalew = ((float) targetWidth) / width;
-        float scaleh = ((float) targetWidth / 2) / height;
+        float scaleh = ((float) targetHeight) / height;
         matrix.setScale(scalew, scaleh);
+        Bitmap newbm = Bitmap.createBitmap(defaultbmp, 0, 0, width, height, matrix, true);
+        return newbm;
+    }
 
-        Bitmap newbm = Bitmap.createBitmap(defaultbmp, 0, 0, targetWidth, targetWidth / 2);
-        UrlImageSpan imageSpan = new UrlImageSpan(context, newbm, imageUrl, content);
-        SpannableString spannableString = new SpannableString(imageUrl);
-        spannableString.setSpan(imageSpan, 0, imageUrl.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+    /**
+     * @param context
+     * @param content
+     * @param images
+     * @param tag
+     */
+    @RequiresApi(api = Build.VERSION_CODES.KITKAT)
+    public static void showImageInEditTextView(Context context, TextView content, List<MyImages> images, String tag) {
+        String contentString = content.getText().toString();
+        String[] arrayString = contentString.split("<img>");
+        Log.d("length:", "" + arrayString.length);
+        if (arrayString.length <= 1) {
+            if (images != null) {
+                for (MyImages image : images) {
+                    Bitmap defaultbitmap = getDefaultbgBitmap(context, image);
+                    UrlImageSpan imageSpan = new UrlImageSpan(context, defaultbitmap, image.getImageurl_big(), content);
+                    SpannableString spannableString = new SpannableString(image.getImageurl_big());
+                    spannableString.setSpan(imageSpan, 0, image.getImageurl_big().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    content.append("\r\n");
+                    content.append(spannableString);
+                }
+            }
+        } else {
+            //TODO
+        }
+    }
 
-        content.append("\r\n");
-        content.append(spannableString);
+    public static void addTextImageToLayout(final Context context, LinearLayout layout, String contentString, final List<MyImages> imagesList) {
+        String[] arrayString = contentString.split("<img>");
+        if (arrayString.length <= 1) {
+            for (String str : arrayString) {
+                TextView textView = (TextView) View.inflate(context, R.layout.item_textview, null);
+                textView.setText(str);
+                layout.addView(textView);
+            }
+            for (int i = 0; i < imagesList.size(); i++) {
+                MyImages image = imagesList.get(i);
+                ImageView imageView = (ImageView) View.inflate(context, R.layout.item_imageview, null);
+                int imageWidth = Utils.getScreenWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
+                int imageHeight = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+                layoutParams.topMargin = context.getResources().getDimensionPixelSize(R.dimen.dimen_5);
+                ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
+                imageView.setLayoutParams(layoutParams);
+                layout.addView(imageView);
+
+                final int finalI = i;
+                imageView.setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View v) {
+                        IntentUtil.toScannerPictureActivity(context, (ArrayList<MyImages>) imagesList, finalI);
+                    }
+                });
+            }
+        } else {
+            //TODO
+        }
+        contentString.indexOf("");
     }
 
     //第二种方法

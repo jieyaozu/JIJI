@@ -26,8 +26,8 @@ public class UrlImageSpan extends ImageSpan {
     private TextView tv;
     private boolean picShowed;
 
-    public UrlImageSpan(Context context, Bitmap bitmap, String url, TextView tv) {
-        super(context, bitmap);
+    public UrlImageSpan(Context context, Bitmap defaultbitmap, String url, TextView tv) {
+        super(context, defaultbitmap);
         this.url = url;
         this.tv = tv;
     }

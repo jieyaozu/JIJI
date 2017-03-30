@@ -116,28 +116,16 @@
             android:layout_marginRight="10dp"
             android:background="@color/divider_background_color" />
 
-        <TextView
+        <LinearLayout
             android:id="@+id/item_listview_forum_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:lineSpacingExtra="5dp"
+            android:orientation="vertical"
             android:paddingBottom="5dp"
             android:paddingLeft="20dp"
             android:paddingRight="20dp"
-            android:paddingTop="10dp"
-            android:text="这里是详细的内容,不知道啊"
-            android:textColor="@color/nomralblack"
-            android:textIsSelectable="true"
-            android:textSize="16dp" />
-
-        <com.yaozu.object.widget.NoScrollListView
-            android:id="@+id/item_listview_forum_container"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:layout_marginBottom="10dp"
-            android:divider="@null"
-            android:numColumns="3"
-            android:visibility="visible" />
+            android:paddingTop="10dp">
+        </LinearLayout>
 
         <ImageView
             android:id="@+id/header_postdetail_support"

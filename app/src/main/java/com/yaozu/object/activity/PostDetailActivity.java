@@ -6,6 +6,8 @@ import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.os.Build;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -61,7 +63,7 @@ import java.util.List;
 /**
  * Created by jxj42 on 2017/2/8.
  */
-
+@RequiresApi(api = Build.VERSION_CODES.KITKAT)
 public class PostDetailActivity extends BaseActivity implements View.OnClickListener {
     private EditText etEditContent;
     private ActionBar mActionBar;
@@ -282,24 +284,21 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         ImageView userIcon = (ImageView) headerView.findViewById(R.id.item_listview_forum_usericon);
         TextView userName = (TextView) headerView.findViewById(R.id.item_listview_forum_username);
         TextView title = (TextView) headerView.findViewById(R.id.item_listview_forum_title);
-        TextView content = (TextView) headerView.findViewById(R.id.item_listview_forum_content);
+        LinearLayout textLayout = (LinearLayout) headerView.findViewById(R.id.item_listview_forum_content);
         TextView support = (TextView) headerView.findViewById(R.id.header_postdetail_support_tv);
         TextView reply = (TextView) headerView.findViewById(R.id.header_postdetail_reply_tv);
         TextView createTime = (TextView) headerView.findViewById(R.id.item_listview_forum_time);
-        NoScrollListView noScrollListView = (NoScrollListView) headerView.findViewById(R.id.item_listview_forum_container);
 
         userName.setText(mPost.getUserName());
         title.setText(mPost.getTitle());
-        content.setText(mPost.getContent());
+        //content.setText(mPost.getContent());
         createTime.setText(mPost.getCreatetime());
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
+        EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent(), mPost.getImages());
+        //EditContentImageUtil.showImageInEditTextView(this, content, mPost.getImages(), "");
 
-        EditContentImageUtil.conbineEditText(this, content, "https://pic4.zhimg.com/v2-5f2110422263469a4ab4b85ab7247573_b.jpg", "");
-
-        NoScrollListViewAdapter noScrollListViewAdapter = new NoScrollListViewAdapter(mPost.getImages());
-        noScrollListView.setAdapter(noScrollListViewAdapter);
         userIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -385,47 +384,6 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     protected void onILoad() {
         currentIndex++;
         findReplyPostRequest(currentIndex, mPost.getPostid());
-    }
-
-    private class NoScrollListViewAdapter extends BaseAdapter {
-        private List<MyImages> imagesList = new ArrayList<MyImages>();
-
-        public NoScrollListViewAdapter(List<MyImages> images) {
-            imagesList.addAll(images);
-        }
-
-        @Override
-        public int getCount() {
-            return imagesList.size();
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(final int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(PostDetailActivity.this, R.layout.item_noscroll_listview, null);
-            final ImageView imageView = (ImageView) view.findViewById(R.id.item_noscroll_listview_image);
-            MyImages image = imagesList.get(position);
-            RelativeLayout.LayoutParams params = (RelativeLayout.LayoutParams) imageView.getLayoutParams();
-            //params.width = imageWidth;
-            params.height = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
-            ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
-            imageView.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    IntentUtil.toScannerPictureActivity(PostDetailActivity.this, (ArrayList<MyImages>) imagesList, position);
-                }
-            });
-            return view;
-        }
     }
 
     private AnimatorSet getEnterAnimtor(final View target) {
