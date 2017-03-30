@@ -49,7 +49,6 @@ import java.text.ParseException;
 import java.text.SimpleDateFormat;
 import java.util.Calendar;
 import java.util.Date;
-import java.util.Random;
 
 /**
  * Created by wangfang on 2016/7/26.
@@ -745,20 +744,4 @@ public class Utils {
         Object retObj = mainMethod.invoke(null, input);
         return (byte[]) retObj;
     }
-
-    private static String baseChars = "qwertyuiopasdfghjklzxcvbnm0123456789";
-    private static Random mRandom = new Random();
-
-    public static String getRandomChar(int len) {
-        String chars = "";
-        for (int i = 0; i < len; i++) {
-            int baseIndex = mRandom.nextInt(baseChars.length());
-            if (baseIndex >= baseChars.length()) {
-                baseIndex = baseChars.length() - 1;
-            }
-            chars += baseChars.charAt(baseIndex);
-        }
-        return chars.toUpperCase();
-    }
-
 }

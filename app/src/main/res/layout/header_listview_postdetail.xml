@@ -120,7 +120,6 @@
             android:id="@+id/item_listview_forum_content"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:ellipsize="end"
             android:lineSpacingExtra="5dp"
             android:paddingBottom="5dp"
             android:paddingLeft="20dp"

@@ -3,15 +3,12 @@ package com.yaozu.object.activity;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.support.v7.app.ActionBar;
-import android.text.Editable;
 import android.text.Html;
-import android.text.Spannable;
-import android.text.SpannableString;
 import android.text.TextUtils;
-import android.text.style.ImageSpan;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -37,11 +34,11 @@ import com.yaozu.object.listener.UploadListener;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.EditContentImageUtil;
 import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.NetUtil;
-import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.HorizontalListView;
 
 import java.io.File;
@@ -93,7 +90,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         switch (item.getItemId()) {
             case R.id.action_commit:
                 String title = etTitle.getText().toString().trim();
-                String content = etContent.getText().toString().trim();
+                String content = etContent.getText().toString();
                 if (TextUtils.isEmpty(title)) {
                     showToast("标题不能为空");
                     return true;
@@ -101,7 +98,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 if (TextUtils.isEmpty(content)) {
                     content = "";
                 }
-                sendPostRequest(title, content);
+                Log.d("=====content======>", content);
+                //sendPostRequest(title, content);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -129,22 +127,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
         horizontalListViewAdapter = new HorizontalListViewAdapter();
         mHorizontalListView.setAdapter(horizontalListViewAdapter);
-    }
-
-    private SpannableString getBitmapMime(Bitmap pic, Uri uri) {
-        String path = uri.getPath();
-        SpannableString ss = new SpannableString(path);
-        ImageSpan span = new ImageSpan(this, pic);
-        ss.setSpan(span, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-        return ss;
-    }
-
-    private void insertIntoEditText(SpannableString ss) {
-        Editable et = etContent.getText();// 先获取Edittext中的内容
-        int start = etContent.getSelectionStart();
-        et.insert(start, ss);// 设置ss要添加的位置
-        etContent.setText(et);// 把et添加到Edittext中
-        etContent.setSelection(start + ss.length());// 设置Edittext中光标在最后面显示
     }
 
     @Override
@@ -182,7 +164,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POST;
         ParamList parameters = new ParamList();
-        postid = Utils.getRandomChar(4) + ((System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "");
+        postid = EncodingConvert.getRandomString(4) + ((System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "");
         parameters.add(new ParamList.Parameter("postid", postid));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("status", "0"));
@@ -236,7 +218,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 if (index > 0) {
                     suffix = displayName.substring(index, displayName.length());
                 }
-                displayName = "superplan_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
+                displayName = "guagua_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
             }
             savePath = createSavePath(savePath, displayName);
             FileUtil.saveOutput(bitmap, savePath);
@@ -345,9 +327,9 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 //方法二
                 //etContent.append(Html.fromHtml("<img src='" + image.getPath() + "'/>", imageGetter, null));
                 //方法一
-//                String path = image.getPath();
-//                Bitmap originalBitmap = BitmapFactory.decodeFile(path);
-//                insertIntoEditText(getBitmapMime(originalBitmap, Uri.parse(path)));
+                String path = image.getPath();
+                Bitmap originalBitmap = BitmapFactory.decodeFile(path);
+                EditContentImageUtil.insertIntoEditText(SendPostActivity.this, etContent, originalBitmap, path);
 
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override

@@ -13,7 +13,6 @@ import android.support.v7.widget.RecyclerView;
 import android.text.Editable;
 import android.text.TextUtils;
 import android.text.TextWatcher;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -44,6 +43,7 @@ import com.yaozu.object.listener.UploadListener;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.EditContentImageUtil;
 import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
@@ -295,6 +295,8 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
+
+        EditContentImageUtil.conbineEditText(this, content, "https://pic4.zhimg.com/v2-5f2110422263469a4ab4b85ab7247573_b.jpg", "");
 
         NoScrollListViewAdapter noScrollListViewAdapter = new NoScrollListViewAdapter(mPost.getImages());
         noScrollListView.setAdapter(noScrollListViewAdapter);
