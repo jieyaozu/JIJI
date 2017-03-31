@@ -49,6 +49,13 @@ public class IntentUtil {
         overridePendingTransition(context);
     }
 
+    public static void toSendPostActivity(Context context, Post post) {
+        Intent sendPost = new Intent(context, SendPostActivity.class);
+        sendPost.putExtra(IntentKey.INTENT_POST, post);
+        context.startActivity(sendPost);
+        overridePendingTransition(context);
+    }
+
     public static void toPostDetailActivity(Context context, Post post) {
         Intent postDetail = new Intent(context, PostDetailActivity.class);
         postDetail.putExtra(IntentKey.INTENT_POST, post);

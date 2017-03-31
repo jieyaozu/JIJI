@@ -1,20 +1,17 @@
 package com.yaozu.object.activity;
 
+import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
-import android.graphics.BitmapFactory;
-import android.graphics.drawable.Drawable;
+import android.os.Build;
 import android.support.v7.app.ActionBar;
-import android.text.Html;
 import android.text.TextUtils;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
-import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
@@ -23,9 +20,9 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.ParamList;
@@ -51,7 +48,6 @@ import java.util.List;
 
 public class SendPostActivity extends BaseActivity implements View.OnClickListener {
     private ImageView ivPhotoButton;
-    private LinearLayout llPicLayout;
     private LinearLayout rootView;
     //软件盘弹起后所占高度阀值  
     private int keyHeight = 0;
@@ -63,6 +59,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     private final int REQUEST_RESULT_SELECT_ALBUM = 0;
 
     private HorizontalListView mHorizontalListView;
+    private Post mPost;
     private TextView tvIndicate;
     private String postid;
     int count = 0;
@@ -110,14 +107,12 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     protected void initView() {
         rootView = (LinearLayout) findViewById(R.id.activity_sendpost_edit_root);
         ivPhotoButton = (ImageView) findViewById(R.id.activity_sendpost_edit_photo);
-        llPicLayout = (LinearLayout) findViewById(R.id.activity_sendpost_edit_piclayout);
         etTitle = (EditText) findViewById(R.id.activity_sendpost_edit_title);
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
-        mHorizontalListView = (HorizontalListView) findViewById(R.id.activity_sendpost_edit_hlistview);
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
-        tvIndicate = (TextView) findViewById(R.id.activity_sendpost_edit_indicate);
     }
 
+    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void initData() {
         //获取屏幕高度  
@@ -125,39 +120,16 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         //阀值设置为屏幕高度的1/3  
         keyHeight = screenHeight / 3;
 
-        horizontalListViewAdapter = new HorizontalListViewAdapter();
-        mHorizontalListView.setAdapter(horizontalListViewAdapter);
+        mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
+        etContent.setText(mPost.getContent());
+        EditContentImageUtil.showImageInEditTextView(this, etContent, mPost.getImages(), "");
     }
 
     @Override
     protected void setListener() {
         ivPhotoButton.setOnClickListener(this);
-        rootView.addOnLayoutChangeListener(new View.OnLayoutChangeListener() {
-            @Override
-            public void onLayoutChange(View v, int left, int top, int right, int bottom, int oldLeft, int oldTop, int oldRight, int oldBottom) {
-                //现在认为只要控件将Activity向上推的高度超过了1/3屏幕高，就认为软键盘弹起  
-                if (oldBottom != 0 && bottom != 0 && (oldBottom - bottom > keyHeight)) {
-                    //showToast("监听到软键盘弹起...");
-                } else if (oldBottom != 0 && bottom != 0 && (bottom - oldBottom > keyHeight)) {
-                    //showToast("监听到软件盘关闭...");
-                    llPicLayout.setVisibility(View.VISIBLE);
-                }
-            }
-        });
         etTitle.setOnClickListener(this);
         etContent.setOnClickListener(this);
-        etTitle.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                llPicLayout.setVisibility(View.GONE);
-            }
-        });
-        etContent.setOnFocusChangeListener(new View.OnFocusChangeListener() {
-            @Override
-            public void onFocusChange(View v, boolean hasFocus) {
-                llPicLayout.setVisibility(View.GONE);
-            }
-        });
     }
 
     private void sendPostRequest(String title, String content) {
@@ -285,7 +257,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 break;
             case R.id.activity_sendpost_edit_title:
             case R.id.activity_sendpost_edit_content:
-                llPicLayout.setVisibility(View.GONE);
+
                 break;
         }
     }
@@ -294,72 +266,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      * 将要发表的图片
      */
     private List<MyImages> mListData = new ArrayList<MyImages>();
-    private HorizontalListViewAdapter horizontalListViewAdapter;
-
-    public class HorizontalListViewAdapter extends BaseAdapter {
-
-        @Override
-        public int getCount() {
-            tvIndicate.setText(mListData.size() + "/6");
-            return mListData.size() + 1;
-        }
-
-        @Override
-        public Object getItem(int position) {
-            return null;
-        }
-
-        @Override
-        public long getItemId(int position) {
-            return 0;
-        }
-
-        @Override
-        public View getView(int position, View convertView, ViewGroup parent) {
-            View view = View.inflate(SendPostActivity.this, R.layout.item_sendpost_selectpic, null);
-            ImageView imageView = (ImageView) view.findViewById(R.id.sendpic_item_image);
-            ImageView delete = (ImageView) view.findViewById(R.id.sendpic_item_image_delete);
-//            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(itemWidth, itemWidth);
-//            imageView.setLayoutParams(params);
-            if (position < mListData.size()) {
-                final MyImages image = mListData.get(position);
-                ImageLoader.getInstance().displayImage("file://" + image.getPath(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
-                //方法二
-                //etContent.append(Html.fromHtml("<img src='" + image.getPath() + "'/>", imageGetter, null));
-                //方法一
-                String path = image.getPath();
-                Bitmap originalBitmap = BitmapFactory.decodeFile(path);
-                EditContentImageUtil.insertIntoEditText(SendPostActivity.this, etContent, originalBitmap, path);
-
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        //IntentUtil.toScannerActivity(AddPlanUnitActivity.this, listData, position);
-                    }
-                });
-                delete.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        mListData.remove(image);
-                        notifyDataSetChanged();
-                    }
-                });
-            } else {
-                imageView.setImageResource(R.drawable.addpic_selector);
-                delete.setVisibility(View.GONE);
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View view) {
-                        Intent intent = new Intent(SendPostActivity.this, MyAlbumActivity.class);
-                        intent.putExtra(IntentKey.INTENT_SELECT_ALBUM_SINGLE, false);
-                        intent.putExtra(IntentKey.HAVE_SELECTED_COUNT, mListData.size());
-                        SendPostActivity.this.startActivityForResult(intent, REQUEST_RESULT_SELECT_ALBUM);
-                    }
-                });
-            }
-            return view;
-        }
-    }
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -369,19 +275,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 if (data != null) {
                     List<MyImages> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
                     mListData.addAll(listData);
-                    horizontalListViewAdapter.notifyDataSetChanged();
                 }
                 break;
         }
     }
-
-    //第二种方法
-    private Html.ImageGetter imageGetter = new Html.ImageGetter() {
-        @Override
-        public Drawable getDrawable(String source) {
-            Drawable d = Drawable.createFromPath(source);
-            d.setBounds(0, 0, d.getIntrinsicWidth(), d.getIntrinsicHeight());
-            return d;
-        }
-    };
 }

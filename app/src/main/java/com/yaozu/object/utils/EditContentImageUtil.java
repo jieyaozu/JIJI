@@ -5,7 +5,6 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.Drawable;
-import android.net.Uri;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.text.Editable;
@@ -22,7 +21,6 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.bean.MyImages;
 import com.yaozu.object.widget.UrlImageSpan;
 
@@ -87,7 +85,7 @@ public class EditContentImageUtil {
      * @param tag
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void showImageInEditTextView(Context context, TextView content, List<MyImages> images, String tag) {
+    public static void showImageInEditTextView(Context context, EditText content, List<MyImages> images, String tag) {
         String contentString = content.getText().toString();
         String[] arrayString = contentString.split("<img>");
         Log.d("length:", "" + arrayString.length);
@@ -96,8 +94,9 @@ public class EditContentImageUtil {
                 for (MyImages image : images) {
                     Bitmap defaultbitmap = getDefaultbgBitmap(context, image);
                     UrlImageSpan imageSpan = new UrlImageSpan(context, defaultbitmap, image.getImageurl_big(), content);
-                    SpannableString spannableString = new SpannableString(image.getImageurl_big());
-                    spannableString.setSpan(imageSpan, 0, image.getImageurl_big().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                    String path = "<img>" + image.getImageurl_big() + "</img>";
+                    SpannableString spannableString = new SpannableString(path);
+                    spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     content.append("\r\n");
                     content.append(spannableString);
                 }

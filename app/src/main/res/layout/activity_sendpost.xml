@@ -63,37 +63,6 @@
                 android:padding="10dp"
                 android:src="@drawable/compose_pic_selector" />
 
-            <LinearLayout
-                android:id="@+id/activity_sendpost_edit_piclayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:background="#10000000"
-                android:orientation="vertical"
-                android:paddingBottom="10dp"
-                android:paddingTop="10dp"
-                android:visibility="visible">
-
-                <com.yaozu.object.widget.HorizontalListView
-                    android:id="@+id/activity_sendpost_edit_hlistview"
-                    android:layout_width="match_parent"
-                    android:layout_height="95dp"
-                    android:layout_marginLeft="5dp"
-                    android:layout_marginRight="5dp" />
-
-                <TextView
-                    android:id="@+id/activity_sendpost_edit_indicate"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:layout_marginTop="10dp"
-                    android:text="0/6" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_gravity="center_horizontal"
-                    android:text="最多可选择6张图片" />
-            </LinearLayout>
         </LinearLayout>
     </RelativeLayout>
 </LinearLayout>

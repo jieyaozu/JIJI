@@ -26,7 +26,6 @@ import android.widget.Button;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
@@ -53,7 +52,6 @@ import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.HorizontalListView;
-import com.yaozu.object.widget.NoScrollListView;
 import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
 
 import java.io.File;
@@ -144,6 +142,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 return true;
             case R.id.action_webview:
                 IntentUtil.toWebViewActivity(this, mPost.getPostid());
+                return true;
+            case R.id.action_editpost:
+                IntentUtil.toSendPostActivity(this, mPost);
                 return true;
             case R.id.action_share:
                 showToast("分享");
