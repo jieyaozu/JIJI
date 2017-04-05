@@ -1,17 +1,19 @@
 package com.yaozu.object.adapter;
 
 import android.content.Context;
-import android.support.v7.widget.CardView;
-import android.support.v7.widget.RecyclerView;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.widget.stickylistheaders.StickyListHeadersAdapter;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -20,7 +22,7 @@ import java.util.List;
  * Created by jxj42 on 2017/3/5.
  */
 
-public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyViewHolder> {
+public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAdapter {
     private Context mContext;
     private List<GroupBean> groupBeanList = new ArrayList<>();
 
@@ -42,39 +44,75 @@ public class GroupListAdapter extends RecyclerView.Adapter<GroupListAdapter.MyVi
     }
 
     @Override
-    public MyViewHolder onCreateViewHolder(ViewGroup parent, int viewType) {
-        MyViewHolder viewHolder = new MyViewHolder(LayoutInflater.from(mContext).inflate(R.layout.item_group_listview, parent, false));
-        return viewHolder;
-    }
-
-    @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
-        GroupBean groupBean = groupBeanList.get(position);
-        holder.tvGroupName.setText(groupBean.getGroupname());
-        holder.layout.setOnClickListener(new View.OnClickListener() {
-            @Override
-            public void onClick(View v) {
-
-            }
-        });
-    }
-
-    @Override
-    public int getItemCount() {
+    public int getCount() {
         return groupBeanList.size();
     }
 
-    public class MyViewHolder extends RecyclerView.ViewHolder {
+    @Override
+    public Object getItem(int position) {
+        return null;
+    }
+
+    @Override
+    public long getItemId(int position) {
+        return 0;
+    }
+
+    @Override
+    public View getView(int position, View convertView, ViewGroup parent) {
+        View view = null;
+        MyViewHolder holder = null;
+        if (convertView == null) {
+            holder = new MyViewHolder();
+            view = LayoutInflater.from(mContext).inflate(R.layout.item_group_listview, parent, false);
+            holder.layout = (LinearLayout) view.findViewById(R.id.item_group_layout);
+            holder.tvGroupName = (TextView) view.findViewById(R.id.item_groupname);
+            holder.ivGroupIcon = (ImageView) view.findViewById(R.id.item_group_icon);
+            view.setTag(holder);
+        } else {
+            view = convertView;
+            holder = (MyViewHolder) view.getTag();
+        }
+        final GroupBean groupBean = groupBeanList.get(position);
+        holder.tvGroupName.setText(groupBean.getGroupname());
+        Log.d("======>", groupBean.getUsertype());
+        holder.layout.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toGroupOfPostActivity(mContext, groupBean);
+            }
+        });
+        return view;
+    }
+
+    @Override
+    public View getHeaderView(int position, View convertView, ViewGroup parent) {
+        View view = LayoutInflater.from(mContext).inflate(R.layout.item_group_header, parent, false);
+        TextView textView = (TextView) view.findViewById(R.id.item_group_title);
+        final GroupBean groupBean = groupBeanList.get(position);
+        if ("admin".equals(groupBean.getUsertype())) {
+            textView.setText("我管理的群");
+        } else if ("normal".equals(groupBean.getUsertype())) {
+            textView.setText("我加入的群");
+        }
+        return view;
+    }
+
+    @Override
+    public long getHeaderId(int position) {
+        final GroupBean groupBean = groupBeanList.get(position);
+        if ("admin".equals(groupBean.getUsertype())) {
+            return 0;
+        } else if ("normal".equals(groupBean.getUsertype())) {
+            return 1;
+        }
+        return 0;
+    }
+
+    class MyViewHolder {
         private LinearLayout layout;
         private TextView tvGroupName;
         private ImageView ivGroupIcon;
-
-        public MyViewHolder(View itemView) {
-            super(itemView);
-            layout = (LinearLayout) itemView.findViewById(R.id.item_group_layout);
-            tvGroupName = (TextView) itemView.findViewById(R.id.item_groupname);
-            ivGroupIcon = (ImageView) itemView.findViewById(R.id.item_group_icon);
-        }
     }
 
 }

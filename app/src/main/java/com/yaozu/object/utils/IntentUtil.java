@@ -14,9 +14,11 @@ import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.ThemePostActivity;
 import com.yaozu.object.activity.WebViewActivity;
+import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
 import com.yaozu.object.activity.user.UserInfoActivity;
+import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 
@@ -128,6 +130,19 @@ public class IntentUtil {
      */
     public static void toCreatGroupActivity(Context context) {
         Intent intent = new Intent(context, CreateGroupActivity.class);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 群内帖子页面
+     *
+     * @param context
+     * @param groupBean
+     */
+    public static void toGroupOfPostActivity(Context context, GroupBean groupBean) {
+        Intent intent = new Intent(context, GroupOfPostActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
         context.startActivity(intent);
         overridePendingTransition(context);
     }

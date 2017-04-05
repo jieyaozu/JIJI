@@ -3,7 +3,6 @@ package com.yaozu.object.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -101,7 +100,6 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
 
     private String getNoImageContent(String contentString) {
         String content = contentString.replaceAll("<img>(.+)</img>", "");
-        Log.d("===content===>", content);
         return content;
     }
 

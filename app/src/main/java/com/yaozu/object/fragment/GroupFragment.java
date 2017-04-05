@@ -2,14 +2,10 @@ package com.yaozu.object.fragment;
 
 import android.os.Bundle;
 import android.support.annotation.Nullable;
-import android.support.v7.widget.DefaultItemAnimator;
-import android.support.v7.widget.LinearLayoutManager;
-import android.support.v7.widget.RecyclerView;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
-import android.widget.Toast;
 
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.GroupListAdapter;
@@ -18,7 +14,7 @@ import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
-import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
+import com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView;
 
 /**
  * Created by jxj42 on 2017/2/5.
@@ -26,39 +22,29 @@ import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
 
 public class GroupFragment extends BaseFragment implements View.OnClickListener {
     public static String TAG = "GroupFragment";
-    private RecyclerView mRecyclerView;
+    public StickyListHeadersListView listView;
     private int currentPage = 1;
-    private HeaderViewRecyclerAdapter stringAdapter;
     private GroupListAdapter listViewAdapter;
-    private LinearLayoutManager linearLayoutManager;
     private ImageView ivCreateGroup;
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listViewAdapter = new GroupListAdapter(this.getActivity());
-        linearLayoutManager = new LinearLayoutManager(this.getActivity());
-        mRecyclerView.setLayoutManager(linearLayoutManager);
-        mRecyclerView.setItemAnimator(new DefaultItemAnimator());
-        stringAdapter = new HeaderViewRecyclerAdapter(listViewAdapter);
-        mRecyclerView.setAdapter(stringAdapter);
-        refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
+        listView.setAdapter(listViewAdapter);
 
-        refreshLayout.doRefreshing();
-        refreshLayout.setIsCanLoad(false);
+        requestGetMyGroup(LoginInfo.getInstance(getActivity()).getUserAccount());
     }
 
     @Override
     protected void onIRefresh() {
         super.onIRefresh();
-        currentPage = 1;
-        requestGetMyGroup(LoginInfo.getInstance(getActivity()).getUserAccount());
+
     }
 
     @Override
     protected void onILoad() {
         super.onILoad();
-        currentPage++;
     }
 
     @Override
@@ -70,7 +56,7 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_group, container, false);
-        mRecyclerView = (RecyclerView) view.findViewById(R.id.common_refresh_recyclerview);
+        listView = (StickyListHeadersListView) view.findViewById(R.id.fragment_group_listview);
         ivCreateGroup = (ImageView) view.findViewById(R.id.fragment_create_group);
 
         ivCreateGroup.setOnClickListener(this);
@@ -82,7 +68,6 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
         RequestManager.getInstance().getRequest(getActivity(), url, GroupReqData.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
-                refreshLayout.completeRefresh();
                 if (object != null) {
                     GroupReqData groupReqData = (GroupReqData) object;
                     listViewAdapter.clearData();
@@ -92,7 +77,7 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
 
             @Override
             public void onFailure(int code, String message) {
-                refreshLayout.completeRefresh();
+
             }
         });
     }

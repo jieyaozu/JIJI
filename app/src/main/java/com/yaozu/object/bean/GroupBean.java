@@ -1,10 +1,12 @@
 package com.yaozu.object.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by jxj42 on 2017/4/4.
  */
 
-public class GroupBean {
+public class GroupBean implements Serializable {
     private String groupid;
     private String groupname;
     //群的头像
