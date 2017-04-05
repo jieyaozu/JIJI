@@ -16,7 +16,7 @@ import android.widget.ImageView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.MyAlbumGridAdapter;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentKey;
 
@@ -29,7 +29,7 @@ import java.util.List;
 public class MyAlbumActivity extends BaseActivity implements View.OnClickListener {
     private GridView gridView;
     private MyAlbumGridAdapter albumGridAdapter;
-    List<MyImages> listData;
+    List<MyImage> listData;
     public static boolean isInit = false;
     public int selectedcount = 0;
 
@@ -55,7 +55,7 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
                 switch (scrollState) {
                     case AbsListView.OnScrollListener.SCROLL_STATE_IDLE:// 滑动停止
                         for (; start_index < end_index; start_index++) {
-                            MyImages myImages = listData.get(start_index);
+                            MyImage myImages = listData.get(start_index);
                             ImageView imageView = (ImageView) gridView.findViewWithTag(myImages.getPath());
                             ImageLoader.getInstance().displayImage("file://" + myImages.getPath(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
                         }
@@ -93,7 +93,7 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
         switch (item.getItemId()) {
             case R.id.myalbum_action_commit:
                 List<Integer> selectpos = albumGridAdapter.getSelectPosition();
-                List<MyImages> resultData = new ArrayList<MyImages>();
+                List<MyImage> resultData = new ArrayList<MyImage>();
                 for (int i = 0; i < selectpos.size(); i++) {
                     int pos = selectpos.get(i);
                     resultData.add(listData.get(pos));
@@ -137,11 +137,11 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
     /**
      * 从系统提供的MediaStore中获取媒体文件的信息
      */
-    public List<MyImages> scannerMedia() {
+    public List<MyImage> scannerMedia() {
         Cursor cursor = getContentResolver().query(
                 MediaStore.Images.Media.EXTERNAL_CONTENT_URI, null, null,
                 null, MediaStore.Images.Media.DATE_ADDED + " desc");
-        List<MyImages> images = new ArrayList<MyImages>();
+        List<MyImage> images = new ArrayList<MyImage>();
         //Uri mUri = Uri.parse("content://media/external/images/media");
         if (cursor != null) {
             while (cursor.moveToNext()) {
@@ -160,7 +160,7 @@ public class MyAlbumActivity extends BaseActivity implements View.OnClickListene
                     continue;
                 }
 
-                MyImages myImage = new MyImages();
+                MyImage myImage = new MyImage();
                 myImage.setDisplayName(displayName);
                 myImage.setPath(path);
                 myImage.setWidth(width);

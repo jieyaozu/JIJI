@@ -50,4 +50,10 @@ public class DataInterface {
     public static String FIND_COLLECT_POST = APP_HOST + "superplan/post/collect.do?method=findcollectpost&";
     //修改用户账户类型 userid,type
     public static String CHANGE_ACCOUNT_TYPE = APP_HOST + "superplan/user/finduser.do?method=updateusertype&";
+
+    //查找我的群组
+    public static String FIND_MY_GROUP = APP_HOST + "superplan/app/group.do?method=findmygroup&";
+
+    //查找所有版块
+    public static String FIND_ALL_SECTION = APP_HOST + "superplan/app/section.do?method=findall";
 }

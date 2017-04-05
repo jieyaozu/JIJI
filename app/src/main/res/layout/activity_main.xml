@@ -65,7 +65,7 @@
                     android:paddingBottom="5dp"
                     android:paddingLeft="0dp"
                     android:paddingTop="6dp"
-                    android:text="简文"
+                    android:text="群组"
                     android:textColor="@color/gray"
                     android:textSize="12dp" />
 

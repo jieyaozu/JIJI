@@ -95,6 +95,10 @@
             android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.CreateGroupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
     </application>
 
 </manifest>

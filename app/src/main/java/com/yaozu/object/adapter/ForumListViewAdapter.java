@@ -3,6 +3,7 @@ package com.yaozu.object.adapter;
 import android.content.Context;
 import android.support.v7.widget.RecyclerView;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -15,7 +16,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.utils.Constant;
@@ -65,7 +66,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         holder.createTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
         holder.title.setText(post.getTitle());
         if (!TextUtils.isEmpty(post.getContent())) {
-            holder.content.setText(post.getContent());
+            holder.content.setText(getNoImageContent(post.getContent()));
             holder.content.setVisibility(View.VISIBLE);
         } else {
             holder.content.setVisibility(View.GONE);
@@ -96,6 +97,12 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
                 IntentUtil.toPostDetailActivity(mContext, post);
             }
         });
+    }
+
+    private String getNoImageContent(String contentString) {
+        String content = contentString.replaceAll("<img>(.+)</img>", "");
+        Log.d("===content===>", content);
+        return content;
     }
 
     @Override
@@ -140,9 +147,9 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
     }
 
     private class NoScrollGridViewAdapter extends BaseAdapter {
-        private List<MyImages> imagesList = new ArrayList<MyImages>();
+        private List<MyImage> imagesList = new ArrayList<MyImage>();
 
-        public void setData(List<MyImages> images) {
+        public void setData(List<MyImage> images) {
             if (images == null) {
                 this.imagesList.clear();
                 notifyDataSetChanged();
@@ -186,7 +193,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
             params.width = itemWidth;
             params.height = itemWidth;
             imageView.setLayoutParams(params);
-            MyImages image = imagesList.get(position);
+            MyImage image = imagesList.get(position);
             ImageLoader.getInstance().displayImage(image.getImageurl_small(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
             return view;
         }

@@ -7,6 +7,7 @@ import android.support.v4.app.FragmentActivity;
 import com.yaozu.object.R;
 import com.yaozu.object.SettingsActivity2;
 import com.yaozu.object.activity.CollectActivity;
+import com.yaozu.object.activity.CreateGroupActivity;
 import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.PostReplyDetailActivity;
 import com.yaozu.object.activity.ScannerPictureActivity;
@@ -16,7 +17,7 @@ import com.yaozu.object.activity.WebViewActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
 import com.yaozu.object.activity.user.UserInfoActivity;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 
 import java.util.ArrayList;
@@ -36,7 +37,7 @@ public class IntentUtil {
         ((FragmentActivity) context).overridePendingTransition(R.anim.right_enter_page, R.anim.right_quit_page);
     }
 
-    public static void toScannerPictureActivity(Context context, ArrayList<MyImages> imagesList, int position) {
+    public static void toScannerPictureActivity(Context context, ArrayList<MyImage> imagesList, int position) {
         Intent intent = new Intent(context, ScannerPictureActivity.class);
         intent.putParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES, imagesList);
         intent.putExtra(IntentKey.INTENT_ALBUM_IMAGES_INDEX, position);
@@ -45,6 +46,7 @@ public class IntentUtil {
 
     public static void toSendPostActivity(Context context) {
         Intent sendPost = new Intent(context, SendPostActivity.class);
+        sendPost.putExtra(IntentKey.INTENT_IS_EDIT_POST, false);
         context.startActivity(sendPost);
         overridePendingTransition(context);
     }
@@ -52,6 +54,7 @@ public class IntentUtil {
     public static void toSendPostActivity(Context context, Post post) {
         Intent sendPost = new Intent(context, SendPostActivity.class);
         sendPost.putExtra(IntentKey.INTENT_POST, post);
+        sendPost.putExtra(IntentKey.INTENT_IS_EDIT_POST, true);
         context.startActivity(sendPost);
         overridePendingTransition(context);
     }
@@ -114,6 +117,17 @@ public class IntentUtil {
     public static void toWebViewActivity(Context context, String postid) {
         Intent intent = new Intent(context, WebViewActivity.class);
         intent.putExtra(IntentKey.INTENT_POST_ID, postid);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 创建群
+     *
+     * @param context
+     */
+    public static void toCreatGroupActivity(Context context) {
+        Intent intent = new Intent(context, CreateGroupActivity.class);
         context.startActivity(intent);
         overridePendingTransition(context);
     }

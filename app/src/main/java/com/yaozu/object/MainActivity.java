@@ -8,9 +8,7 @@ import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
-import android.view.Gravity;
 import android.view.KeyEvent;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -22,7 +20,7 @@ import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.bean.UserInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.UserInfoData;
-import com.yaozu.object.fragment.ArticleFragment;
+import com.yaozu.object.fragment.GroupFragment;
 import com.yaozu.object.fragment.ForumFragment;
 import com.yaozu.object.fragment.MineFragment;
 import com.yaozu.object.httpmanager.RequestManager;
@@ -90,7 +88,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
                             radioButton.setChecked(true);
                         } else {
-                            mActionbar.setTitle("简文");
+                            mActionbar.setTitle("群组");
                             updateContent(1);
                             rbForum.setTextColor(getResources().getColor(R.color.gray));
                             rbArticle.setTextColor(getResources().getColor(R.color.colorPrimary));
@@ -185,12 +183,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 fragment = new ForumFragment();
             }
         } else if (checkedId == 1) {
-            tag = ArticleFragment.TAG;
+            tag = GroupFragment.TAG;
             final Fragment foundFragment = fm.findFragmentByTag(tag);
             if (foundFragment != null) {
                 fragment = foundFragment;
             } else {
-                fragment = new ArticleFragment();
+                fragment = new GroupFragment();
             }
         } else if (checkedId == 2) {
             tag = MineFragment.TAG;

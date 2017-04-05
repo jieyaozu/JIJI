@@ -9,7 +9,7 @@ import java.io.Serializable;
 /**
  * Created by jieyz on 2016/4/25.
  */
-public class MyImages implements Parcelable, Serializable {
+public class MyImage implements Parcelable, Serializable {
     public String userid;
     public String displayName;
     //帖子ID
@@ -21,11 +21,11 @@ public class MyImages implements Parcelable, Serializable {
     public String width;
     public String height;
 
-    public MyImages() {
+    public MyImage() {
 
     }
 
-    protected MyImages(Parcel in) {
+    protected MyImage(Parcel in) {
         userid = in.readString();
         displayName = in.readString();
         postid = in.readString();
@@ -37,15 +37,15 @@ public class MyImages implements Parcelable, Serializable {
         height = in.readString();
     }
 
-    public static final Creator<MyImages> CREATOR = new Creator<MyImages>() {
+    public static final Creator<MyImage> CREATOR = new Creator<MyImage>() {
         @Override
-        public MyImages createFromParcel(Parcel in) {
-            return new MyImages(in);
+        public MyImage createFromParcel(Parcel in) {
+            return new MyImage(in);
         }
 
         @Override
-        public MyImages[] newArray(int size) {
-            return new MyImages[size];
+        public MyImage[] newArray(int size) {
+            return new MyImage[size];
         }
     };
 

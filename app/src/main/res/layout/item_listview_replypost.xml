@@ -96,11 +96,10 @@
                 android:layout_height="wrap_content"
                 android:layout_marginLeft="55dp"
                 android:layout_marginRight="20dp"
-                android:layout_marginTop="10dp"
                 android:ellipsize="end"
                 android:lineSpacingExtra="5dp"
                 android:paddingBottom="5dp"
-                android:paddingTop="10dp"
+                android:paddingTop="5dp"
                 android:text=""
                 android:textColor="@color/nomralblack"
                 android:textSize="16dp" />

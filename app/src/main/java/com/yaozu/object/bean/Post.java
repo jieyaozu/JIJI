@@ -24,7 +24,7 @@ public class Post implements Serializable {
     private String content;
     private String supportNum;
     private String replyNum;
-    private List<MyImages> images;
+    private List<MyImage> images;
     private List<Comment> comments;
 
     public String getParenttitle() {
@@ -139,11 +139,11 @@ public class Post implements Serializable {
         this.replyNum = replyNum;
     }
 
-    public List<MyImages> getImages() {
+    public List<MyImage> getImages() {
         return images;
     }
 
-    public void setImages(List<MyImages> images) {
+    public void setImages(List<MyImage> images) {
         this.images = images;
     }
 }

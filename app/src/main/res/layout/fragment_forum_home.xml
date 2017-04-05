@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:superplan="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <TextView
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:background="@color/colorPrimary"
+        android:gravity="center"
+        android:text="首页论坛"
+        android:textColor="@color/colorWhite"
+        android:textSize="16dp" />
+
+    <com.yaozu.object.widget.PagerSlidingTabStrip
+        android:id="@+id/forum_sliding_tab"
+        android:layout_width="match_parent"
+        android:layout_height="30dp"
+        android:contentDescription="top_navigation_bar"
+        android:fillViewport="false"
+        superplan:pstsExpandViewWidth="10dp"
+        superplan:pstsIndicatorColor="@color/colorPrimary"
+        android:background="@color/colorWhite"
+        superplan:pstsIndicatorHeight="2dp"
+        superplan:pstsTabPaddingLeftRight="14dp"
+        superplan:pstsTextNormalColor="@color/gray_white"
+        superplan:pstsTextSelectedColor="@color/colorPrimary"
+        superplan:pstsUnderlineColor="@color/colorWhite"
+        superplan:pstsUnderlineHeight="0.5dp"
+        superplan:tabTextSize="14dp" />
+
+    <android.support.v4.view.ViewPager
+        android:id="@+id/forum_viewpager"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent" />
+</LinearLayout>

@@ -23,22 +23,28 @@ import java.lang.reflect.Field;
 
 public class UrlImageSpan extends ImageSpan {
     private String url;
-    private TextView tv;
+    private TextView textView;
     private boolean picShowed;
 
+    /**
+     * @param context
+     * @param defaultbitmap
+     * @param url
+     * @param tv
+     */
     public UrlImageSpan(Context context, Bitmap defaultbitmap, String url, TextView tv) {
         super(context, defaultbitmap);
         this.url = url;
-        this.tv = tv;
+        this.textView = tv;
     }
 
     @Override
     public Drawable getDrawable() {
         if (!picShowed) {
-            Glide.with(tv.getContext()).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
+            Glide.with(textView.getContext()).load(url).asBitmap().into(new SimpleTarget<Bitmap>() {
                 @Override
                 public void onResourceReady(Bitmap resource, GlideAnimation<? super Bitmap> glideAnimation) {
-                    Resources resources = tv.getContext().getResources();
+                    Resources resources = textView.getContext().getResources();
                     int targetWidth = (int) (resources.getDisplayMetrics().widthPixels);
                     Bitmap zoom = zoom(resource, targetWidth);
                     BitmapDrawable b = new BitmapDrawable(resources, zoom);
@@ -56,7 +62,8 @@ public class UrlImageSpan extends ImageSpan {
                         mDrawableRef.set(UrlImageSpan.this, null);
 
                         picShowed = true;
-                        tv.invalidate();
+                        textView.invalidate();
+                        textView.append(" ");
                     } catch (IllegalAccessException e) {
                         e.printStackTrace();
                     } catch (NoSuchFieldException e) {

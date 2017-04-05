@@ -4,6 +4,8 @@ import android.annotation.TargetApi;
 import android.content.Context;
 import android.content.Intent;
 import android.graphics.Bitmap;
+import android.graphics.BitmapFactory;
+import android.graphics.Matrix;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
@@ -16,12 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.yaozu.object.R;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
@@ -39,13 +40,15 @@ import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.widget.HorizontalListView;
 
 import java.io.File;
+import java.io.UnsupportedEncodingException;
+import java.net.URLEncoder;
 import java.util.ArrayList;
 import java.util.List;
 
 /**
  * Created by jxj42 on 2017/2/6.
  */
-
+@TargetApi(Build.VERSION_CODES.KITKAT)
 public class SendPostActivity extends BaseActivity implements View.OnClickListener {
     private ImageView ivPhotoButton;
     private LinearLayout rootView;
@@ -60,9 +63,11 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     private HorizontalListView mHorizontalListView;
     private Post mPost;
-    private TextView tvIndicate;
     private String postid;
     int count = 0;
+
+    //是新增还是编辑
+    private boolean isEdit = false;
 
     @Override
     protected void setContentView() {
@@ -87,7 +92,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         switch (item.getItemId()) {
             case R.id.action_commit:
                 String title = etTitle.getText().toString().trim();
-                String content = etContent.getText().toString();
+                String content = etContent.getText().toString().trim();
                 if (TextUtils.isEmpty(title)) {
                     showToast("标题不能为空");
                     return true;
@@ -95,8 +100,23 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 if (TextUtils.isEmpty(content)) {
                     content = "";
                 }
-                Log.d("=====content======>", content);
-                //sendPostRequest(title, content);
+                //Log.d("=====content======>", content);
+                if (!isEdit) {
+                    sendPostRequest(title, content);
+                } else {
+                    //拿到传进来的图片名
+                    for (int i = 0; i < mPost.getImages().size(); i++) {
+                        MyImage image = mPost.getImages().get(i);
+                        System.out.println("===List里面的name===>" + image.getDisplayName());
+                    }
+                    //拿到编辑的图片名
+                    String[] array = content.split("<img>");
+                    for (String str : array) {
+                        if (str.contains("</img>")) {
+                            System.out.println("===Content 里面的name===>" + str.substring(0, str.indexOf("</img>")));
+                        }
+                    }
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -112,7 +132,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
     }
 
-    @TargetApi(Build.VERSION_CODES.KITKAT)
     @Override
     protected void initData() {
         //获取屏幕高度  
@@ -120,9 +139,13 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         //阀值设置为屏幕高度的1/3  
         keyHeight = screenHeight / 3;
 
+        isEdit = getIntent().getBooleanExtra(IntentKey.INTENT_IS_EDIT_POST, false);
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
-        etContent.setText(mPost.getContent());
-        EditContentImageUtil.showImageInEditTextView(this, etContent, mPost.getImages(), "");
+        if (mPost != null) {
+            etTitle.setText(mPost.getTitle());
+            etContent.setText(mPost.getContent());
+            EditContentImageUtil.showImageInEditTextView(this, etContent, mPost.getImages(), "");
+        }
     }
 
     @Override
@@ -132,6 +155,12 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         etContent.setOnClickListener(this);
     }
 
+    /**
+     * 新增一个帖子
+     *
+     * @param title
+     * @param content
+     */
     private void sendPostRequest(String title, String content) {
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POST;
@@ -142,7 +171,11 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         parameters.add(new ParamList.Parameter("status", "0"));
         parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
         parameters.add(new ParamList.Parameter("title", title));
-        parameters.add(new ParamList.Parameter("content", content));
+        try {
+            parameters.add(new ParamList.Parameter("content", URLEncoder.encode(content, "utf-8")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
 
         RequestManager.getInstance().postRequest(this, url, parameters, RequestData.class, new RequestManager.OnResponseListener() {
             @Override
@@ -176,22 +209,12 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      */
     private void uploadImagesToServer() {
         for (int i = 0; i < mListData.size(); i++) {
-            final MyImages image = mListData.get(i);
+            final MyImage image = mListData.get(i);
             //保存一份到本地
             Bitmap bitmap = FileUtil.compressUserIcon(1200, image.getPath());
             String savePath = getDir("images", MODE_PRIVATE).getPath();
             String displayName = image.getDisplayName();
-            displayName = (System.currentTimeMillis() % 1000) + "_" + displayName;//保证唯一
-            if (EncodingConvert.isContainsChinese(displayName)) {
-                displayName = displayName.hashCode() + ".jpg";
-            } else if (displayName.length() > 64) {
-                int index = displayName.lastIndexOf(".");
-                String suffix = "";
-                if (index > 0) {
-                    suffix = displayName.substring(index, displayName.length());
-                }
-                displayName = "guagua_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
-            }
+
             savePath = createSavePath(savePath, displayName);
             FileUtil.saveOutput(bitmap, savePath);
             //插入数据库
@@ -248,12 +271,10 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         switch (v.getId()) {
             case R.id.activity_sendpost_edit_photo:
                 hideSoftInput();
-                if (mListData.size() == 0) {
-                    Intent intent = new Intent(this, MyAlbumActivity.class);
-                    intent.putExtra(IntentKey.INTENT_SELECT_ALBUM_SINGLE, false);
-                    intent.putExtra(IntentKey.HAVE_SELECTED_COUNT, selectedCount);
-                    startActivityForResult(intent, REQUEST_RESULT_SELECT_ALBUM);
-                }
+                Intent intent = new Intent(this, MyAlbumActivity.class);
+                intent.putExtra(IntentKey.INTENT_SELECT_ALBUM_SINGLE, false);
+                intent.putExtra(IntentKey.HAVE_SELECTED_COUNT, selectedCount);
+                startActivityForResult(intent, REQUEST_RESULT_SELECT_ALBUM);
                 break;
             case R.id.activity_sendpost_edit_title:
             case R.id.activity_sendpost_edit_content:
@@ -265,7 +286,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     /**
      * 将要发表的图片
      */
-    private List<MyImages> mListData = new ArrayList<MyImages>();
+    private List<MyImage> mListData = new ArrayList<MyImage>();
 
     @Override
     protected void onActivityResult(int requestCode, int resultCode, Intent data) {
@@ -273,10 +294,57 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         switch (requestCode) {
             case REQUEST_RESULT_SELECT_ALBUM:
                 if (data != null) {
-                    List<MyImages> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
+                    List<MyImage> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
+                    for (int i = 0; i < listData.size(); i++) {
+                        MyImage image = listData.get(i);
+                        String displayName = generateDisplayName(image.getDisplayName());
+                        image.setDisplayName(displayName);
+                        Bitmap bitmap = getDestBitmap(this, image);
+                        EditContentImageUtil.insertIntoEditText(this, etContent, bitmap, image.getDisplayName());
+                    }
                     mListData.addAll(listData);
                 }
                 break;
         }
+    }
+
+    /**
+     * 重新生成图片的文件名
+     *
+     * @param originName
+     * @return
+     */
+    private String generateDisplayName(String originName) {
+        String displayName = null;
+        originName = (System.currentTimeMillis() % 1000) + "_" + originName;//保证唯一
+        if (EncodingConvert.isContainsChinese(originName)) {
+            originName = originName.hashCode() + ".jpg";
+        } else if (originName.length() > 64) {
+            int index = originName.lastIndexOf(".");
+            String suffix = "";
+            if (index > 0) {
+                suffix = originName.substring(index, originName.length());
+            }
+            originName = "guagua_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
+        }
+        displayName = originName;
+        return displayName;
+    }
+
+    private static Bitmap getDestBitmap(Context context, MyImage images) {
+        Bitmap defaultbmp = BitmapFactory.decodeFile(images.getPath());
+        // 获得图片的宽高
+        int width = defaultbmp.getWidth();
+        int height = defaultbmp.getHeight();
+        //目标宽高
+        int targetWidth = (int) (context.getResources().getDisplayMetrics().widthPixels);
+        int targetHeight = (int) ((Float.parseFloat(images.getHeight()) / Float.parseFloat(images.getWidth())) * targetWidth);
+        // 计算缩放比例
+        Matrix matrix = new Matrix();
+        float scalew = ((float) targetWidth) / width;
+        float scaleh = ((float) targetHeight) / height;
+        matrix.setScale(scalew, scaleh);
+        Bitmap newbm = Bitmap.createBitmap(defaultbmp, 0, 0, width, height, matrix, true);
+        return newbm;
     }
 }

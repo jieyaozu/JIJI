@@ -18,10 +18,11 @@ import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.widget.UrlImageSpan;
 
 import java.util.ArrayList;
@@ -32,8 +33,8 @@ import java.util.List;
  */
 
 public class EditContentImageUtil {
-    public static SpannableString getBitmapMime(Context context, Bitmap pic, String tag) {
-        String path = "<img>" + tag + "</img>";
+    public static SpannableString getBitmapMime(Context context, Bitmap pic, String imagename) {
+        String path = "<img>" + imagename + "</img>";
         SpannableString ss = new SpannableString(path);
         ImageSpan span = new ImageSpan(context, pic);
         ss.setSpan(span, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
@@ -45,6 +46,7 @@ public class EditContentImageUtil {
         int start = editText.getSelectionStart();
         et.insert(start, ss);// 设置ss要添加的位置
         editText.setText(et);// 把et添加到Edittext中
+        editText.append("\r\n");
         editText.setSelection(start + ss.length());// 设置Edittext中光标在最后面显示
     }
 
@@ -52,16 +54,16 @@ public class EditContentImageUtil {
      * 向editText中插入
      *
      * @param context
-     * @param editText 被插入的输入框
-     * @param pic      插入的图片
-     * @param tag      图片的唯一标识
+     * @param editText  被插入的输入框
+     * @param pic       插入的图片
+     * @param imagename 图片的唯一标识
      */
-    public static void insertIntoEditText(Context context, EditText editText, Bitmap pic, String tag) {
-        SpannableString spannableString = getBitmapMime(context, pic, tag);
+    public static void insertIntoEditText(Context context, EditText editText, Bitmap pic, String imagename) {
+        SpannableString spannableString = getBitmapMime(context, pic, imagename);
         insertIntoEditText(editText, spannableString);
     }
 
-    private static Bitmap getDefaultbgBitmap(Context context, MyImages images) {
+    private static Bitmap getDefaultbgBitmap(Context context, MyImage images) {
         Bitmap defaultbmp = BitmapFactory.decodeResource(context.getResources(), R.drawable.loading_bg);
         // 获得图片的宽高
         int width = defaultbmp.getWidth();
@@ -85,16 +87,16 @@ public class EditContentImageUtil {
      * @param tag
      */
     @RequiresApi(api = Build.VERSION_CODES.KITKAT)
-    public static void showImageInEditTextView(Context context, EditText content, List<MyImages> images, String tag) {
+    public static void showImageInEditTextView(Context context, EditText content, List<MyImage> images, String tag) {
         String contentString = content.getText().toString();
         String[] arrayString = contentString.split("<img>");
         Log.d("length:", "" + arrayString.length);
         if (arrayString.length <= 1) {
             if (images != null) {
-                for (MyImages image : images) {
+                for (MyImage image : images) {
                     Bitmap defaultbitmap = getDefaultbgBitmap(context, image);
                     UrlImageSpan imageSpan = new UrlImageSpan(context, defaultbitmap, image.getImageurl_big(), content);
-                    String path = "<img>" + image.getImageurl_big() + "</img>";
+                    String path = "<img>" + image.getDisplayName() + "</img>";
                     SpannableString spannableString = new SpannableString(path);
                     spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                     content.append("\r\n");
@@ -102,11 +104,34 @@ public class EditContentImageUtil {
                 }
             }
         } else {
+            content.setText("");
             //TODO
+            for (int i = 0; i < arrayString.length; i++) {
+                String p = arrayString[i];
+                //有图片
+                if (p.contains("</img>")) {
+                    p = p.substring(p.indexOf("</img>") + "</img>".length(), p.length());
+                    //插入图片
+                    int pos = i - 1;
+                    if (pos < images.size()) {
+                        MyImage image = images.get(pos);
+                        Bitmap defaultbitmap = getDefaultbgBitmap(context, image);
+                        UrlImageSpan imageSpan = new UrlImageSpan(context, defaultbitmap, image.getImageurl_big(), content);
+                        String path = "<img>" + image.getDisplayName() + "</img>";
+                        SpannableString spannableString = new SpannableString(path);
+                        spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+                        content.append("\r\n");
+                        content.append(spannableString);
+                    } else {
+                        Toast.makeText(context, "数组越界错误", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                content.append(p);
+            }
         }
     }
 
-    public static void addTextImageToLayout(final Context context, LinearLayout layout, String contentString, final List<MyImages> imagesList) {
+    public static void addTextImageToLayout(final Context context, LinearLayout layout, String contentString, final List<MyImage> imagesList) {
         String[] arrayString = contentString.split("<img>");
         if (arrayString.length <= 1) {
             for (String str : arrayString) {
@@ -115,7 +140,7 @@ public class EditContentImageUtil {
                 layout.addView(textView);
             }
             for (int i = 0; i < imagesList.size(); i++) {
-                MyImages image = imagesList.get(i);
+                MyImage image = imagesList.get(i);
                 ImageView imageView = (ImageView) View.inflate(context, R.layout.item_imageview, null);
                 int imageWidth = Utils.getScreenWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
                 int imageHeight = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
@@ -129,14 +154,48 @@ public class EditContentImageUtil {
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
                     public void onClick(View v) {
-                        IntentUtil.toScannerPictureActivity(context, (ArrayList<MyImages>) imagesList, finalI);
+                        IntentUtil.toScannerPictureActivity(context, (ArrayList<MyImage>) imagesList, finalI);
                     }
                 });
             }
         } else {
             //TODO
+            for (int i = 0; i < arrayString.length; i++) {
+                TextView textView = (TextView) View.inflate(context, R.layout.item_textview, null);
+                String p = arrayString[i];
+                Log.d("======p=====>", i + ": " + p);
+                //有图片
+                if (p.contains("</img>")) {
+                    Log.d("======img=====>", i + "");
+                    p = p.substring(p.indexOf("</img>") + "</img>".length(), p.length());
+                    //插入图片
+                    int pos = i - 1;
+                    if (pos < imagesList.size()) {
+                        MyImage image = imagesList.get(pos);
+                        ImageView imageView = (ImageView) View.inflate(context, R.layout.item_imageview, null);
+                        int imageWidth = Utils.getScreenWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
+                        int imageHeight = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
+                        LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
+                        layoutParams.topMargin = context.getResources().getDimensionPixelSize(R.dimen.dimen_5);
+                        ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
+                        imageView.setLayoutParams(layoutParams);
+                        layout.addView(imageView);
+
+                        final int finalI = i - 1;
+                        imageView.setOnClickListener(new View.OnClickListener() {
+                            @Override
+                            public void onClick(View v) {
+                                IntentUtil.toScannerPictureActivity(context, (ArrayList<MyImage>) imagesList, finalI);
+                            }
+                        });
+                    } else {
+                        Toast.makeText(context, "数组越界错误", Toast.LENGTH_SHORT).show();
+                    }
+                }
+                layout.addView(textView);
+                textView.setText(p);
+            }
         }
-        contentString.indexOf("");
     }
 
     //第二种方法

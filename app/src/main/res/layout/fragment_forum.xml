@@ -10,17 +10,16 @@
         android:layout_height="wrap_content"
         android:orientation="vertical">
 
-        <TextView
-            android:layout_width="match_parent"
-            android:layout_height="50dp"
-            android:background="@color/colorPrimary"
-            android:gravity="center"
-            android:text="首页论坛"
-            android:textSize="16dp"
-            android:textColor="@color/colorWhite" />
-
         <include layout="@layout/common_refresh_layout" />
     </LinearLayout>
+
+    <TextView
+        android:id="@+id/progressbar"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:text="正在载入..."
+        android:textColor="@color/gray_white" />
 
     <com.yaozu.object.widget.FloatingActionButton
         android:id="@+id/fragment_forum_imageview"

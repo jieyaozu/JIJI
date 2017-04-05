@@ -1,7 +1,6 @@
 package com.yaozu.object.activity;
 
 import android.annotation.TargetApi;
-import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.v4.view.PagerAdapter;
 import android.support.v4.view.ViewPager;
@@ -11,7 +10,7 @@ import android.view.ViewGroup;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.widget.polites.GestureImageView;
@@ -19,15 +18,12 @@ import com.yaozu.object.widget.polites.GestureImageView;
 import java.util.ArrayList;
 import java.util.List;
 
-import uk.co.senab.photoview.PhotoView;
-import uk.co.senab.photoview.PhotoViewAttacher;
-
 /**
  * Created by jieyz on 2016/4/28.
  */
 public class ScannerPictureActivity extends BaseActivity {
     private ViewPager viewPager;
-    private List<MyImages> images;
+    private List<MyImage> images;
     //当前显示的位置
     private int currentItem = 0;
     private List<GestureImageView> imageViews = new ArrayList<>();

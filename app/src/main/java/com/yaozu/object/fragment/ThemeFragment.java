@@ -16,7 +16,7 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.user.UserInfoActivity;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.HomeForumDataInfo;
 import com.yaozu.object.httpmanager.RequestManager;
@@ -213,9 +213,9 @@ public class ThemeFragment extends BaseFragment {
     }
 
     private class NoScrollGridViewAdapter extends BaseAdapter {
-        private List<MyImages> imagesList = new ArrayList<MyImages>();
+        private List<MyImage> imagesList = new ArrayList<MyImage>();
 
-        public void setData(List<MyImages> images) {
+        public void setData(List<MyImage> images) {
             if (images == null) {
                 this.imagesList.clear();
                 notifyDataSetChanged();
@@ -259,7 +259,7 @@ public class ThemeFragment extends BaseFragment {
             params.width = itemWidth;
             params.height = itemWidth;
             imageView.setLayoutParams(params);
-            MyImages image = imagesList.get(position);
+            MyImage image = imagesList.get(position);
             ImageLoader.getInstance().displayImage(image.getImageurl_small(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
             return view;
         }

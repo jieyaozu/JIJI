@@ -1,0 +1,38 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:background="@color/colorWhite"
+    android:orientation="vertical">
+
+    <LinearLayout
+        android:id="@+id/item_group_layout"
+        style="@style/RippleBackground"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:gravity="center_vertical"
+        android:orientation="horizontal"
+        android:padding="@dimen/dimen_5">
+
+        <ImageView
+            android:id="@+id/item_group_icon"
+            android:layout_width="40dp"
+            android:layout_height="40dp"
+            android:src="@drawable/compose" />
+
+        <TextView
+            android:id="@+id/item_groupname"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginLeft="5dp"
+            android:text="关于VR、AR,微软或成最大赢家"
+            android:textColor="@color/nomralblack"
+            android:textSize="18dp" />
+    </LinearLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="50dp"
+        android:background="@color/divider_background_color" />
+</LinearLayout>

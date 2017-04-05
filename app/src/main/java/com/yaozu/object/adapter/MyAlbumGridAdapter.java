@@ -18,7 +18,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.utils.Constant;
 
 import java.util.ArrayList;
@@ -29,7 +29,7 @@ import java.util.List;
  */
 public class MyAlbumGridAdapter extends BaseAdapter {
     private Context mContext;
-    private List<MyImages> images;
+    private List<MyImage> images;
     private int itemWidth = 0;
     private int margin = 0;
     private GridView gridView;
@@ -39,7 +39,7 @@ public class MyAlbumGridAdapter extends BaseAdapter {
     public int MAXPICTURE = 6;
 
 
-    public MyAlbumGridAdapter(Context context, boolean isSingle, GridView gridView, List<MyImages> data) {
+    public MyAlbumGridAdapter(Context context, boolean isSingle, GridView gridView, List<MyImage> data) {
         this.mContext = context;
         this.gridView = gridView;
         images = data;
@@ -123,7 +123,7 @@ public class MyAlbumGridAdapter extends BaseAdapter {
         RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(itemWidth, itemWidth);
         params.setMargins(margin, margin, margin, margin);
         imageView.setLayoutParams(params);
-        final MyImages myImages = images.get(position);
+        final MyImage myImages = images.get(position);
 
         imageView.setTag(myImages.getPath());
         ImageLoader.getInstance().displayImage("file://" + myImages.getPath(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);

@@ -33,7 +33,7 @@ import com.alibaba.fastjson.JSON;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.PostDetailAdapter;
-import com.yaozu.object.bean.MyImages;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.DetailReplyPostListInfo;
 import com.yaozu.object.entity.LoginInfo;
@@ -297,7 +297,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
-        EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent(), mPost.getImages());
+        EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent().trim(), mPost.getImages());
         //EditContentImageUtil.showImageInEditTextView(this, content, mPost.getImages(), "");
 
         userIcon.setOnClickListener(new View.OnClickListener() {
@@ -547,7 +547,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
      */
     private void uploadImagesToServer() {
         for (int i = 0; i < mListData.size(); i++) {
-            final MyImages image = mListData.get(i);
+            final MyImage image = mListData.get(i);
             //保存一份到本地
             Bitmap bitmap = FileUtil.compressUserIcon(1200, image.getPath());
             String savePath = getDir("images", MODE_PRIVATE).getPath();
@@ -609,7 +609,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     /**
      * 将要发表的图片
      */
-    private List<MyImages> mListData = new ArrayList<MyImages>();
+    private List<MyImage> mListData = new ArrayList<MyImage>();
     private HorizontalListViewAdapter horizontalListViewAdapter;
 
     public class HorizontalListViewAdapter extends BaseAdapter {
@@ -646,7 +646,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 //            RelativeLayout.LayoutParams params = new RelativeLayout.LayoutParams(itemWidth, itemWidth);
 //            imageView.setLayoutParams(params);
             if (position < mListData.size()) {
-                final MyImages image = mListData.get(position);
+                final MyImage image = mListData.get(position);
                 ImageLoader.getInstance().displayImage("file://" + image.getPath(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
                 imageView.setOnClickListener(new View.OnClickListener() {
                     @Override
@@ -684,7 +684,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         switch (requestCode) {
             case REQUEST_RESULT_SELECT_ALBUM:
                 if (data != null) {
-                    List<MyImages> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
+                    List<MyImage> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
                     mListData.addAll(listData);
                     horizontalListViewAdapter.notifyDataSetChanged();
                 }
