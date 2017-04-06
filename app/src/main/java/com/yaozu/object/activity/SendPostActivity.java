@@ -9,21 +9,29 @@ import android.graphics.Matrix;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
-import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.ScrollView;
+import android.widget.Spinner;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.yaozu.object.R;
+import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
+import com.yaozu.object.bean.SectionBean;
+import com.yaozu.object.db.dao.SectionDao;
+import com.yaozu.object.entity.GroupReqData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.ParamList;
@@ -100,8 +108,17 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 if (TextUtils.isEmpty(content)) {
                     content = "";
                 }
+                if (groupSpinner.getSelectedItemPosition() >= group_data_list.size() - 1) {
+                    showToast("请选择群");
+                    return true;
+                }
+
+                if (sectionSpinner.getSelectedItemPosition() >= section_data_list.size() - 1) {
+                    showToast("请选择版块");
+                    return true;
+                }
                 //Log.d("=====content======>", content);
-                if (!isEdit) {
+/*                if (!isEdit) {
                     sendPostRequest(title, content);
                 } else {
                     //拿到传进来的图片名
@@ -116,7 +133,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                             System.out.println("===Content 里面的name===>" + str.substring(0, str.indexOf("</img>")));
                         }
                     }
-                }
+                }*/
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -129,6 +146,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         ivPhotoButton = (ImageView) findViewById(R.id.activity_sendpost_edit_photo);
         etTitle = (EditText) findViewById(R.id.activity_sendpost_edit_title);
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
+        sectionSpinner = (Spinner) findViewById(R.id.sendpost_select_section);
+        groupSpinner = (Spinner) findViewById(R.id.sendpost_select_group);
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
     }
 
@@ -146,6 +165,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             etContent.setText(mPost.getContent());
             EditContentImageUtil.showImageInEditTextView(this, etContent, mPost.getImages(), "");
         }
+        initGroupSpinnerData();
+        initSectionSpinnerData();
     }
 
     @Override
@@ -346,5 +367,126 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         matrix.setScale(scalew, scaleh);
         Bitmap newbm = Bitmap.createBitmap(defaultbmp, 0, 0, width, height, matrix, true);
         return newbm;
+    }
+
+    //Spinner
+    private Spinner sectionSpinner;
+    private SpinnerAdapter arr_adapter;
+    private List<SectionBean> section_data_list;
+    private SectionDao sectionDao;
+
+    //--------------------群---------------------
+    private Spinner groupSpinner;
+    private GroupSpinnerAdapter groupSpinnerAdapter;
+    private List<GroupBean> group_data_list = new ArrayList<>();
+
+    private void initGroupSpinnerData() {
+        groupSpinnerAdapter = new GroupSpinnerAdapter();
+        requestGetMyGroup(LoginInfo.getInstance(this).getUserAccount());
+    }
+
+    private void requestGetMyGroup(String userid) {
+        String url = DataInterface.FIND_MY_GROUP + "userid=" + userid;
+        RequestManager.getInstance().getRequest(this, url, GroupReqData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    GroupReqData groupReqData = (GroupReqData) object;
+                    group_data_list.addAll(groupReqData.getBody().getGrList());
+                    GroupBean groupBean = new GroupBean();
+                    groupBean.setGroupname("选择群");
+                    group_data_list.add(groupBean);
+                    groupSpinner.setAdapter(groupSpinnerAdapter);
+                    groupSpinner.setSelection(group_data_list.size() - 1);
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    class GroupSpinnerAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return group_data_list.size() - 1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = LayoutInflater.from(SendPostActivity.this);
+            View view = null;
+            if (convertView != null) {
+                view = convertView;
+            } else {
+                view = inflater.inflate(R.layout.text_line, null);
+            }
+            GroupBean groupBean = group_data_list.get(position);
+            TextView textView = (TextView) view.findViewById(R.id.text_line_text);
+            textView.setText(groupBean.getGroupname());
+            return view;
+        }
+    }
+
+
+    //------------------版块------------------------
+    private void initSectionSpinnerData() {
+        arr_adapter = new SpinnerAdapter();
+        sectionDao = new SectionDao(this);
+        section_data_list = sectionDao.findAllSections();
+        if (section_data_list != null) {
+            SectionBean hintBean = new SectionBean();
+            hintBean.setSectionname("选择版块");
+            section_data_list.add(hintBean);
+            sectionSpinner.setAdapter(arr_adapter);
+            sectionSpinner.setDropDownVerticalOffset(getResources().getDimensionPixelSize(R.dimen.dimen_40));
+            sectionSpinner.setSelection(section_data_list.size() - 1);
+        }
+    }
+
+    class SpinnerAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return section_data_list.size() - 1;
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = LayoutInflater.from(SendPostActivity.this);
+            View view = null;
+            if (convertView != null) {
+                view = convertView;
+            } else {
+                view = inflater.inflate(R.layout.text_line, null);
+            }
+            SectionBean section = section_data_list.get(position);
+            TextView textView = (TextView) view.findViewById(R.id.text_line_text);
+            textView.setText(section.getSectionname());
+            return view;
+        }
     }
 }

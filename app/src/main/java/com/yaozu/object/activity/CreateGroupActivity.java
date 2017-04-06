@@ -7,7 +7,6 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.Spinner;
 import android.widget.TextView;
@@ -25,7 +24,7 @@ import java.util.List;
  */
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class CreateGroupActivity extends BaseActivity {
-    private Spinner spinner;
+    private Spinner sectionSpinner;
     private SpinnerAdapter arr_adapter;
     private List<SectionReqData.Section> data_list = new ArrayList<>();
 
@@ -36,7 +35,7 @@ public class CreateGroupActivity extends BaseActivity {
 
     @Override
     protected void initView() {
-        spinner = (Spinner) findViewById(R.id.creategroup_spinner);
+        sectionSpinner = (Spinner) findViewById(R.id.creategroup_spinner);
     }
 
     @Override
@@ -57,9 +56,9 @@ public class CreateGroupActivity extends BaseActivity {
 
     private void initSpinnerData() {
         arr_adapter = new SpinnerAdapter();
-        spinner.setAdapter(arr_adapter);
-        spinner.setDropDownVerticalOffset(getResources().getDimensionPixelSize(R.dimen.dimen_40));
-        spinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
+        sectionSpinner.setAdapter(arr_adapter);
+        sectionSpinner.setDropDownVerticalOffset(getResources().getDimensionPixelSize(R.dimen.dimen_40));
+        sectionSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
 
