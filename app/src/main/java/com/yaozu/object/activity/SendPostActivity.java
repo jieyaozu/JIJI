@@ -112,14 +112,16 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                     showToast("请选择群");
                     return true;
                 }
+                String groupid = group_data_list.get(groupSpinner.getSelectedItemPosition()).getGroupid();
 
                 if (sectionSpinner.getSelectedItemPosition() >= section_data_list.size() - 1) {
                     showToast("请选择版块");
                     return true;
                 }
+                String sectionid = section_data_list.get(sectionSpinner.getSelectedItemPosition()).getSectionid();
                 //Log.d("=====content======>", content);
-/*                if (!isEdit) {
-                    sendPostRequest(title, content);
+                if (!isEdit) {
+                    sendPostRequest(title, content, groupid, sectionid);
                 } else {
                     //拿到传进来的图片名
                     for (int i = 0; i < mPost.getImages().size(); i++) {
@@ -133,7 +135,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                             System.out.println("===Content 里面的name===>" + str.substring(0, str.indexOf("</img>")));
                         }
                     }
-                }*/
+                }
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
@@ -182,12 +184,14 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      * @param title
      * @param content
      */
-    private void sendPostRequest(String title, String content) {
+    private void sendPostRequest(String title, String content, String groupid, String sectionid) {
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POST;
         ParamList parameters = new ParamList();
         postid = EncodingConvert.getRandomString(4) + ((System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "");
         parameters.add(new ParamList.Parameter("postid", postid));
+        parameters.add(new ParamList.Parameter("groupid", groupid));
+        parameters.add(new ParamList.Parameter("sectionid", sectionid));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("status", "0"));
         parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));

@@ -17,6 +17,16 @@ public class GroupBean implements Serializable {
     private String number;
     //所属的版块id
     private String sectionid;
+    //群简介
+    private String introduce;
+
+    public String getIntroduce() {
+        return introduce;
+    }
+
+    public void setIntroduce(String introduce) {
+        this.introduce = introduce;
+    }
 
     public String getGroupicon() {
         return groupicon;
