@@ -20,6 +20,14 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "                         sectionid varchar(32) unique, " +
                 "                         sectionname varchar(32), " +
                 "                         selected varchar(32))");
+        db.execSQL("create table mygroup (_id integer primary key autoincrement," +
+                "                         groupid varchar(32) unique, " +
+                "                         groupicon varchar(32), " +
+                "                         usertype varchar(32), " +
+                "                         number varchar(32), " +
+                "                         sectionid varchar(32), " +
+                "                         groupname varchar(64), " +
+                "                         introduce varchar(512))");
     }
 
     @Override

@@ -30,12 +30,17 @@
             android:src="@drawable/ic_add_white" />
     </RelativeLayout>
 
-    <com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView
-        android:id="@+id/fragment_group_listview"
+    <android.support.v4.widget.SwipeRefreshLayout
+        android:id="@+id/swipe_fresh"
         android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:divider="@null"
-        android:dividerHeight="0dp"
-        app:divider="@null" />
+        android:layout_height="wrap_content">
 
+        <com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView
+            android:id="@+id/fragment_group_listview"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:divider="@null"
+            android:dividerHeight="0dp"
+            app:divider="@null" />
+    </android.support.v4.widget.SwipeRefreshLayout>
 </LinearLayout>

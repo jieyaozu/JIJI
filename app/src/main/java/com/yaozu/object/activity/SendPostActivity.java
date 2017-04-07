@@ -15,6 +15,7 @@ import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
+import android.widget.AdapterView;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -30,8 +31,8 @@ import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.bean.SectionBean;
+import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.db.dao.SectionDao;
-import com.yaozu.object.entity.GroupReqData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.ParamList;
@@ -155,6 +156,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     @Override
     protected void initData() {
+        groupDao = new GroupDao(this);
         //获取屏幕高度  
         int screenHeight = this.getWindowManager().getDefaultDisplay().getHeight();
         //阀值设置为屏幕高度的1/3  
@@ -383,33 +385,52 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     private Spinner groupSpinner;
     private GroupSpinnerAdapter groupSpinnerAdapter;
     private List<GroupBean> group_data_list = new ArrayList<>();
+    private GroupDao groupDao;
 
     private void initGroupSpinnerData() {
         groupSpinnerAdapter = new GroupSpinnerAdapter();
-        requestGetMyGroup(LoginInfo.getInstance(this).getUserAccount());
-    }
-
-    private void requestGetMyGroup(String userid) {
-        String url = DataInterface.FIND_MY_GROUP + "userid=" + userid;
-        RequestManager.getInstance().getRequest(this, url, GroupReqData.class, new RequestManager.OnResponseListener() {
+        requestGetMyGroup();
+        groupSpinner.setOnItemSelectedListener(new AdapterView.OnItemSelectedListener() {
             @Override
-            public void onSuccess(Object object, int code, String message) {
-                if (object != null) {
-                    GroupReqData groupReqData = (GroupReqData) object;
-                    group_data_list.addAll(groupReqData.getBody().getGrList());
-                    GroupBean groupBean = new GroupBean();
-                    groupBean.setGroupname("选择群");
-                    group_data_list.add(groupBean);
-                    groupSpinner.setAdapter(groupSpinnerAdapter);
-                    groupSpinner.setSelection(group_data_list.size() - 1);
+            public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
+                String sectionid = group_data_list.get(position).getSectionid();
+                int selectPos = getSelection(sectionid);
+                if (selectPos >= 0) {
+                    sectionSpinner.setSelection(selectPos);
                 }
             }
 
             @Override
-            public void onFailure(int code, String message) {
+            public void onNothingSelected(AdapterView<?> parent) {
 
             }
         });
+    }
+
+    private int getSelection(String sectionid) {
+        int selectPos = -1;
+        if (section_data_list == null) {
+            return -1;
+        }
+        if (TextUtils.isEmpty(sectionid)) {
+            return selectPos;
+        }
+        for (int i = 0; i < section_data_list.size(); i++) {
+            if (sectionid.equals(section_data_list.get(i).getSectionid())) {
+                selectPos = i;
+                break;
+            }
+        }
+        return selectPos;
+    }
+
+    private void requestGetMyGroup() {
+        group_data_list.addAll(groupDao.findAllMyGroup());
+        GroupBean groupBean = new GroupBean();
+        groupBean.setGroupname("选择群");
+        group_data_list.add(groupBean);
+        groupSpinner.setAdapter(groupSpinnerAdapter);
+        groupSpinner.setSelection(group_data_list.size() - 1);
     }
 
     class GroupSpinnerAdapter extends BaseAdapter {
