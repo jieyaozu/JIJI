@@ -59,7 +59,7 @@
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
                 android:layout_centerVertical="true"
-                android:layout_marginRight="30dp"
+                android:layout_marginRight="10dp"
                 android:layout_toLeftOf="@+id/activity_sendpost_edit_photo">
 
                 <Spinner
@@ -75,9 +75,14 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_gravity="center_vertical"
-                    android:layout_marginLeft="@dimen/dimen_5"
                     android:layout_weight="1" />
 
+                <Spinner
+                    android:id="@+id/sendpost_select_permission"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center_vertical"
+                    android:layout_weight="1" />
             </LinearLayout>
 
             <ImageView

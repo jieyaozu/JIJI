@@ -9,12 +9,14 @@ public class DataInterface {
     public static String APP_HOST = "http://www.chaojijihua.com:8080/";
     public static String SERVER_APP_HOST = "http://www.chaojijihua.com:8080/";
     //测试地址
-    //public static String APP_HOST = "http://192.168.0.104:8080/";
+    //public static String APP_HOST = "http://192.168.0.105:8080/";
     //查询用户详情
     public static String FIND_USERINFO = APP_HOST + "superplan/user/finduser.do?method=finduserinfo&";
     public static String LOGIN_URL = APP_HOST + "superplan/login/login.do?method=dologin&";
     public static String REGISTER_URL = APP_HOST + "superplan/register/register.do?method=doregister&";
     public static String UPLOAD_IMAGES = APP_HOST + "superplan/upload/image.do?method=upload&";
+    //群封面图
+    public static String UPLOAD_GROUP_IMAGES = APP_HOST + "superplan/upload/image.do?method=uploadGroupIcon&";
     public static String UPLOAD_USERICON = APP_HOST + "superplan/upload/usericon.do?method=upload&";
     //发表贴子
     public static String ADD_POST = APP_HOST + "superplan/post/post.do?method=add&";
@@ -22,6 +24,8 @@ public class DataInterface {
     public static String REPLY_ADD_POST = APP_HOST + "superplan/post/post.do?method=replypost&";
     //查找首页贴子列表
     public static String FIND_HOME_POST_LIST = APP_HOST + "superplan/post/post.do?method=findHomelist&";
+    //查找群内贴子列表
+    public static String FIND_GROUP_POST_LIST = APP_HOST + "superplan/post/post.do?method=findGrouplist&";
     //查找所有回贴
     public static String FIND_DETAIL_REPLY_POST_LIST = APP_HOST + "superplan/post/post.do?method=findreplypost&";
     //查找单个回复贴子详情
@@ -56,4 +60,6 @@ public class DataInterface {
 
     //查找所有版块
     public static String FIND_ALL_SECTION = APP_HOST + "superplan/app/section.do?method=findall";
+    //创建群
+    public static String CREATE_MY_GROUP = APP_HOST + "superplan/app/group.do?method=create&";
 }

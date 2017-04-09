@@ -8,7 +8,11 @@ import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
 import android.util.Log;
+import android.widget.Toast;
 
+import com.alibaba.fastjson.JSON;
+import com.yaozu.object.activity.group.UploadGroupIconActivity;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.listener.DownLoadIconListener;
 import com.yaozu.object.listener.UploadListener;
@@ -26,6 +30,7 @@ import java.io.IOException;
 import java.io.InputStream;
 import java.net.HttpURLConnection;
 import java.net.URL;
+import java.util.List;
 
 /**
  * Created by 耀祖 on 2015/12/22.
@@ -59,7 +64,7 @@ public class NetUtil {
      * @param file
      * @param uploadListener
      */
-    public static void uploadImageFile(final Context context, String postid, String createTime, final File file, final UploadListener uploadListener) {
+    private static void uploadImageFile(final Context context, String postid, String createTime, final File file, final UploadListener uploadListener) {
         LoginInfo user = new LoginInfo(context);
         // 组拼上传的数据
         Part[] parts = new Part[0];
@@ -75,9 +80,39 @@ public class NetUtil {
         uploadIconFile(DataInterface.UPLOAD_IMAGES, parts, uploadListener);
     }
 
+    /**
+     * 上传群封面图
+     *
+     * @param context
+     * @param groupid
+     * @param createTime
+     * @param file
+     * @param uploadListener
+     */
+    private static void uploadGroupImageFile(final Context context, String groupid, String createTime, final File file, final UploadListener uploadListener) {
+        LoginInfo user = new LoginInfo(context);
+        // 组拼上传的数据
+        Part[] parts = new Part[0];
+        try {
+            parts = new Part[]{new StringPart("source", "695132533"),
+                    new StringPart("userid", user.getUserAccount()),
+                    new StringPart("groupid", groupid),
+                    new StringPart("createtime", createTime),
+                    new FilePart("file", file)};
+        } catch (FileNotFoundException e) {
+            e.printStackTrace();
+        }
+        uploadIconFile(DataInterface.UPLOAD_GROUP_IMAGES, parts, uploadListener);
+    }
+
     public static void uploadImageFile(final Context context, String postid, String createTime, final String path, final UploadListener uploadListener) {
         File file = new File(path);
         uploadImageFile(context, postid, createTime, file, uploadListener);
+    }
+
+    public static void uploadGroupImageFile(final Context context, String groupid, String createTime, final String path, final UploadListener uploadListener) {
+        File file = new File(path);
+        uploadGroupImageFile(context, groupid, createTime, file, uploadListener);
     }
 
     /**
@@ -143,77 +178,31 @@ public class NetUtil {
         }).start();
     }
 
-
-    public static void downLoadUserIcon(final String iconUrl, final DownLoadIconListener downLoadListener) {
-        final int SUCCESS = 1;
-        final int FAILED = 0;
-        final Handler handler = new Handler() {
-            @Override
-            public void handleMessage(Message msg) {
-                super.handleMessage(msg);
-                switch (msg.what) {
-                    case SUCCESS:
-                        if (downLoadListener != null) {
-                            Bitmap bmp = (Bitmap) msg.obj;
-                            downLoadListener.downLoadSuccess(bmp);
-                        }
-                        break;
-                    case FAILED:
-                        if (downLoadListener != null) {
-                            downLoadListener.downLoadFailed();
-                        }
-                        break;
-                }
-            }
-        };
-        Runnable runnable = new Runnable() {
-            @Override
-            public void run() {
-                URL url;
-                try {
-                    url = new URL(iconUrl);
-                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
-                    conn.setConnectTimeout(5000);
-                    conn.setReadTimeout(30000);
-                    InputStream is = conn.getInputStream();
-                    if (is == null) {
-                        Message msg = handler.obtainMessage();
-                        msg.what = FAILED;
-                        handler.sendMessage(msg);
-                    } else {
-                        Message msg = handler.obtainMessage();
-                        msg.what = SUCCESS;
-                        msg.obj = BitmapFactory.decodeStream(is);
-                        handler.sendMessage(msg);
-                        is.close();
-                    }
-                } catch (IOException e) {
-                    e.printStackTrace();
-                    Message msg = handler.obtainMessage();
-                    msg.what = FAILED;
-                    handler.sendMessage(msg);
-                }
-            }
-        };
-        new Thread(runnable).start();
-    }
-
-    public static Bitmap getLocalOtherUserIcon(String userid) {
-        final String filePath = USERS_ICON_PATH + File.separator + userid + "_icon";
-        Bitmap localbitmap = BitmapFactory.decodeFile(filePath);
-        return localbitmap;
-    }
-
     /**
-     * 原画质
-     *
-     * @param userid
-     * @return
+     * 保存本地并上传图片
+     * 把发布的图片另存一份到指定的本地位置
+     * 然后在把图片上传到服务器上
      */
-    public static Bitmap getLocalOriginOtherUserIcon(String userid) {
-        final String filePath = USERS_ICON_PATH + File.separator + userid + "_icon_og";
-        Bitmap localbitmap = BitmapFactory.decodeFile(filePath);
-        return localbitmap;
+    public static void uploadGroupImagesToServer(Context context,List<MyImage> mListData, String groupid,UploadListener listener) {
+        for (int i = 0; i < mListData.size(); i++) {
+            final MyImage image = mListData.get(i);
+            //保存一份到本地
+            Bitmap bitmap = FileUtil.compressUserIcon(1200, image.getPath());
+            String savePath = context.getDir("images", Context.MODE_PRIVATE).getPath();
+            String displayName = image.getDisplayName();
+
+            savePath = createSavePath(savePath, displayName);
+            FileUtil.saveOutput(bitmap, savePath);
+            //插入数据库
+            image.setPath(savePath);
+            image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
+            //上传到服务器
+            NetUtil.uploadGroupImageFile(context, groupid, image.getCreatetime(), image.getPath(),listener);
+        }
+    }
+
+    private static String createSavePath(String savePath, String displayName) {
+        return savePath + File.separator + displayName;
     }
 
     /**

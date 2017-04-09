@@ -16,4 +16,5 @@ public class IntentKey {
     public static final String INTENT_ALBUM_IMAGES_INDEX = "intent_album_images_index";
     public static final String INTENT_IS_EDIT_POST = "intent_is_edit_post";
     public static final String INTENT_GROUP = "intent_group";
+    public static final String INTENT_GROUP_ID = "intent_group_id";
 }

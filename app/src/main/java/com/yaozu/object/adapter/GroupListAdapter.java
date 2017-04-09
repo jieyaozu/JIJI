@@ -10,9 +10,12 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersAdapter;
 
 import java.util.ArrayList;
@@ -75,6 +78,7 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
         }
         final GroupBean groupBean = groupBeanList.get(position);
         holder.tvGroupName.setText(groupBean.getGroupname());
+        Utils.setUserImg(groupBean.getGroupicon(), holder.ivGroupIcon);
         Log.d("======>", groupBean.getUsertype());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override

@@ -14,6 +14,7 @@ import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.ThemePostActivity;
 import com.yaozu.object.activity.WebViewActivity;
+import com.yaozu.object.activity.group.GroupDetailActivity;
 import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
@@ -46,14 +47,15 @@ public class IntentUtil {
         context.startActivity(intent);
     }
 
-    public static void toSendPostActivity(Context context) {
+    public static void toSendPostActivity(Context context, String groupid) {
         Intent sendPost = new Intent(context, SendPostActivity.class);
         sendPost.putExtra(IntentKey.INTENT_IS_EDIT_POST, false);
+        sendPost.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
         context.startActivity(sendPost);
         overridePendingTransition(context);
     }
 
-    public static void toSendPostActivity(Context context, Post post) {
+    public static void toEditSendPostActivity(Context context, Post post) {
         Intent sendPost = new Intent(context, SendPostActivity.class);
         sendPost.putExtra(IntentKey.INTENT_POST, post);
         sendPost.putExtra(IntentKey.INTENT_IS_EDIT_POST, true);
@@ -145,5 +147,17 @@ public class IntentUtil {
         intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
         context.startActivity(intent);
         overridePendingTransition(context);
+    }
+
+    /**
+     * 群详情页面
+     *
+     * @param context
+     * @param groupid
+     */
+    public static void toGroupDetailActivity(Context context, String groupid) {
+        Intent intent = new Intent(context, GroupDetailActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
+        context.startActivity(intent);
     }
 }

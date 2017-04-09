@@ -4,6 +4,7 @@ import android.graphics.Bitmap;
 
 import com.nostra13.universalimageloader.core.DisplayImageOptions;
 import com.nostra13.universalimageloader.core.assist.ImageScaleType;
+import com.nostra13.universalimageloader.core.display.RoundedBitmapDisplayer;
 import com.yaozu.object.R;
 
 /**
@@ -22,6 +23,14 @@ public class Constant {
     public static final DisplayImageOptions IMAGE_OPTIONS_FOR_PARTNER = new DisplayImageOptions.Builder()
             .bitmapConfig(Bitmap.Config.RGB_565).imageScaleType(ImageScaleType.EXACTLY)
             .cacheInMemory(true).cacheOnDisc(true).resetViewBeforeLoading(true).build();
+
+    public static final DisplayImageOptions IMAGE_OPTIONS_FOR_ROUNDCORNER = new DisplayImageOptions.Builder()
+            .bitmapConfig(Bitmap.Config.RGB_565).imageScaleType(ImageScaleType.EXACTLY)
+            .cacheInMemory(true).cacheOnDisc(true).resetViewBeforeLoading(true)
+            .displayer(new RoundedBitmapDisplayer(10)).build();
+
+    public static boolean IS_CREATEGROUP_SUCCESS = false;
+
     public static final String LOGIN_MSG = "login_msg";
     public static String CRASH_MSG = "crash_msg";
     public static String SP_PLAN_MSG = "plan_msg";

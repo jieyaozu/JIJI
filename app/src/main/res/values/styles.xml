@@ -21,8 +21,14 @@
         <item name="android:windowIsTranslucent">true</item>
     </style>
 
+    <style name="SwipeBackNoTitleTheme" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+        <item name="colorPrimaryDark">@android:color/transparent</item>
+    </style>
+
     <style name="NoTitleBar" parent="android:Theme.Light.NoTitleBar">
         <item name="android:windowTranslucentStatus" tools:targetApi="19">true</item>
+        <item name="android:windowIsTranslucent">true</item>
     </style>
 
     <style name="NobackDialog" parent="@android:style/Theme.Dialog">

@@ -104,6 +104,14 @@
             android:name=".activity.group.GroupOfPostActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.group.UploadGroupIconActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.group.GroupDetailActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackNoTitleTheme" />
     </application>
 
 </manifest>

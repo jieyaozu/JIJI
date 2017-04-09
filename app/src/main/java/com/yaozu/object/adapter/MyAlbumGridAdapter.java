@@ -3,6 +3,7 @@ package com.yaozu.object.adapter;
 import android.content.Context;
 import android.content.Intent;
 import android.net.Uri;
+import android.os.Parcelable;
 import android.support.v4.app.FragmentActivity;
 import android.util.DisplayMetrics;
 import android.view.View;
@@ -20,6 +21,7 @@ import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.IntentKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -134,8 +136,9 @@ public class MyAlbumGridAdapter extends BaseAdapter {
             public void onClick(View view) {
                 if (isSingle) {
                     Intent intent = new Intent();
-                    Uri uri = Uri.parse(myImages.getPath());
-                    intent.setData(uri);
+                    List<MyImage> resultData = new ArrayList<MyImage>();
+                    resultData.add(myImages);
+                    intent.putParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES, (ArrayList<? extends Parcelable>) resultData);
                     ((FragmentActivity) mContext).setResult(0, intent);
                     ((FragmentActivity) mContext).finish();
                 } else {

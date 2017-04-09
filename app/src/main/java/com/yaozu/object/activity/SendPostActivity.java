@@ -9,6 +9,7 @@ import android.graphics.Matrix;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -16,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
+import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -29,6 +31,7 @@ import com.alibaba.fastjson.JSON;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
+import com.yaozu.object.bean.PermissionBean;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.bean.SectionBean;
 import com.yaozu.object.db.dao.GroupDao;
@@ -46,6 +49,7 @@ import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.NetUtil;
+import com.yaozu.object.utils.SendPostUtil;
 import com.yaozu.object.widget.HorizontalListView;
 
 import java.io.File;
@@ -73,6 +77,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     private HorizontalListView mHorizontalListView;
     private Post mPost;
     private String postid;
+    private String groupid;
     int count = 0;
 
     //是新增还是编辑
@@ -119,10 +124,12 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                     showToast("请选择版块");
                     return true;
                 }
+                String permission = permissionBeanList.get(permissionSpinner.getSelectedItemPosition()).getPermissioncode();
                 String sectionid = section_data_list.get(sectionSpinner.getSelectedItemPosition()).getSectionid();
                 //Log.d("=====content======>", content);
                 if (!isEdit) {
-                    sendPostRequest(title, content, groupid, sectionid);
+                    checkImageData(content);//校验一下图片
+                    sendPostRequest(title, content, groupid, sectionid, permission);
                 } else {
                     //拿到传进来的图片名
                     for (int i = 0; i < mPost.getImages().size(); i++) {
@@ -151,6 +158,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
         sectionSpinner = (Spinner) findViewById(R.id.sendpost_select_section);
         groupSpinner = (Spinner) findViewById(R.id.sendpost_select_group);
+        permissionSpinner = (Spinner) findViewById(R.id.sendpost_select_permission);
         scrollView = (ScrollView) findViewById(R.id.activity_sendpost_edit_scrollview);
     }
 
@@ -164,6 +172,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
         isEdit = getIntent().getBooleanExtra(IntentKey.INTENT_IS_EDIT_POST, false);
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
+        groupid = getIntent().getStringExtra(IntentKey.INTENT_GROUP_ID);
         if (mPost != null) {
             etTitle.setText(mPost.getTitle());
             etContent.setText(mPost.getContent());
@@ -171,6 +180,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         }
         initGroupSpinnerData();
         initSectionSpinnerData();
+        initPermissionSpinnerData();
     }
 
     @Override
@@ -186,7 +196,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      * @param title
      * @param content
      */
-    private void sendPostRequest(String title, String content, String groupid, String sectionid) {
+    private void sendPostRequest(String title, String content, String groupid, String sectionid, String permission) {
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POST;
         ParamList parameters = new ParamList();
@@ -194,6 +204,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         parameters.add(new ParamList.Parameter("postid", postid));
         parameters.add(new ParamList.Parameter("groupid", groupid));
         parameters.add(new ParamList.Parameter("sectionid", sectionid));
+        parameters.add(new ParamList.Parameter("permission", permission));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("status", "0"));
         parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
@@ -244,9 +255,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
             savePath = createSavePath(savePath, displayName);
             FileUtil.saveOutput(bitmap, savePath);
-            //插入数据库
-            image.setUserid(LoginInfo.getInstance(this).getUserAccount());
-            image.setPostid(postid);
             image.setPath(savePath);
             image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
             //上传到服务器
@@ -255,14 +263,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 public void uploadSuccess(String jsonstring) {
                     com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(jsonstring);
                     int code = jsonObject.getIntValue("code");
-                    String imageurl_1200 = jsonObject.getString("imageurl_big");
-                    String imageurl_400 = jsonObject.getString("imageurl_small");
-                    String width = jsonObject.getString("width");
-                    String height = jsonObject.getString("height");
-                    image.setImageurl_big(imageurl_1200);
-                    image.setImageurl_small(imageurl_400);
-                    image.setWidth(width);
-                    image.setHeight(height);
                     if (code == 1) {
                         count++;
                     } else {
@@ -281,6 +281,26 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 }
             });
         }
+    }
+
+    /**
+     * 校对图文中的图片和mListData中的图片
+     */
+    private void checkImageData(String content) {
+        String[] array = content.split("<img>");
+        List<MyImage> imageList = new ArrayList<>();
+        for (String str : array) {
+            if (str.contains("</img>")) {
+                String displayName = str.substring(0, str.indexOf("</img>"));
+                for (MyImage image : mListData) {
+                    if (displayName.equals(image.getDisplayName())) {
+                        imageList.add(image);
+                    }
+                }
+            }
+        }
+        mListData.clear();
+        mListData.addAll(imageList);
     }
 
     private String createSavePath(String savePath, String displayName) {
@@ -387,6 +407,11 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     private List<GroupBean> group_data_list = new ArrayList<>();
     private GroupDao groupDao;
 
+    //权限
+    private Spinner permissionSpinner;
+    private PermissonAdapter permissonAdapter;
+    private List<PermissionBean> permissionBeanList = new ArrayList<>();
+
     private void initGroupSpinnerData() {
         groupSpinnerAdapter = new GroupSpinnerAdapter();
         requestGetMyGroup();
@@ -394,7 +419,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             @Override
             public void onItemSelected(AdapterView<?> parent, View view, int position, long id) {
                 String sectionid = group_data_list.get(position).getSectionid();
-                int selectPos = getSelection(sectionid);
+                int selectPos = SendPostUtil.getSectionSelection(section_data_list, sectionid);
                 if (selectPos >= 0) {
                     sectionSpinner.setSelection(selectPos);
                 }
@@ -407,23 +432,6 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         });
     }
 
-    private int getSelection(String sectionid) {
-        int selectPos = -1;
-        if (section_data_list == null) {
-            return -1;
-        }
-        if (TextUtils.isEmpty(sectionid)) {
-            return selectPos;
-        }
-        for (int i = 0; i < section_data_list.size(); i++) {
-            if (sectionid.equals(section_data_list.get(i).getSectionid())) {
-                selectPos = i;
-                break;
-            }
-        }
-        return selectPos;
-    }
-
     private void requestGetMyGroup() {
         group_data_list.addAll(groupDao.findAllMyGroup());
         GroupBean groupBean = new GroupBean();
@@ -431,6 +439,10 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         group_data_list.add(groupBean);
         groupSpinner.setAdapter(groupSpinnerAdapter);
         groupSpinner.setSelection(group_data_list.size() - 1);
+        if (!TextUtils.isEmpty(groupid)) {
+            int selected = SendPostUtil.getGroupSelection(group_data_list, groupid);
+            if (selected >= 0) groupSpinner.setSelection(selected);
+        }
     }
 
     class GroupSpinnerAdapter extends BaseAdapter {
@@ -467,14 +479,16 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
     }
 
 
-    //------------------版块------------------------
+    /**
+     * ------------------版块------------------------
+     */
     private void initSectionSpinnerData() {
         arr_adapter = new SpinnerAdapter();
         sectionDao = new SectionDao(this);
         section_data_list = sectionDao.findAllSections();
         if (section_data_list != null) {
             SectionBean hintBean = new SectionBean();
-            hintBean.setSectionname("选择版块");
+            hintBean.setSectionname("版块");
             section_data_list.add(hintBean);
             sectionSpinner.setAdapter(arr_adapter);
             sectionSpinner.setDropDownVerticalOffset(getResources().getDimensionPixelSize(R.dimen.dimen_40));
@@ -511,6 +525,50 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             SectionBean section = section_data_list.get(position);
             TextView textView = (TextView) view.findViewById(R.id.text_line_text);
             textView.setText(section.getSectionname());
+            return view;
+        }
+    }
+
+    /**
+     * 权限
+     */
+    private void initPermissionSpinnerData() {
+        permissonAdapter = new PermissonAdapter();
+        permissionBeanList.add(new PermissionBean("public", "公开"));
+        permissionBeanList.add(new PermissionBean("protected", "保护"));
+        permissionBeanList.add(new PermissionBean("private", "私有"));
+        permissionSpinner.setAdapter(permissonAdapter);
+    }
+
+    class PermissonAdapter extends BaseAdapter {
+
+        @Override
+        public int getCount() {
+            return permissionBeanList.size();
+        }
+
+        @Override
+        public Object getItem(int position) {
+            return null;
+        }
+
+        @Override
+        public long getItemId(int position) {
+            return 0;
+        }
+
+        @Override
+        public View getView(int position, View convertView, ViewGroup parent) {
+            LayoutInflater inflater = LayoutInflater.from(SendPostActivity.this);
+            View view = null;
+            if (convertView != null) {
+                view = convertView;
+            } else {
+                view = inflater.inflate(R.layout.text_line, null);
+            }
+            PermissionBean bean = permissionBeanList.get(position);
+            TextView textView = (TextView) view.findViewById(R.id.text_line_text);
+            textView.setText(bean.getPermissionname());
             return view;
         }
     }

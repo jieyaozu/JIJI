@@ -1,8 +1,35 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_common_toolsbar" />
-</LinearLayout>
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="vertical">
+
+        <include layout="@layout/activity_common_toolsbar" />
+
+        <include layout="@layout/common_refresh_layout" />
+    </LinearLayout>
+
+    <com.yaozu.object.widget.FloatingActionButton
+        android:id="@+id/activity_forum_imageview"
+        android:layout_width="56dp"
+        android:layout_height="56dp"
+        android:layout_alignParentBottom="true"
+        android:layout_alignParentRight="true"
+        android:layout_marginBottom="10dp"
+        android:layout_marginRight="10dp"
+        android:background="@drawable/fab_background"
+        android:elevation="8dp"
+        android:stateListAnimator="@animator/fab_anim">
+
+        <ImageView
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_gravity="center"
+            android:src="@drawable/fab_icons" />
+    </com.yaozu.object.widget.FloatingActionButton>
+</RelativeLayout>

@@ -163,7 +163,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
         switch (v.getId()) {
             case R.id.fragment_forum_imageview:
                 if (LoginInfo.getInstance(this.getActivity()).isLogining()) {
-                    IntentUtil.toSendPostActivity(this.getActivity());
+                    IntentUtil.toSendPostActivity(this.getActivity(), null);
                 } else {
                     IntentUtil.toLoginActivity(this.getActivity());
                 }

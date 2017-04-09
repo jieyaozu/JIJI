@@ -144,7 +144,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 IntentUtil.toWebViewActivity(this, mPost.getPostid());
                 return true;
             case R.id.action_editpost:
-                IntentUtil.toSendPostActivity(this, mPost);
+                IntentUtil.toEditSendPostActivity(this, mPost);
                 return true;
             case R.id.action_share:
                 showToast("分享");
@@ -289,6 +289,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         TextView support = (TextView) headerView.findViewById(R.id.header_postdetail_support_tv);
         TextView reply = (TextView) headerView.findViewById(R.id.header_postdetail_reply_tv);
         TextView createTime = (TextView) headerView.findViewById(R.id.item_listview_forum_time);
+        TextView groupName = (TextView) headerView.findViewById(R.id.header_postdetail_group);
 
         userName.setText(mPost.getUserName());
         title.setText(mPost.getTitle());
@@ -297,6 +298,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
+        groupName.setText(mPost.getGroupid() + " >");
         EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent().trim(), mPost.getImages());
         //EditContentImageUtil.showImageInEditTextView(this, content, mPost.getImages(), "");
 
@@ -304,6 +306,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             @Override
             public void onClick(View v) {
                 IntentUtil.toUserInfoActivity(PostDetailActivity.this, mPost.getUserid());
+            }
+        });
+        groupName.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+
             }
         });
         //是否收藏

@@ -7,6 +7,7 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.Toast;
 
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.GroupListAdapter;
@@ -15,9 +16,12 @@ import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.entity.GroupReqData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView;
+
+import java.util.List;
 
 /**
  * Created by jxj42 on 2017/2/5.
@@ -44,7 +48,12 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
                 requestGetMyGroup(LoginInfo.getInstance(getActivity()).getUserAccount());
             }
         });
-        requestGetMyGroup(LoginInfo.getInstance(getActivity()).getUserAccount());
+        List<GroupBean> groupBeanList = groupDao.findAllMyGroup();
+        if (groupBeanList != null && groupBeanList.size() > 0) {
+            listViewAdapter.addData(groupBeanList);
+        } else {
+            requestGetMyGroup(LoginInfo.getInstance(getActivity()).getUserAccount());
+        }
     }
 
     @Override
@@ -64,6 +73,21 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
         return view;
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Constant.IS_CREATEGROUP_SUCCESS) {
+            Constant.IS_CREATEGROUP_SUCCESS = false;
+            requestGetMyGroup(LoginInfo.getInstance(getActivity()).getUserAccount());
+            Toast.makeText(this.getActivity(), "创建群成功了", Toast.LENGTH_SHORT).show();
+        }
+    }
+
+    /**
+     * 查询我的群组
+     *
+     * @param userid
+     */
     private void requestGetMyGroup(String userid) {
         String url = DataInterface.FIND_MY_GROUP + "userid=" + userid;
         RequestManager.getInstance().getRequest(getActivity(), url, GroupReqData.class, new RequestManager.OnResponseListener() {

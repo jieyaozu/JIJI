@@ -35,6 +35,7 @@ public class ForumFragment extends BaseFragment {
 
     private SectionDao sectionDao;
     private List<SectionBean> beanList;
+    private SectionBean sectionBean = new SectionBean();
 
     @Override
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
@@ -43,9 +44,14 @@ public class ForumFragment extends BaseFragment {
         pagerSlidingTabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.forum_sliding_tab);
         sectionDao = new SectionDao(this.getActivity());
         beanList = sectionDao.findSelectSections();
+        //第一页固定为热贴
+        sectionBean.setSectionid("9999");
+        sectionBean.setSectionname("热贴");
         if (beanList == null || beanList.size() <= 0) {
+            beanList.add(sectionBean);
             getScetionListData();
         } else {
+            beanList.add(0, sectionBean);
             forumPagerAdapter = new ForumPagerAdapter(getFragmentManager());
             viewPager.setAdapter(forumPagerAdapter);
             pagerSlidingTabStrip.setViewPager(viewPager);
@@ -82,7 +88,6 @@ public class ForumFragment extends BaseFragment {
                         }
                         sectionDao.add(bean);
                     }
-
                     forumPagerAdapter = new ForumPagerAdapter(getFragmentManager());
                     viewPager.setAdapter(forumPagerAdapter);
                     pagerSlidingTabStrip.setViewPager(viewPager);

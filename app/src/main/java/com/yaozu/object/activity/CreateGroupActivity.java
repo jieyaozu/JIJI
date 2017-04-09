@@ -1,20 +1,28 @@
 package com.yaozu.object.activity;
 
+import android.content.Intent;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.AdapterView;
 import android.widget.BaseAdapter;
+import android.widget.Button;
+import android.widget.EditText;
 import android.widget.Spinner;
 import android.widget.TextView;
 
 import com.yaozu.object.R;
+import com.yaozu.object.activity.group.UploadGroupIconActivity;
+import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.entity.SectionReqData;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -23,8 +31,11 @@ import java.util.List;
  * Created by jxj42 on 2017/4/4.
  */
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class CreateGroupActivity extends BaseActivity {
+public class CreateGroupActivity extends BaseActivity implements View.OnClickListener {
     private Spinner sectionSpinner;
+    private Button btNext;
+    private EditText etGroupName;
+    private EditText etIntroduce;
     private SpinnerAdapter arr_adapter;
     private List<SectionReqData.Section> data_list = new ArrayList<>();
 
@@ -36,6 +47,9 @@ public class CreateGroupActivity extends BaseActivity {
     @Override
     protected void initView() {
         sectionSpinner = (Spinner) findViewById(R.id.creategroup_spinner);
+        etGroupName = (EditText) findViewById(R.id.group_name_edittext);
+        etIntroduce = (EditText) findViewById(R.id.group_introduction_edittext);
+        btNext = (Button) findViewById(R.id.creategroup_next_bt);
     }
 
     @Override
@@ -45,13 +59,21 @@ public class CreateGroupActivity extends BaseActivity {
 
     @Override
     protected void setListener() {
-
+        btNext.setOnClickListener(this);
     }
 
     @Override
     protected void settingActionBar(ActionBar actionBar) {
         actionBar.setTitle("创建群");
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Constant.IS_CREATEGROUP_SUCCESS) {
+            finish();
+        }
     }
 
     private void initSpinnerData() {
@@ -71,6 +93,36 @@ public class CreateGroupActivity extends BaseActivity {
         });
 
         getScetionListData();
+    }
+
+    @Override
+    public void onClick(View v) {
+        switch (v.getId()) {
+            case R.id.creategroup_next_bt:
+                GroupBean groupBean = new GroupBean();
+                String groupName = etGroupName.getText().toString().trim();
+                String introduce = etIntroduce.getText().toString().trim();
+                String sectionid = data_list.get(sectionSpinner.getSelectedItemPosition()).getSection_id();
+                if (TextUtils.isEmpty(groupName)) {
+                    showToast("群名称不能为空");
+                    return;
+                }
+                if (TextUtils.isEmpty(sectionid)) {
+                    showToast("请选择一个版块");
+                    return;
+                }
+                if (TextUtils.isEmpty(introduce)) {
+                    showToast("群简介不能为空");
+                    return;
+                }
+                groupBean.setGroupname(groupName);
+                groupBean.setIntroduce(introduce);
+                groupBean.setSectionid(sectionid);
+                Intent intent = new Intent(this, UploadGroupIconActivity.class);
+                intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
+                startActivity(intent);
+                break;
+        }
     }
 
     class SpinnerAdapter extends BaseAdapter {
@@ -116,9 +168,6 @@ public class CreateGroupActivity extends BaseActivity {
                     List<SectionReqData.Section> sectionList = sectionReqData.getBody().getSections();
                     data_list.clear();
                     data_list.addAll(sectionList);
-                    if (data_list.size() > 0) {
-                        data_list.remove(0);
-                    }
                     arr_adapter.notifyDataSetChanged();
                 }
             }
