@@ -340,8 +340,8 @@ public class Utils {
         // canvas.drawRoundRect(rectF, roundPx, roundPx, paint);//
         // 画圆角矩形，第一个参数为图形显示区域，第二个参数和第三个参数分别是水平圆角半径和垂直圆角半径。
         if (radius != 0) {
-            canvas.drawRoundRect(rectF,radius, radius, paint);
-        }else{
+            canvas.drawRoundRect(rectF, radius, radius, paint);
+        } else {
             canvas.drawCircle(roundPx, roundPx, roundPx, paint);
         }
         paint.setXfermode(new PorterDuffXfermode(
@@ -365,14 +365,11 @@ public class Utils {
                     Constant.IMAGE_OPTIONS_FOR_USER,
                     new SimpleImageLoadingListener() {
                         @Override
-                        public void onLoadingComplete(String imageUri,
-                                                      View view, Bitmap loadedImage) {
-                            super.onLoadingComplete(imageUri, view,
-                                    loadedImage);
+                        public void onLoadingComplete(String imageUri, View view, Bitmap loadedImage) {
+                            super.onLoadingComplete(imageUri, view, loadedImage);
                             ImageView iv = (ImageView) view;
                             if (loadedImage != null) {
-                                iv.setImageBitmap(Utils
-                                        .toRoundBitmap(loadedImage));
+                                iv.setImageBitmap(Utils.toRoundBitmap(loadedImage));
                             }
                         }
                     });
@@ -399,7 +396,7 @@ public class Utils {
                             ImageView iv = (ImageView) view;
                             if (loadedImage != null) {
                                 iv.setImageBitmap(Utils
-                                        .toRoundBitmap(loadedImage,10));
+                                        .toRoundBitmap(loadedImage, 10));
                             }
                         }
                     });

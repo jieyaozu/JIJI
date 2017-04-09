@@ -28,6 +28,24 @@ public class Post implements Serializable {
     private List<Comment> comments;
     private String groupid;
     private String groupname;
+    private String sectionid;
+    private String permission;
+
+    public String getSectionid() {
+        return sectionid;
+    }
+
+    public void setSectionid(String sectionid) {
+        this.sectionid = sectionid;
+    }
+
+    public String getPermission() {
+        return permission;
+    }
+
+    public void setPermission(String permission) {
+        this.permission = permission;
+    }
 
     public String getGroupid() {
         return groupid;

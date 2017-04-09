@@ -2,17 +2,15 @@ package com.yaozu.object.entity;
 
 import com.yaozu.object.bean.GroupBean;
 
-import java.util.List;
-
 /**
- * Created by jxj42 on 2017/4/4.
+ * Created by jxj42 on 2017/4/9.
  */
 
-public class GroupReqData extends BaseEntity<GroupReqData.BodyEntity> {
+public class GroupBeanReqData extends BaseEntity<GroupBeanReqData.BodyEntity> {
     public class BodyEntity {
         private String code;
         private String message;
-        private List<GroupBean> grList;
+        private GroupBean groupbean;
 
         public String getCode() {
             return code;
@@ -30,12 +28,12 @@ public class GroupReqData extends BaseEntity<GroupReqData.BodyEntity> {
             this.message = message;
         }
 
-        public List<GroupBean> getGrList() {
-            return grList;
+        public GroupBean getGroupbean() {
+            return groupbean;
         }
 
-        public void setGrList(List<GroupBean> grList) {
-            this.grList = grList;
+        public void setGroupbean(GroupBean groupbean) {
+            this.groupbean = groupbean;
         }
     }
 }

@@ -62,4 +62,6 @@ public class DataInterface {
     public static String FIND_ALL_SECTION = APP_HOST + "superplan/app/section.do?method=findall";
     //创建群
     public static String CREATE_MY_GROUP = APP_HOST + "superplan/app/group.do?method=create&";
+    //查找群的详情
+    public static String FIND_GROUP_BY_ID = APP_HOST + "superplan/app/group.do?method=findgroup&";
 }

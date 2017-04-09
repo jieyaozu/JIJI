@@ -13,7 +13,7 @@ import com.yaozu.object.R;
 import com.yaozu.object.adapter.GroupListAdapter;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.db.dao.GroupDao;
-import com.yaozu.object.entity.GroupReqData;
+import com.yaozu.object.entity.GroupReqListData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
@@ -90,12 +90,12 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
      */
     private void requestGetMyGroup(String userid) {
         String url = DataInterface.FIND_MY_GROUP + "userid=" + userid;
-        RequestManager.getInstance().getRequest(getActivity(), url, GroupReqData.class, new RequestManager.OnResponseListener() {
+        RequestManager.getInstance().getRequest(getActivity(), url, GroupReqListData.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
                 swipeRefreshLayout.setRefreshing(false);
                 if (object != null) {
-                    GroupReqData groupReqData = (GroupReqData) object;
+                    GroupReqListData groupReqData = (GroupReqListData) object;
                     listViewAdapter.clearData();
                     listViewAdapter.addData(groupReqData.getBody().getGrList());
                     //清空数据库

@@ -298,7 +298,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
-        groupName.setText(mPost.getGroupid() + " >");
+        groupName.setText(mPost.getGroupname() + " >");
         EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent().trim(), mPost.getImages());
         //EditContentImageUtil.showImageInEditTextView(this, content, mPost.getImages(), "");
 

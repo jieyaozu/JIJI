@@ -183,7 +183,7 @@ public class NetUtil {
      * 把发布的图片另存一份到指定的本地位置
      * 然后在把图片上传到服务器上
      */
-    public static void uploadGroupImagesToServer(Context context,List<MyImage> mListData, String groupid,UploadListener listener) {
+    public static void uploadGroupImagesToServer(Context context, List<MyImage> mListData, String groupid, UploadListener listener) {
         for (int i = 0; i < mListData.size(); i++) {
             final MyImage image = mListData.get(i);
             //保存一份到本地
@@ -197,12 +197,66 @@ public class NetUtil {
             image.setPath(savePath);
             image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
             //上传到服务器
-            NetUtil.uploadGroupImageFile(context, groupid, image.getCreatetime(), image.getPath(),listener);
+            NetUtil.uploadGroupImageFile(context, groupid, image.getCreatetime(), image.getPath(), listener);
         }
     }
 
     private static String createSavePath(String savePath, String displayName) {
         return savePath + File.separator + displayName;
+    }
+
+    public static void downLoadBitmap(final String iconUrl, final DownLoadIconListener downLoadListener) {
+        final int SUCCESS = 1;
+        final int FAILED = 0;
+        final Handler handler = new Handler() {
+            @Override
+            public void handleMessage(Message msg) {
+                super.handleMessage(msg);
+                switch (msg.what) {
+                    case SUCCESS:
+                        if (downLoadListener != null) {
+                            Bitmap bmp = (Bitmap) msg.obj;
+                            downLoadListener.downLoadSuccess(bmp);
+                        }
+                        break;
+                    case FAILED:
+                        if (downLoadListener != null) {
+                            downLoadListener.downLoadFailed();
+                        }
+                        break;
+                }
+            }
+        };
+        Runnable runnable = new Runnable() {
+            @Override
+            public void run() {
+                URL url;
+                try {
+                    url = new URL(iconUrl);
+                    HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+                    conn.setConnectTimeout(5000);
+                    conn.setReadTimeout(30000);
+                    InputStream is = conn.getInputStream();
+                    if (is == null) {
+                        Message msg = handler.obtainMessage();
+                        msg.what = FAILED;
+                        handler.sendMessage(msg);
+                    } else {
+                        Message msg = handler.obtainMessage();
+                        msg.what = SUCCESS;
+                        msg.obj = BitmapFactory.decodeStream(is);
+                        handler.sendMessage(msg);
+                        is.close();
+                    }
+                } catch (IOException e) {
+                    e.printStackTrace();
+                    Message msg = handler.obtainMessage();
+                    msg.what = FAILED;
+                    handler.sendMessage(msg);
+                }
+            }
+        };
+        new Thread(runnable).start();
     }
 
     /**

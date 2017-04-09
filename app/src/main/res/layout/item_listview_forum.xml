@@ -79,7 +79,6 @@
                 </LinearLayout>
             </RelativeLayout>
 
-
             <TextView
                 android:id="@+id/item_listview_forum_title"
                 android:layout_width="match_parent"

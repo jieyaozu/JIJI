@@ -6,18 +6,36 @@ import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Build;
+import android.os.Message;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
 import android.renderscript.RenderScript;
 import android.renderscript.ScriptIntrinsicBlur;
+import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.view.View;
 import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
+import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
+import com.nostra13.universalimageloader.core.listener.SimpleImageLoadingListener;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.entity.GroupBeanReqData;
+import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.listener.DownLoadIconListener;
+import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
+import com.yaozu.object.utils.NetUtil;
+
+import java.io.IOException;
+import java.io.InputStream;
+import java.net.HttpURLConnection;
+import java.net.URL;
 
 /**
  * Created by jxj42 on 2017/4/9.
@@ -27,6 +45,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private ImageView ivGroupIcon;
     private ImageView ivReturn;
     private RelativeLayout rlHeaderBackground;
+    private String mGroupid;
+    private TextView tvGroupName, tvGroupIntroduce;
 
     @Override
     protected void setContentView() {
@@ -47,6 +67,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     protected void initView() {
         ivGroupIcon = (ImageView) findViewById(R.id.group_detail_icon);
         ivReturn = (ImageView) findViewById(R.id.actionbar_return);
+        tvGroupName = (TextView) findViewById(R.id.group_detail_groupname);
+        tvGroupIntroduce = (TextView) findViewById(R.id.group_detail_groupintroduce);
         rlHeaderBackground = (RelativeLayout) findViewById(R.id.group_detail_header_background);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.xiaoma);
         rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
@@ -84,7 +106,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private Bitmap big(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.postScale(4f, 4f); //长和宽放大缩小的比例
+        matrix.postScale(20f, 20f); //长和宽放大缩小的比例
         Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return resizeBmp;
     }
@@ -98,7 +120,48 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void initData() {
+        mGroupid = getIntent().getStringExtra(IntentKey.INTENT_GROUP_ID);
+        requestGroupDetail(mGroupid);
+    }
 
+    /**
+     * 查找群的详情
+     */
+    private void requestGroupDetail(String groupid) {
+        String url = DataInterface.FIND_GROUP_BY_ID + "groupid=" + groupid;
+        RequestManager.getInstance().getRequest(this, url, GroupBeanReqData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    GroupBeanReqData groupBeanReqData = (GroupBeanReqData) object;
+                    GroupBean groupBean = groupBeanReqData.getBody().getGroupbean();
+                    ImageLoader.getInstance().displayImage(groupBeanReqData.getBody().getGroupbean().getGroupicon(), ivGroupIcon);
+                    tvGroupName.setText(groupBean.getGroupname());
+                    tvGroupIntroduce.setText(groupBean.getIntroduce());
+                    downloadImage(groupBean.getGroupicon());
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    private void downloadImage(String iconUrl) {
+        NetUtil.downLoadBitmap(iconUrl, new DownLoadIconListener() {
+            @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
+            @Override
+            public void downLoadSuccess(Bitmap bitmap) {
+                rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
+            }
+
+            @Override
+            public void downLoadFailed() {
+
+            }
+        });
     }
 
     @Override

@@ -17,8 +17,37 @@ public class GroupBean implements Serializable {
     private String number;
     //所属的版块id
     private String sectionid;
+    private String sectionname;
     //群简介
     private String introduce;
+    //群成员数量
+    private String pnumber;
+    //发贴总数
+    private String mptnumber;
+
+    public String getMptnumber() {
+        return mptnumber;
+    }
+
+    public void setMptnumber(String mptnumber) {
+        this.mptnumber = mptnumber;
+    }
+
+    public String getSectionname() {
+        return sectionname;
+    }
+
+    public void setSectionname(String sectionname) {
+        this.sectionname = sectionname;
+    }
+
+    public String getPnumber() {
+        return pnumber;
+    }
+
+    public void setPnumber(String pnumber) {
+        this.pnumber = pnumber;
+    }
 
     public String getIntroduce() {
         return introduce;
