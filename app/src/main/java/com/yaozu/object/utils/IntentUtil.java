@@ -153,11 +153,11 @@ public class IntentUtil {
      * 群详情页面
      *
      * @param context
-     * @param groupid
+     * @param groupBean
      */
-    public static void toGroupDetailActivity(Context context, String groupid) {
+    public static void toGroupDetailActivity(Context context, GroupBean groupBean) {
         Intent intent = new Intent(context, GroupDetailActivity.class);
-        intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
+        intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
         context.startActivity(intent);
     }
 }

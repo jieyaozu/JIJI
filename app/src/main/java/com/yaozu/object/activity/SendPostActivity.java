@@ -9,7 +9,6 @@ import android.graphics.Matrix;
 import android.os.Build;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
-import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -17,7 +16,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.inputmethod.InputMethodManager;
 import android.widget.AdapterView;
-import android.widget.ArrayAdapter;
 import android.widget.BaseAdapter;
 import android.widget.EditText;
 import android.widget.ImageView;
@@ -126,6 +124,10 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 }
                 String permission = permissionBeanList.get(permissionSpinner.getSelectedItemPosition()).getPermissioncode();
                 String sectionid = section_data_list.get(sectionSpinner.getSelectedItemPosition()).getSectionid();
+                if (!"private".equals(permission) && content.length() < 140) {
+                    showToast("发表公开或者保护的帖子时，长度至少需要140个字符");
+                    return true;
+                }
                 //Log.d("=====content======>", content);
                 if (!isEdit) {
                     checkImageData(content);//校验一下图片

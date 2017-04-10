@@ -143,7 +143,7 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
     public boolean onOptionsItemSelected(MenuItem item) {
         switch (item.getItemId()) {
             case R.id.action_groupdetail:
-                IntentUtil.toGroupDetailActivity(this, groupBean.getGroupid());
+                IntentUtil.toGroupDetailActivity(this, groupBean);
                 return true;
             default:
                 return super.onOptionsItemSelected(item);
