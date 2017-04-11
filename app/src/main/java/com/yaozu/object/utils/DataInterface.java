@@ -64,4 +64,6 @@ public class DataInterface {
     public static String CREATE_MY_GROUP = APP_HOST + "superplan/app/group.do?method=create&";
     //查找群的详情
     public static String FIND_GROUP_BY_ID = APP_HOST + "superplan/app/group.do?method=findgroup&";
+    //编辑更改群名称和群介绍
+    public static String EDIT_GROUP = APP_HOST + "superplan/app/group.do?method=editgroup&";
 }

@@ -27,20 +27,26 @@ import com.yaozu.object.entity.GroupBeanReqData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.listener.DownLoadIconListener;
 import com.yaozu.object.utils.ACache;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentKey;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
+import com.yaozu.object.utils.ObjectBeanCache;
 
 /**
  * Created by jxj42 on 2017/4/9.
  */
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
 public class GroupDetailActivity extends BaseActivity implements View.OnClickListener {
-    private ImageView ivGroupIcon;
+    private ImageView ivGroupIcon, ivEditIcon;
     private ImageView ivReturn;
     private RelativeLayout rlHeaderBackground;
+    private ImageView ivGroupMenu;
     private GroupBean mGroupbean;
     private TextView tvGroupName, tvGroupIntroduce;
+    private ACache aCache;
+    private ObjectBeanCache objectBeanCache;
 
     @Override
     protected void setContentView() {
@@ -60,10 +66,13 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void initView() {
         aCache = ACache.get(this);
+        objectBeanCache = ObjectBeanCache.getInstance();
         ivGroupIcon = (ImageView) findViewById(R.id.group_detail_icon);
+        ivEditIcon = (ImageView) findViewById(R.id.group_detail_edit_icon);
         ivReturn = (ImageView) findViewById(R.id.actionbar_return);
         tvGroupName = (TextView) findViewById(R.id.group_detail_groupname);
         tvGroupIntroduce = (TextView) findViewById(R.id.group_detail_groupintroduce);
+        ivGroupMenu = (ImageView) findViewById(R.id.groupdetail_actionbar_menu);
         rlHeaderBackground = (RelativeLayout) findViewById(R.id.group_detail_header_background);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.xiaoma);
         rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
@@ -122,14 +131,20 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             downloadBackgroundImage(mGroupbean.getGroupicon());
         }
 
-        requestGroupDetail(mGroupbean.getGroupid());
+        Object object = objectBeanCache.getObject(mGroupbean.getGroupid());
+        if (object == null) {
+            requestGroupDetail(mGroupbean.getGroupid());
+        } else {
+            mGroupbean = (GroupBean) object;
+            bindDataToView((GroupBean) object);
+        }
     }
 
 
     /**
      * 查找群的详情
      */
-    private void requestGroupDetail(String groupid) {
+    private void requestGroupDetail(final String groupid) {
         String url = DataInterface.FIND_GROUP_BY_ID + "groupid=" + groupid;
         RequestManager.getInstance().getRequest(this, url, GroupBeanReqData.class, new RequestManager.OnResponseListener() {
             @Override
@@ -137,10 +152,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 if (object != null) {
                     GroupBeanReqData groupBeanReqData = (GroupBeanReqData) object;
                     GroupBean groupBean = groupBeanReqData.getBody().getGroupbean();
-                    ImageLoader.getInstance().displayImage(groupBeanReqData.getBody().getGroupbean().getGroupicon(), ivGroupIcon);
-                    tvGroupName.setText(groupBean.getGroupname());
-                    tvGroupIntroduce.setText(groupBean.getIntroduce());
-                    downloadBackgroundImage(groupBean.getGroupicon());
+                    mGroupbean = groupBean;
+                    objectBeanCache.addCacheObject(groupid, groupBean);
+                    bindDataToView(groupBean);
                 }
             }
 
@@ -151,7 +165,17 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         });
     }
 
-    private ACache aCache;
+    /**
+     * 填充数据
+     *
+     * @param groupBean
+     */
+    private void bindDataToView(GroupBean groupBean) {
+        ImageLoader.getInstance().displayImage(groupBean.getGroupicon(), ivGroupIcon);
+        tvGroupName.setText(groupBean.getGroupname());
+        tvGroupIntroduce.setText(groupBean.getIntroduce());
+        downloadBackgroundImage(groupBean.getGroupicon());
+    }
 
     private void downloadBackgroundImage(final String iconUrl) {
         Bitmap bitmap = aCache.getAsBitmap(iconUrl);
@@ -177,6 +201,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void setListener() {
         ivReturn.setOnClickListener(this);
+        ivGroupMenu.setOnClickListener(this);
+        ivEditIcon.setOnClickListener(this);
     }
 
     @Override
@@ -185,10 +211,26 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
+    protected void onResume() {
+        super.onResume();
+        if (Constant.IS_EDITGROUP_SUCCESS) {
+            Constant.IS_EDITGROUP_SUCCESS = false;
+            objectBeanCache.cleanCache();
+            requestGroupDetail(mGroupbean.getGroupid());
+        }
+    }
+
+    @Override
     public void onClick(View v) {
         switch (v.getId()) {
             case R.id.actionbar_return:
                 finish();
+                break;
+            case R.id.groupdetail_actionbar_menu:
+                IntentUtil.toEditGroupActivity(this, mGroupbean);
+                break;
+            case R.id.group_detail_edit_icon:
+                showToast("edit");
                 break;
         }
     }

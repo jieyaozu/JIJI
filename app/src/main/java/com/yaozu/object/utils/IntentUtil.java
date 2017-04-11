@@ -14,6 +14,7 @@ import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.ThemePostActivity;
 import com.yaozu.object.activity.WebViewActivity;
+import com.yaozu.object.activity.group.EditGroupActivity;
 import com.yaozu.object.activity.group.GroupDetailActivity;
 import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.activity.user.LoginActivity;
@@ -157,6 +158,18 @@ public class IntentUtil {
      */
     public static void toGroupDetailActivity(Context context, GroupBean groupBean) {
         Intent intent = new Intent(context, GroupDetailActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 群详情页面
+     *
+     * @param context
+     * @param groupBean
+     */
+    public static void toEditGroupActivity(Context context, GroupBean groupBean) {
+        Intent intent = new Intent(context, EditGroupActivity.class);
         intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
         context.startActivity(intent);
     }

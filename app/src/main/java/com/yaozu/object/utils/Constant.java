@@ -30,6 +30,7 @@ public class Constant {
             .displayer(new RoundedBitmapDisplayer(10)).build();
 
     public static boolean IS_CREATEGROUP_SUCCESS = false;
+    public static boolean IS_EDITGROUP_SUCCESS = false;
 
     public static final String LOGIN_MSG = "login_msg";
     public static String CRASH_MSG = "crash_msg";
