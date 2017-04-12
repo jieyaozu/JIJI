@@ -19,7 +19,7 @@ public class FileUtil {
     private static String TAG = FileUtil.class.getSimpleName();
     private String SDPATH;
     private String DWONLOADPATH;
-
+    public static String APP_FOLDER = "mayimen";
     /**
      * "/superplan/file/"
      */
@@ -37,8 +37,8 @@ public class FileUtil {
     public FileUtil() {
         //得到当前外部存储设备的目录
         // /SDCARD
-        SDPATH = getSDPath() + File.separator + "superplan" + File.separator + "file" + File.separator;
-        DWONLOADPATH = getSDPath() + File.separator + "superplan" + File.separator + "download" + File.separator;
+        SDPATH = getSDPath() + File.separator + APP_FOLDER + File.separator + "file" + File.separator;
+        DWONLOADPATH = getSDPath() + File.separator + APP_FOLDER + File.separator + "download" + File.separator;
         File dir = new File(SDPATH);
         if (!dir.exists()) {
             dir.mkdirs();

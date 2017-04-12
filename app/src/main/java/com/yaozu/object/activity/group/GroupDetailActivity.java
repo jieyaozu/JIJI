@@ -1,6 +1,7 @@
 package com.yaozu.object.activity.group;
 
 import android.annotation.TargetApi;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
@@ -18,21 +19,32 @@ import android.view.WindowManager;
 import android.widget.ImageView;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
+import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.activity.CropImageActivity;
+import com.yaozu.object.activity.MyAlbumActivity;
 import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.entity.GroupBeanReqData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.listener.DownLoadIconListener;
+import com.yaozu.object.listener.UploadListener;
 import com.yaozu.object.utils.ACache;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.EncodingConvert;
+import com.yaozu.object.utils.FileUtil;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.utils.ObjectBeanCache;
+
+import java.io.File;
+import java.util.ArrayList;
+import java.util.List;
 
 /**
  * Created by jxj42 on 2017/4/9.
@@ -47,6 +59,11 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private TextView tvGroupName, tvGroupIntroduce;
     private ACache aCache;
     private ObjectBeanCache objectBeanCache;
+
+    private static final int ACTIVITY_RESULT_GALRY = 0;
+    private static final int ACTIVITY_RESULT_CROPIMAGE = 1;
+    private FileUtil fileUtil = new FileUtil();
+    public static String ICON_PATH = FileUtil.getSDPath() + File.separator + FileUtil.APP_FOLDER + File.separator + "icon.jpg";
 
     @Override
     protected void setContentView() {
@@ -220,6 +237,87 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
+    /**
+     * 打开相册选取图片
+     */
+    public void getimgefromegalry() {
+        Intent intent = new Intent(this, MyAlbumActivity.class);
+        intent.putExtra(IntentKey.INTENT_SELECT_ALBUM_SINGLE, true);
+        this.startActivityForResult(intent, ACTIVITY_RESULT_GALRY);
+    }
+
+    @Override
+    public void onActivityResult(int requestCode, int resultCode, Intent data) {
+        super.onActivityResult(requestCode, resultCode, data);
+        switch (requestCode) {
+            case ACTIVITY_RESULT_GALRY:
+                if (data == null) {
+                    return;
+                }
+                List<MyImage> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
+                String path = listData.get(0).getPath();
+                final Bitmap bm = FileUtil.compressUserIcon(1200, path);
+                Intent cropimage = new Intent(this, CropImageActivity.class);
+                IntentKey.cropBitmap = bm;
+                startActivityForResult(cropimage, ACTIVITY_RESULT_CROPIMAGE);
+                break;
+            case ACTIVITY_RESULT_CROPIMAGE:
+                if (IntentKey.cropBitmap == null) {
+                    return;
+                }
+                //保存到本地
+                FileUtil.saveOutput(IntentKey.cropBitmap, ICON_PATH);
+                //上传头像到服务器上
+                //NetUtil.uploadUserIconFile(this, new File(ICON_PATH), new MyUploadListener());
+                MyImage image = new MyImage();
+                image.setPath(ICON_PATH);
+                image.setDisplayName(generateDisplayName("icon"));
+                List<MyImage> imageList = new ArrayList<>();
+                imageList.add(image);
+                NetUtil.uploadGroupImagesToServer(this, imageList, mGroupbean.getGroupid(), new UploadListener() {
+                    @Override
+                    public void uploadSuccess(String jsonstring) {
+                        System.out.println();
+                        Bitmap bitmap = BitmapFactory.decodeFile(ICON_PATH);
+                        if (bitmap != null) {
+                            objectBeanCache.cleanCache();
+                            ivGroupIcon.setImageBitmap(bitmap);
+                            rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
+                        }
+                    }
+
+                    @Override
+                    public void uploadFailed() {
+                        Toast.makeText(GroupDetailActivity.this, "图片发布失败，请重新发送", Toast.LENGTH_SHORT).show();
+                    }
+                });
+                break;
+        }
+    }
+
+    /**
+     * 重新生成图片的文件名
+     *
+     * @param originName
+     * @return
+     */
+    private String generateDisplayName(String originName) {
+        String displayName = null;
+        originName = (System.currentTimeMillis() % 1000) + "_" + originName;//保证唯一
+        if (EncodingConvert.isContainsChinese(originName)) {
+            originName = originName.hashCode() + ".jpg";
+        } else {
+            int index = originName.lastIndexOf(".");
+            String suffix = "";
+            if (index > 0) {
+                suffix = originName.substring(index, originName.length());
+            }
+            originName = "guagua_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
+        }
+        displayName = originName;
+        return displayName;
+    }
+
     @Override
     public void onClick(View v) {
         switch (v.getId()) {
@@ -230,7 +328,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 IntentUtil.toEditGroupActivity(this, mGroupbean);
                 break;
             case R.id.group_detail_edit_icon:
-                showToast("edit");
+                getimgefromegalry();
                 break;
         }
     }

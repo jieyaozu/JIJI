@@ -12,4 +12,5 @@
     <color name="gray">#616161</color>
     <color name="top_blue">#63B8FF</color>
     <color name="divider_background_color">#447F7F7F</color>
+    <color name="black">#000000</color>
 </resources>

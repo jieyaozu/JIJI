@@ -116,6 +116,10 @@
             android:name=".activity.group.EditGroupActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.CropImageActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackNoTitleTheme" />
     </application>
 
 </manifest>
