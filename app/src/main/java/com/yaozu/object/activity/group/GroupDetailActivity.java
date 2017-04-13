@@ -57,8 +57,10 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private ImageView ivGroupMenu;
     private GroupBean mGroupbean;
     private TextView tvGroupName, tvGroupIntroduce;
+    private TextView tvGroupId, tvSection;
     private ACache aCache;
     private ObjectBeanCache objectBeanCache;
+    private TextView tvPersonNum, tvPostNum, tvFansNum;//成员数，发贴数，粉丝数
 
     private static final int ACTIVITY_RESULT_GALRY = 0;
     private static final int ACTIVITY_RESULT_CROPIMAGE = 1;
@@ -88,6 +90,11 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         ivEditIcon = (ImageView) findViewById(R.id.group_detail_edit_icon);
         ivReturn = (ImageView) findViewById(R.id.actionbar_return);
         tvGroupName = (TextView) findViewById(R.id.group_detail_groupname);
+        tvGroupId = (TextView) findViewById(R.id.group_detail_groupid);
+        tvSection = (TextView) findViewById(R.id.group_detail_section);
+        tvPersonNum = (TextView) findViewById(R.id.group_detail_personnum);
+        tvPostNum = (TextView) findViewById(R.id.group_detail_postnum);
+        tvFansNum = (TextView) findViewById(R.id.group_detail_fansnum);
         tvGroupIntroduce = (TextView) findViewById(R.id.group_detail_groupintroduce);
         ivGroupMenu = (ImageView) findViewById(R.id.groupdetail_actionbar_menu);
         rlHeaderBackground = (RelativeLayout) findViewById(R.id.group_detail_header_background);
@@ -127,14 +134,14 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
     private Bitmap big(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.postScale(20f, 20f); //长和宽放大缩小的比例
+        matrix.postScale(10f, 10f); //长和宽放大缩小的比例
         Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return resizeBmp;
     }
 
     private Bitmap small(Bitmap bitmap) {
         Matrix matrix = new Matrix();
-        matrix.postScale(0.05f, 0.05f); //长和宽放大缩小的比例
+        matrix.postScale(0.1f, 0.1f); //长和宽放大缩小的比例
         Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
         return resizeBmp;
     }
@@ -143,6 +150,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     protected void initData() {
         mGroupbean = (GroupBean) getIntent().getSerializableExtra(IntentKey.INTENT_GROUP);
         tvGroupName.setText(mGroupbean.getGroupname());
+        tvGroupId.setText(mGroupbean.getGroupid());
         if (!TextUtils.isEmpty(mGroupbean.getGroupicon())) {
             ImageLoader.getInstance().displayImage(mGroupbean.getGroupicon(), ivGroupIcon);
             downloadBackgroundImage(mGroupbean.getGroupicon());
@@ -190,7 +198,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private void bindDataToView(GroupBean groupBean) {
         ImageLoader.getInstance().displayImage(groupBean.getGroupicon(), ivGroupIcon);
         tvGroupName.setText(groupBean.getGroupname());
+        tvGroupId.setText(groupBean.getGroupid());
+        tvSection.setText(groupBean.getSectionname());
         tvGroupIntroduce.setText(groupBean.getIntroduce());
+        tvPersonNum.setText(groupBean.getPnumber());
+        tvPostNum.setText(groupBean.getMptnumber());
+
         downloadBackgroundImage(groupBean.getGroupicon());
     }
 
@@ -220,6 +233,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         ivReturn.setOnClickListener(this);
         ivGroupMenu.setOnClickListener(this);
         ivEditIcon.setOnClickListener(this);
+        tvSection.setOnClickListener(this);
     }
 
     @Override
@@ -329,6 +343,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 break;
             case R.id.group_detail_edit_icon:
                 getimgefromegalry();
+                break;
+            case R.id.group_detail_section:
+                showToast("section");
                 break;
         }
     }

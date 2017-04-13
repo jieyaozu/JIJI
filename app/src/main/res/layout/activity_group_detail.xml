@@ -18,8 +18,8 @@
             <LinearLayout
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:layout_marginBottom="50dp"
+                android:layout_above="@+id/group_detail_msglayout"
+                android:layout_marginBottom="15dp"
                 android:orientation="horizontal">
 
                 <RelativeLayout
@@ -32,7 +32,7 @@
                         android:layout_width="100dp"
                         android:layout_height="100dp"
                         android:scaleType="centerCrop"
-                        android:src="@drawable/xiaoma" />
+                        android:src="@drawable/loading_bg" />
 
                     <ImageView
                         android:id="@+id/group_detail_edit_icon"
@@ -45,16 +45,122 @@
                         android:src="@drawable/icon_edit" />
                 </RelativeLayout>
 
-                <TextView
-                    android:id="@+id/group_detail_groupname"
+                <LinearLayout
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:layout_marginLeft="10dp"
-                    android:ellipsize="marquee"
-                    android:maxLines="1"
-                    android:text=""
-                    android:textColor="@color/colorWhite"
-                    android:textSize="18dp" />
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:id="@+id/group_detail_groupname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:ellipsize="marquee"
+                        android:maxLines="1"
+                        android:text="dsa"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="18dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_groupid"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:maxLines="1"
+                        android:text="2123213"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_section"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="10dp"
+                        android:layout_marginTop="10dp"
+                        android:background="@drawable/main_transparent_listview_selector"
+                        android:drawablePadding="@dimen/dimen_5"
+                        android:drawableRight="@drawable/text_arrow_white"
+                        android:text=""
+                        android:textColor="@color/colorWhite"
+                        android:textSize="13dp" />
+                </LinearLayout>
+            </LinearLayout>
+
+            <LinearLayout
+                android:id="@+id/group_detail_msglayout"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_alignParentBottom="true"
+                android:orientation="horizontal">
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="群成员"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_personnum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="0"
+                        android:textColor="@color/colorWhite" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="发贴"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_postnum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="0"
+                        android:textColor="@color/colorWhite" />
+                </LinearLayout>
+
+                <LinearLayout
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="1"
+                    android:gravity="center"
+                    android:orientation="vertical">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:text="粉丝"
+                        android:textColor="@color/colorWhite"
+                        android:textSize="12dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_fansnum"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:padding="5dp"
+                        android:text="0"
+                        android:textColor="@color/colorWhite" />
+                </LinearLayout>
             </LinearLayout>
         </RelativeLayout>
 
