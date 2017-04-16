@@ -4,6 +4,6 @@
     <item
         android:id="@+id/action_groupdetail"
         android:icon="@drawable/skin_header_icon_group"
-        android:title="收藏"
+        android:title="群详情"
         app:showAsAction="ifRoom|collapseActionView" />
 </menu>

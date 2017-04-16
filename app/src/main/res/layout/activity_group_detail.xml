@@ -102,9 +102,11 @@
                         android:gravity="center"
                         android:text="申请入群"
                         android:textColor="@color/colorWhite"
-                        android:textSize="10dp" />
+                        android:textSize="10dp"
+                        android:visibility="gone" />
 
                     <TextView
+                        android:id="@+id/group_detail_attention"
                         android:layout_width="60dp"
                         android:layout_height="20dp"
                         android:layout_alignParentBottom="true"
@@ -115,7 +117,8 @@
                         android:gravity="center"
                         android:text="+关注"
                         android:textColor="@color/colorWhite"
-                        android:textSize="10dp" />
+                        android:textSize="10dp"
+                        android:visibility="gone" />
                 </RelativeLayout>
             </LinearLayout>
 

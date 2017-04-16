@@ -29,6 +29,7 @@ import com.yaozu.object.activity.MyAlbumActivity;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.entity.GroupBeanReqData;
+import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.listener.DownLoadIconListener;
 import com.yaozu.object.listener.UploadListener;
@@ -61,6 +62,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private ACache aCache;
     private ObjectBeanCache objectBeanCache;
     private TextView tvPersonNum, tvPostNum, tvFansNum;//成员数，发贴数，粉丝数
+    private TextView tvApplyEnter, tvAttention;
 
     private static final int ACTIVITY_RESULT_GALRY = 0;
     private static final int ACTIVITY_RESULT_CROPIMAGE = 1;
@@ -97,6 +99,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvFansNum = (TextView) findViewById(R.id.group_detail_fansnum);
         tvGroupIntroduce = (TextView) findViewById(R.id.group_detail_groupintroduce);
         ivGroupMenu = (ImageView) findViewById(R.id.groupdetail_actionbar_menu);
+        tvApplyEnter = (TextView) findViewById(R.id.group_detail_apply);
+        tvAttention = (TextView) findViewById(R.id.group_detail_attention);
         rlHeaderBackground = (RelativeLayout) findViewById(R.id.group_detail_header_background);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.xiaoma);
         rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
@@ -170,7 +174,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
      * 查找群的详情
      */
     private void requestGroupDetail(final String groupid) {
-        String url = DataInterface.FIND_GROUP_BY_ID + "groupid=" + groupid;
+        String url = DataInterface.FIND_GROUP_BY_ID + "groupid=" + groupid + "&userid=" + LoginInfo.getInstance(this).getUserAccount();
         RequestManager.getInstance().getRequest(this, url, GroupBeanReqData.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
@@ -204,6 +208,15 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvPersonNum.setText(groupBean.getPnumber());
         tvPostNum.setText(groupBean.getMptnumber());
 
+        String isMember = groupBean.getIsGroupMember();
+        if ("0".equals(isMember)) {
+            tvApplyEnter.setVisibility(View.VISIBLE);
+            tvAttention.setVisibility(View.VISIBLE);
+        } else {
+            tvApplyEnter.setVisibility(View.GONE);
+            tvAttention.setVisibility(View.GONE);
+        }
+
         downloadBackgroundImage(groupBean.getGroupicon());
     }
 
@@ -234,6 +247,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         ivGroupMenu.setOnClickListener(this);
         ivEditIcon.setOnClickListener(this);
         tvSection.setOnClickListener(this);
+        tvApplyEnter.setOnClickListener(this);
+        tvAttention.setOnClickListener(this);
     }
 
     @Override
@@ -345,7 +360,11 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 getimgefromegalry();
                 break;
             case R.id.group_detail_section:
-                showToast("section");
+                break;
+            case R.id.group_detail_apply:
+                IntentUtil.toApplyEnterGroupActivity(this, mGroupbean.getGroupid());
+                break;
+            case R.id.group_detail_attention:
                 break;
         }
     }

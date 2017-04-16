@@ -9,6 +9,7 @@ import android.support.v4.view.ViewPager;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ImageView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.bean.SectionBean;
@@ -16,6 +17,7 @@ import com.yaozu.object.db.dao.SectionDao;
 import com.yaozu.object.entity.SectionReqData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.widget.PagerSlidingTabStrip;
 
 import java.util.ArrayList;
@@ -30,6 +32,7 @@ import java.util.Map;
 public class ForumFragment extends BaseFragment {
     public static String TAG = "ForumFragment";
     private ViewPager viewPager;
+    private ImageView ivSearch;
     private PagerSlidingTabStrip pagerSlidingTabStrip;
     private ForumPagerAdapter forumPagerAdapter;
 
@@ -42,6 +45,7 @@ public class ForumFragment extends BaseFragment {
         super.onViewCreated(view, savedInstanceState);
         viewPager = (ViewPager) view.findViewById(R.id.forum_viewpager);
         pagerSlidingTabStrip = (PagerSlidingTabStrip) view.findViewById(R.id.forum_sliding_tab);
+        ivSearch = (ImageView) view.findViewById(R.id.fragment_search_group);
         sectionDao = new SectionDao(this.getActivity());
         beanList = sectionDao.findSelectSections();
         //第一页固定为热贴
@@ -56,6 +60,13 @@ public class ForumFragment extends BaseFragment {
             viewPager.setAdapter(forumPagerAdapter);
             pagerSlidingTabStrip.setViewPager(viewPager);
         }
+
+        ivSearch.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toGroupSearchActivity(ForumFragment.this.getActivity());
+            }
+        });
     }
 
     @Nullable

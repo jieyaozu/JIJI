@@ -14,7 +14,7 @@
             android:layout_height="50dp"
             android:background="@color/colorPrimary"
             android:gravity="center"
-            android:text="群组"
+            android:text="我的群组"
             android:textColor="@color/colorWhite"
             android:textSize="16dp" />
 

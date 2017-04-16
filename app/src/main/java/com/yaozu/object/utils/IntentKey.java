@@ -21,4 +21,6 @@ public class IntentKey {
     public static final String INTENT_IS_EDIT_POST = "intent_is_edit_post";
     public static final String INTENT_GROUP = "intent_group";
     public static final String INTENT_GROUP_ID = "intent_group_id";
+    public static final String INTENT_SECTION_ID = "intent_section_id";
+    public static final String INTENT_SECTION_NAME = "intent_section_name";
 }

@@ -9,30 +9,39 @@ import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
 import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
-import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.ImageView;
 import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.bean.ApplyGroupBean;
 import com.yaozu.object.bean.UserInfo;
+import com.yaozu.object.entity.ApplyGroupData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.UserInfoData;
 import com.yaozu.object.fragment.GroupFragment;
 import com.yaozu.object.fragment.ForumFragment;
+import com.yaozu.object.fragment.MessageFragment;
 import com.yaozu.object.fragment.MineFragment;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
+
+import java.util.List;
 
 public class MainActivity extends BaseActivity implements View.OnClickListener {
     private Dialog dialog;
     private String currentContentFragmentTag = null;
     private RadioGroup mRadioGroup;
     private ActionBar mActionbar;
-    private RadioButton rbForum, rbArticle, rbMine;
+    private RadioButton rbForum, rbGroup, rbMessage, rbMine;
+    /**
+     * 消息提示的小红点
+     */
+    private ImageView ivForumdot, ivGroupdot, ivMessagedot, ivMinedot;
 
     @Override
     protected void setContentView() {
@@ -60,13 +69,20 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         updateContent(0);
         ((RadioButton) findViewById(R.id.main_bottom_raido_forum)).setChecked(true);
         rbForum = (RadioButton) findViewById(R.id.main_bottom_raido_forum);
-        rbArticle = (RadioButton) findViewById(R.id.main_bottom_raido_find);
+        rbGroup = (RadioButton) findViewById(R.id.main_bottom_raido_find);
+        rbMessage = (RadioButton) findViewById(R.id.main_bottom_raido_message);
         rbMine = (RadioButton) findViewById(R.id.main_bottom_raido_mine);
+        //小红点
+        ivForumdot = (ImageView) findViewById(R.id.main_forum_hava_unread);
+        ivGroupdot = (ImageView) findViewById(R.id.main_group_hava_unread);
+        ivMessagedot = (ImageView) findViewById(R.id.main_message_have_unread);
+        ivMinedot = (ImageView) findViewById(R.id.main_myself_have_unread);
 
         rbForum.setTextColor(getResources().getColor(R.color.colorPrimary));
-
         //检查用户信息
         requestFindUserinfo(LoginInfo.getInstance(this).getUserAccount());
+
+        requestFindApplyMessage();
     }
 
     @Override
@@ -79,7 +95,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         mActionbar.setTitle("主页");
                         updateContent(0);
                         rbForum.setTextColor(getResources().getColor(R.color.colorPrimary));
-                        rbArticle.setTextColor(getResources().getColor(R.color.gray));
+                        rbGroup.setTextColor(getResources().getColor(R.color.gray));
+                        rbMessage.setTextColor(getResources().getColor(R.color.gray));
                         rbMine.setTextColor(getResources().getColor(R.color.gray));
                         break;
                     case R.id.main_bottom_raido_find:
@@ -91,7 +108,22 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             mActionbar.setTitle("群组");
                             updateContent(1);
                             rbForum.setTextColor(getResources().getColor(R.color.gray));
-                            rbArticle.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            rbGroup.setTextColor(getResources().getColor(R.color.colorPrimary));
+                            rbMessage.setTextColor(getResources().getColor(R.color.gray));
+                            rbMine.setTextColor(getResources().getColor(R.color.gray));
+                        }
+                        break;
+                    case R.id.main_bottom_raido_message:
+                        if (!LoginInfo.getInstance(MainActivity.this).isLogining()) {
+                            IntentUtil.toLoginActivity(MainActivity.this);
+                            RadioButton radioButton = (RadioButton) mRadioGroup.findViewById(R.id.main_bottom_raido_forum);
+                            radioButton.setChecked(true);
+                        } else {
+                            mActionbar.setTitle("消息");
+                            updateContent(2);
+                            rbForum.setTextColor(getResources().getColor(R.color.gray));
+                            rbGroup.setTextColor(getResources().getColor(R.color.gray));
+                            rbMessage.setTextColor(getResources().getColor(R.color.colorPrimary));
                             rbMine.setTextColor(getResources().getColor(R.color.gray));
                         }
                         break;
@@ -102,40 +134,16 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             radioButton.setChecked(true);
                         } else {
                             mActionbar.setTitle("我");
-                            updateContent(2);
+                            updateContent(3);
                             rbForum.setTextColor(getResources().getColor(R.color.gray));
-                            rbArticle.setTextColor(getResources().getColor(R.color.gray));
+                            rbGroup.setTextColor(getResources().getColor(R.color.gray));
+                            rbMessage.setTextColor(getResources().getColor(R.color.gray));
                             rbMine.setTextColor(getResources().getColor(R.color.colorPrimary));
                         }
                         break;
                 }
             }
         });
-    }
-
-    @Override
-    public boolean onCreateOptionsMenu(Menu menu) {
-        //getMenuInflater().inflate(R.menu.main_activity_actions, menu);
-
-//        MenuItem searchItem = menu.findItem(R.id.action_search);
-//        SearchView searchView = (SearchView) MenuItemCompat.getActionView(searchItem);
-//
-//        // Configure the search info and add any event listeners...
-//
-//        MenuItemCompat.OnActionExpandListener expandListener = new MenuItemCompat.OnActionExpandListener() {
-//            @Override
-//            public boolean onMenuItemActionExpand(MenuItem item) {
-//                return false;
-//            }
-//
-//            @Override
-//            public boolean onMenuItemActionCollapse(MenuItem item) {
-//                return false;
-//            }
-//        };
-//        MenuItem menuItem = menu.findItem(R.id.action_share);
-//        MenuItemCompat.setOnActionExpandListener(menuItem, expandListener);
-        return true;
     }
 
     @Override
@@ -191,6 +199,14 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                 fragment = new GroupFragment();
             }
         } else if (checkedId == 2) {
+            tag = MessageFragment.TAG;
+            final Fragment foundFragment = fm.findFragmentByTag(tag);
+            if (foundFragment != null) {
+                fragment = foundFragment;
+            } else {
+                fragment = new MessageFragment();
+            }
+        } else if (checkedId == 3) {
             tag = MineFragment.TAG;
             final Fragment foundFragment = fm.findFragmentByTag(tag);
             if (foundFragment != null) {
@@ -286,5 +302,30 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             localIntent.putExtra("com.android.settings.ApplicationPkgName", getPackageName());
         }
         return localIntent;
+    }
+
+    private void requestFindApplyMessage() {
+        String url = DataInterface.FIND_APPLY_ENTER_GROUP_MSG + "userid=" + LoginInfo.getInstance(this).getUserAccount();
+        RequestManager.getInstance().getRequest(this, url, ApplyGroupData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    ApplyGroupData applyGroupData = (ApplyGroupData) object;
+                    List<ApplyGroupBean> applyList = applyGroupData.getBody().getApplybeans();
+                    if (applyList != null && applyList.size() > 0) {
+                        setMessageDotVisibility(View.VISIBLE);
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    private void setMessageDotVisibility(int visibility) {
+        ivMessagedot.setVisibility(visibility);
     }
 }

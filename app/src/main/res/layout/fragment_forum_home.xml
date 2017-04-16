@@ -5,24 +5,40 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <TextView
+    <RelativeLayout
         android:layout_width="match_parent"
-        android:layout_height="50dp"
-        android:background="@color/colorPrimary"
-        android:gravity="center"
-        android:text="首页论坛"
-        android:textColor="@color/colorWhite"
-        android:textSize="16dp" />
+        android:layout_height="50dp">
+
+        <TextView
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:background="@color/colorPrimary"
+            android:gravity="center"
+            android:text="首页论坛"
+            android:textColor="@color/colorWhite"
+            android:textSize="16dp" />
+
+        <ImageView
+            android:id="@+id/fragment_search_group"
+            style="@style/RippleBackground"
+            android:layout_width="50dp"
+            android:layout_height="match_parent"
+            android:layout_alignParentRight="true"
+            android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
+            android:padding="12dp"
+            android:src="@drawable/android_search" />
+    </RelativeLayout>
 
     <com.yaozu.object.widget.PagerSlidingTabStrip
         android:id="@+id/forum_sliding_tab"
         android:layout_width="match_parent"
         android:layout_height="30dp"
+        android:background="@color/colorWhite"
         android:contentDescription="top_navigation_bar"
         android:fillViewport="false"
         superplan:pstsExpandViewWidth="10dp"
         superplan:pstsIndicatorColor="@color/colorPrimary"
-        android:background="@color/colorWhite"
         superplan:pstsIndicatorHeight="2dp"
         superplan:pstsTabPaddingLeftRight="14dp"
         superplan:pstsTextNormalColor="@color/gray_white"

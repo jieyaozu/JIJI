@@ -115,11 +115,24 @@
         <activity
             android:name=".activity.group.EditGroupActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SwipeBackTheme" />
+            android:theme="@style/SwipeBlackBackTheme" />
         <activity
             android:name=".activity.CropImageActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackNoTitleTheme" />
+        <activity
+            android:name=".activity.group.SectionGroupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.group.ApplyEnterGroupActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBlackBackTheme" />
+        <activity
+            android:name=".activity.group.GroupSearchActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme"
+            android:windowSoftInputMode="adjustResize" />
     </application>
 
 </manifest>

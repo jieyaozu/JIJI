@@ -66,4 +66,13 @@ public class DataInterface {
     public static String FIND_GROUP_BY_ID = APP_HOST + "superplan/app/group.do?method=findgroup&";
     //编辑更改群名称和群介绍
     public static String EDIT_GROUP = APP_HOST + "superplan/app/group.do?method=editgroup&";
+
+    //查找版块下面的群
+    public static String FIND_SECTION_OF_GROUP = APP_HOST + "superplan/app/group.do?method=findSectionOfGroup&";
+    //申请加入某群
+    public static String APPLY_ENTER_GROUP = APP_HOST + "superplan/app/group.do?method=applyEnterGroup&";
+    //查找申请入群的消息(群管理员才会调用)
+    public static String FIND_APPLY_ENTER_GROUP_MSG = APP_HOST + "superplan/app/group.do?method=findApplyMsg&";
+    //搜索群
+    public static String SEARCH_GROUP = APP_HOST + "superplan/app/group.do?method=searchGroup&";
 }

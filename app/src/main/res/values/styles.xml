@@ -17,7 +17,19 @@
         <item name="android:textColorPrimary">@color/colorWhite</item>
     </style>
 
+    <style name="NormalBlackTheme" parent="Theme.AppCompat.Light.NoActionBar">
+        <!-- Customize your theme here. -->
+        <item name="colorPrimary">@color/nomralblack</item>
+        <item name="colorPrimaryDark">@color/blackdark</item>
+        <item name="colorAccent">@color/colorAccent</item>
+        <item name="android:textColorPrimary">@color/colorWhite</item>
+    </style>
+
     <style name="SwipeBackTheme" parent="AppTheme">
+        <item name="android:windowIsTranslucent">true</item>
+    </style>
+
+    <style name="SwipeBlackBackTheme" parent="NormalBlackTheme">
         <item name="android:windowIsTranslucent">true</item>
     </style>
 

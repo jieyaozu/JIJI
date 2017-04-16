@@ -33,6 +33,7 @@ import com.alibaba.fastjson.JSON;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.adapter.PostDetailAdapter;
+import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.DetailReplyPostListInfo;
@@ -311,7 +312,10 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         groupName.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-
+                GroupBean groupBean = new GroupBean();
+                groupBean.setGroupid(mPost.getGroupid());
+                groupBean.setGroupname(mPost.getGroupname());
+                IntentUtil.toGroupOfPostActivity(PostDetailActivity.this, groupBean);
             }
         });
         //是否收藏

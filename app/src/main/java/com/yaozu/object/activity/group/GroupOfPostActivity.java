@@ -24,7 +24,7 @@ import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.ForumListViewAdapter;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.Post;
-import com.yaozu.object.entity.HomeForumDataInfo;
+import com.yaozu.object.entity.GroupForumDataInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
@@ -58,6 +58,8 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
 
     private static final Interpolator INTERPOLATOR = new FastOutSlowInInterpolator();
     private boolean mIsAnimatingOut = false;
+
+    private String isMember;
 
     @Override
     protected void setContentView() {
@@ -103,6 +105,10 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void onScrolled(RecyclerView recyclerView, int dx, int dy) {
                 super.onScrolled(recyclerView, dx, dy);
+                if ("0".equals(isMember)) {
+                    return;
+                }
+
                 if (dy > 0 && !mIsAnimatingOut && ivButton.getVisibility() == View.VISIBLE) {
                     // User scrolled down and the FAB is currently visible -> hide the FAB
                     animateOut(ivButton);
@@ -163,17 +169,25 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
      * @param pageIndex
      */
     private void requestGroupPostList(String groupid, final int pageIndex) {
-        String url = DataInterface.FIND_GROUP_POST_LIST + "groupid=" + groupid + "&pageindex=" + pageIndex;
-        RequestManager.getInstance().getRequest(this, url, HomeForumDataInfo.class, new RequestManager.OnResponseListener() {
+        String userid = LoginInfo.getInstance(this).getUserAccount();
+        String url = DataInterface.FIND_GROUP_POST_LIST + "groupid=" + groupid + "&userid=" + userid + "&pageindex=" + pageIndex;
+        RequestManager.getInstance().getRequest(this, url, GroupForumDataInfo.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
                 refreshLayout.completeRefresh();
                 if (object != null) {
-                    HomeForumDataInfo postDataInfo = (HomeForumDataInfo) object;
+                    GroupForumDataInfo postDataInfo = (GroupForumDataInfo) object;
                     if (pageIndex == 1) {
                         listViewAdapter.clearData();
                         mHeaderAdapter.setData(postDataInfo.getBody().getToplist());
+                        isMember = postDataInfo.getBody().getIsGroupMember();
+                        if ("0".equals(isMember)) {
+                            ivButton.setVisibility(View.GONE);
+                        } else {
+                            ivButton.setVisibility(View.VISIBLE);
+                        }
                     }
+
                     List<Post> postList = postDataInfo.getBody().getPostlist();
                     listViewAdapter.addData(postList);
                     if (postList == null || postList.size() == 0) {

@@ -25,6 +25,16 @@ public class GroupBean implements Serializable {
     //发贴总数
     private String mptnumber;
 
+    private String isGroupMember;
+
+    public String getIsGroupMember() {
+        return isGroupMember;
+    }
+
+    public void setIsGroupMember(String isGroupMember) {
+        this.isGroupMember = isGroupMember;
+    }
+
     public String getMptnumber() {
         return mptnumber;
     }

@@ -14,9 +14,12 @@ import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.ThemePostActivity;
 import com.yaozu.object.activity.WebViewActivity;
+import com.yaozu.object.activity.group.ApplyEnterGroupActivity;
 import com.yaozu.object.activity.group.EditGroupActivity;
 import com.yaozu.object.activity.group.GroupDetailActivity;
 import com.yaozu.object.activity.group.GroupOfPostActivity;
+import com.yaozu.object.activity.group.GroupSearchActivity;
+import com.yaozu.object.activity.group.SectionGroupActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
 import com.yaozu.object.activity.user.UserInfoActivity;
@@ -172,5 +175,43 @@ public class IntentUtil {
         Intent intent = new Intent(context, EditGroupActivity.class);
         intent.putExtra(IntentKey.INTENT_GROUP, groupBean);
         context.startActivity(intent);
+    }
+
+    /**
+     * 查找版块下面的群
+     *
+     * @param context
+     * @param sectionid
+     */
+    public static void toSectionGroupActivity(Context context, String sectionid, String sectionname) {
+        Intent intent = new Intent(context, SectionGroupActivity.class);
+        intent.putExtra(IntentKey.INTENT_SECTION_ID, sectionid);
+        intent.putExtra(IntentKey.INTENT_SECTION_NAME, sectionname);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 申请加入群
+     *
+     * @param context
+     * @param groupid
+     */
+    public static void toApplyEnterGroupActivity(Context context, String groupid) {
+        Intent intent = new Intent(context, ApplyEnterGroupActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 群搜索页面
+     *
+     * @param context
+     */
+    public static void toGroupSearchActivity(Context context) {
+        Intent intent = new Intent(context, GroupSearchActivity.class);
+        context.startActivity(intent);
+        overridePendingTransition(context);
     }
 }
