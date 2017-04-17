@@ -1,6 +1,6 @@
 package com.yaozu.object.entity;
 
-import com.yaozu.object.bean.ApplyGroupBean;
+import com.yaozu.object.bean.GroupMessage;
 
 import java.util.List;
 
@@ -12,7 +12,7 @@ public class ApplyGroupData extends BaseEntity<ApplyGroupData.BodyEntity> {
     public class BodyEntity {
         private String code;
         private String message;
-        private List<ApplyGroupBean> applybeans;
+        private List<GroupMessage> applybeans;
 
         public String getCode() {
             return code;
@@ -30,11 +30,11 @@ public class ApplyGroupData extends BaseEntity<ApplyGroupData.BodyEntity> {
             this.message = message;
         }
 
-        public List<ApplyGroupBean> getApplybeans() {
+        public List<GroupMessage> getApplybeans() {
             return applybeans;
         }
 
-        public void setApplybeans(List<ApplyGroupBean> applybeans) {
+        public void setApplybeans(List<GroupMessage> applybeans) {
             this.applybeans = applybeans;
         }
     }

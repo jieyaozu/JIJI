@@ -1,0 +1,64 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:orientation="vertical">
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <ImageView
+            android:id="@+id/item_messgeicon"
+            android:layout_width="50dp"
+            android:layout_height="50dp"
+            android:layout_marginBottom="@dimen/dimen_5"
+            android:layout_marginLeft="10dp"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:src="@drawable/xiaoma" />
+
+        <TextView
+            android:id="@+id/item_message_number"
+            android:layout_width="15dp"
+            android:layout_height="15dp"
+            android:layout_alignRight="@+id/item_messgeicon"
+            android:layout_marginRight="-7dp"
+            android:layout_marginTop="1dp"
+            android:background="@drawable/icon_number_bg"
+            android:gravity="center"
+            android:text="1"
+            android:textColor="@color/colorWhite"
+            android:textSize="12dp"
+            android:visibility="gone" />
+
+        <LinearLayout
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_centerVertical="true"
+            android:layout_marginLeft="10dp"
+            android:layout_toRightOf="@+id/item_messgeicon"
+            android:orientation="vertical">
+
+            <TextView
+                android:id="@+id/item_message_title"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="title"
+                android:textColor="@color/nomralblack"
+                android:textSize="16dp" />
+
+            <TextView
+                android:id="@+id/item_message_additional"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="@dimen/dimen_5"
+                android:text="aditation" />
+        </LinearLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_marginLeft="10dp"
+        android:background="@color/divider_background_color" />
+</LinearLayout>

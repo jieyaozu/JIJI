@@ -28,6 +28,12 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "                         sectionid varchar(32), " +
                 "                         groupname varchar(64), " +
                 "                         introduce varchar(512))");
+        db.execSQL("create table messagebean (_id integer primary key autoincrement," +
+                "                         type varchar(32) unique, " +
+                "                         title varchar(64), " +
+                "                         additional varchar(512), " +
+                "                         newMsgnumber int(4), " +
+                "                         icon varchar(32))");
     }
 
     @Override

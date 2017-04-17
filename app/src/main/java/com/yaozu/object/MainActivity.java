@@ -17,18 +17,21 @@ import android.widget.RadioGroup;
 import android.widget.TextView;
 
 import com.yaozu.object.activity.BaseActivity;
-import com.yaozu.object.bean.ApplyGroupBean;
+import com.yaozu.object.bean.GroupMessage;
+import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.bean.UserInfo;
+import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.entity.ApplyGroupData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.UserInfoData;
-import com.yaozu.object.fragment.GroupFragment;
 import com.yaozu.object.fragment.ForumFragment;
+import com.yaozu.object.fragment.GroupFragment;
 import com.yaozu.object.fragment.MessageFragment;
 import com.yaozu.object.fragment.MineFragment;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.utils.MsgType;
 
 import java.util.List;
 
@@ -43,10 +46,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private ImageView ivForumdot, ivGroupdot, ivMessagedot, ivMinedot;
 
+    private MessageBeanDao messageBeanDao;
+
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_main);
         setSwipeBackEnable(false);
+        messageBeanDao = new MessageBeanDao(this);
     }
 
     @Override
@@ -311,8 +317,19 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             public void onSuccess(Object object, int code, String message) {
                 if (object != null) {
                     ApplyGroupData applyGroupData = (ApplyGroupData) object;
-                    List<ApplyGroupBean> applyList = applyGroupData.getBody().getApplybeans();
+                    List<GroupMessage> applyList = applyGroupData.getBody().getApplybeans();
                     if (applyList != null && applyList.size() > 0) {
+                        MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
+                        if (messageBean == null) {
+                            messageBean = new MessageBean();
+                            messageBean.setTitle("有新成员加入");
+                            messageBean.setType(MsgType.TYPE_GROUP);
+                            messageBean.setNewMsgnumber(applyList.size());
+                            messageBean.setAdditional("");
+                            messageBeanDao.addMessage(messageBean);
+                        } else {
+
+                        }
                         setMessageDotVisibility(View.VISIBLE);
                     }
                 }

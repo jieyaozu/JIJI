@@ -42,6 +42,9 @@ public class GroupSearchActivity extends BaseActivity implements View.OnClickLis
     private LinearLayoutManager linearLayoutManager;
     private SearchGroupAdapter groupAdapter;
 
+    //用户输入的用于搜索群名称的关键字
+    private String mKeyWord;
+
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_search_group);
@@ -68,6 +71,17 @@ public class GroupSearchActivity extends BaseActivity implements View.OnClickLis
     }
 
     @Override
+    protected void onIRefresh() {
+        super.onIRefresh();
+        requestSearchGroup(mKeyWord);
+    }
+
+    @Override
+    protected void onILoad() {
+        super.onILoad();
+    }
+
+    @Override
     protected void setListener() {
         ivReturn.setOnClickListener(this);
         ivClearText.setOnClickListener(this);
@@ -79,7 +93,8 @@ public class GroupSearchActivity extends BaseActivity implements View.OnClickLis
                     if (TextUtils.isEmpty(groupName)) {
                         return true;
                     }
-                    requestSearchGroup(groupName);
+                    mKeyWord = groupName;
+                    refreshLayout.doRefreshing();
                     return true;
                 }
                 return false;
@@ -128,6 +143,7 @@ public class GroupSearchActivity extends BaseActivity implements View.OnClickLis
         RequestManager.getInstance().postRequest(this, url, parameters, GroupReqListData.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
+                refreshLayout.completeRefresh();
                 if (object != null) {
                     groupAdapter.clearData();
                     GroupReqListData groupReqListData = (GroupReqListData) object;
@@ -144,7 +160,7 @@ public class GroupSearchActivity extends BaseActivity implements View.OnClickLis
 
             @Override
             public void onFailure(int code, String message) {
-
+                refreshLayout.completeRefresh();
             }
         });
     }

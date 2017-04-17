@@ -17,4 +17,10 @@
             android:textColor="@color/colorWhite"
             android:textSize="16dp" />
     </RelativeLayout>
+
+    <ListView
+        android:id="@+id/fragment_message_listview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:divider="@null" />
 </LinearLayout>
