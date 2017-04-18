@@ -1,10 +1,12 @@
 package com.yaozu.object.bean;
 
+import java.io.Serializable;
+
 /**
  * Created by jieyaozu on 2017/4/17.
  */
 
-public class MessageBean {
+public class MessageBean implements Serializable{
     //消息类型
     private String type;
     //消息标题

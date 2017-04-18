@@ -48,7 +48,7 @@ public class MessageBeanDao {
     public void updateBean(MessageBean bean) {
         SQLiteDatabase db = helper.getWritableDatabase();
         if (db.isOpen()) {
-            db.execSQL("update messagebean set title=?,additional=?,newMsgnumber=?icon=? where type=?",
+            db.execSQL("update messagebean set title=?,additional=?,newMsgnumber=?,icon=? where type=?",
                     new Object[]{bean.getTitle(), bean.getAdditional(), bean.getNewMsgnumber(), bean.getIcon(), bean.getType()});
         }
         db.close();

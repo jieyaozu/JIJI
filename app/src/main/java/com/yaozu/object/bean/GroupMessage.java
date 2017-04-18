@@ -6,28 +6,45 @@ package com.yaozu.object.bean;
 
 public class GroupMessage {
     private String userid;
+    private String username;
     private String groupid;
+    private String groupname;
+    private String groupicon;
     private String message;
-    private String status;
     //是申请入群还是退群
-    private String type;
-    //消息图标
-    private String icon;
+    private String status;
+    private String createtime;
 
-    public String getType() {
-        return type;
+    public String getCreatetime() {
+        return createtime;
     }
 
-    public void setType(String type) {
-        this.type = type;
+    public void setCreatetime(String createtime) {
+        this.createtime = createtime;
     }
 
-    public String getIcon() {
-        return icon;
+    public String getGroupname() {
+        return groupname;
     }
 
-    public void setIcon(String icon) {
-        this.icon = icon;
+    public void setGroupname(String groupname) {
+        this.groupname = groupname;
+    }
+
+    public String getUsername() {
+        return username;
+    }
+
+    public void setUsername(String username) {
+        this.username = username;
+    }
+
+    public String getGroupicon() {
+        return groupicon;
+    }
+
+    public void setGroupicon(String groupicon) {
+        this.groupicon = groupicon;
     }
 
     public String getUserid() {

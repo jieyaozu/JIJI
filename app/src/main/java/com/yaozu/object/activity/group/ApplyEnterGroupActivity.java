@@ -54,6 +54,7 @@ public class ApplyEnterGroupActivity extends BaseActivity implements View.OnClic
         ParamList parameters = new ParamList();
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("groupid", groupid));
+        parameters.add(new ParamList.Parameter("status", "applying"));
         try {
             parameters.add(new ParamList.Parameter("message", URLEncoder.encode(message, "utf-8")));
         } catch (UnsupportedEncodingException e) {

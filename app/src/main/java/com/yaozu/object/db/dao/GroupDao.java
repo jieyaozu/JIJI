@@ -5,6 +5,7 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.db.AppDbHelper;
 
 import java.util.ArrayList;
@@ -68,5 +69,69 @@ public class GroupDao {
             db.execSQL("delete from mygroup where 1=1");
         }
         db.close();
+    }
+
+    /*
+    * ***************************************************************群消息*********************************************************
+    * */
+
+    /**
+     * 增加一个群消息
+     *
+     * @param groupMessage
+     */
+    public void addGroupMessage(GroupMessage groupMessage) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        if (db.isOpen()) {
+            db.execSQL("insert into groupmessage (userid,username,groupid,groupname,groupicon,message,status,createtime) values (?,?,?,?,?,?,?,?)",
+                    new Object[]{groupMessage.getUserid(), groupMessage.getUsername(), groupMessage.getGroupid(), groupMessage.getGroupname(), groupMessage.getGroupicon()
+                            , groupMessage.getMessage(), groupMessage.getStatus(), groupMessage.getCreatetime()});
+        }
+        db.close();
+    }
+
+    public void updateMessageBean(GroupMessage bean) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        if (db.isOpen()) {
+            db.execSQL("update groupmessage set username=?,groupname=?,groupicon=?,message=?,status=?,createtime=? where userid=? and groupid=?",
+                    new Object[]{bean.getUsername(), bean.getGroupname(), bean.getGroupicon(), bean.getMessage(), bean.getStatus(), bean.getCreatetime(), bean.getUserid(), bean.getGroupid()});
+        }
+        db.close();
+    }
+
+    /**
+     * 找出所有的群消息
+     *
+     * @return
+     */
+    public List<GroupMessage> findAllGroupMessage() {
+        List<GroupMessage> beanList = new ArrayList<>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from groupmessage", null);
+            while (cursor.moveToNext()) {
+                GroupMessage groupBean = new GroupMessage();
+                String userid = cursor.getString(cursor.getColumnIndex("userid"));
+                String username = cursor.getString(cursor.getColumnIndex("username"));
+                String groupid = cursor.getString(cursor.getColumnIndex("groupid"));
+                String groupname = cursor.getString(cursor.getColumnIndex("groupname"));
+                String groupicon = cursor.getString(cursor.getColumnIndex("groupicon"));
+                String message = cursor.getString(cursor.getColumnIndex("message"));
+                String status = cursor.getString(cursor.getColumnIndex("status"));
+                String createtime = cursor.getString(cursor.getColumnIndex("createtime"));
+
+                groupBean.setUserid(userid);
+                groupBean.setUsername(username);
+                groupBean.setGroupid(groupid);
+                groupBean.setGroupname(groupname);
+                groupBean.setGroupicon(groupicon);
+                groupBean.setMessage(message);
+                groupBean.setStatus(status);
+                groupBean.setCreatetime(createtime);
+                beanList.add(groupBean);
+            }
+        }
+        db.close();
+        return beanList;
     }
 }

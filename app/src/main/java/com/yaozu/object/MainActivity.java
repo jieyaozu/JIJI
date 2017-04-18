@@ -88,7 +88,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //检查用户信息
         requestFindUserinfo(LoginInfo.getInstance(this).getUserAccount());
 
-        requestFindApplyMessage();
+        requestFindGroupMessage();
     }
 
     @Override
@@ -310,7 +310,15 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         return localIntent;
     }
 
-    private void requestFindApplyMessage() {
+    @Override
+    protected void onResume() {
+        super.onResume();
+    }
+
+    /**
+     * 查找有没有群消息
+     */
+    private void requestFindGroupMessage() {
         String url = DataInterface.FIND_APPLY_ENTER_GROUP_MSG + "userid=" + LoginInfo.getInstance(this).getUserAccount();
         RequestManager.getInstance().getRequest(this, url, ApplyGroupData.class, new RequestManager.OnResponseListener() {
             @Override
@@ -319,18 +327,39 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ApplyGroupData applyGroupData = (ApplyGroupData) object;
                     List<GroupMessage> applyList = applyGroupData.getBody().getApplybeans();
                     if (applyList != null && applyList.size() > 0) {
+                        GroupMessage groupMessage = applyList.get(applyList.size() - 1);
                         MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
                         if (messageBean == null) {
                             messageBean = new MessageBean();
-                            messageBean.setTitle("有新成员加入");
+                            if ("applying".equals(groupMessage.getStatus())) {
+                                messageBean.setTitle(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
+                            } else if ("exit".equals(groupMessage.getStatus())) {
+                                messageBean.setTitle(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
+                            }
                             messageBean.setType(MsgType.TYPE_GROUP);
                             messageBean.setNewMsgnumber(applyList.size());
-                            messageBean.setAdditional("");
+                            messageBean.setAdditional(groupMessage.getMessage());
+                            messageBean.setIcon(groupMessage.getGroupicon());
                             messageBeanDao.addMessage(messageBean);
                         } else {
-
+                            if ("applying".equals(groupMessage.getStatus())) {
+                                messageBean.setTitle(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
+                            } else if ("exit".equals(groupMessage.getStatus())) {
+                                messageBean.setTitle(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
+                            }
+                            messageBean.setType(MsgType.TYPE_GROUP);
+                            messageBean.setNewMsgnumber(applyList.size());
+                            messageBean.setAdditional(groupMessage.getMessage());
+                            messageBean.setIcon(groupMessage.getGroupicon());
+                            messageBeanDao.updateBean(messageBean);
                         }
                         setMessageDotVisibility(View.VISIBLE);
+                    } else {
+                        MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
+                        if (messageBean != null) {
+                            messageBean.setNewMsgnumber(0);
+                            messageBeanDao.updateBean(messageBean);
+                        }
                     }
                 }
             }
@@ -342,6 +371,11 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         });
     }
 
+    /**
+     * 小红点的展示与否
+     *
+     * @param visibility
+     */
     private void setMessageDotVisibility(int visibility) {
         ivMessagedot.setVisibility(visibility);
     }

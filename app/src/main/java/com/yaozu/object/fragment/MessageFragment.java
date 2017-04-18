@@ -6,12 +6,17 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.BaseAdapter;
+import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
+import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.db.dao.MessageBeanDao;
+import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.utils.MsgType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -38,6 +43,20 @@ public class MessageFragment extends BaseFragment {
         if (allbeans != null) {
             messageBeanList.addAll(allbeans);
             listAdapter.notifyDataSetChanged();
+        }
+    }
+
+    @Override
+    public void onResume() {
+        super.onResume();
+        if(Constant.IS_CLEARGROUP_MESSAGE_SUCCESS){
+            Constant.IS_CLEARGROUP_MESSAGE_SUCCESS = false;
+            List<MessageBean> allbeans = messageBeanDao.findAllBeans();
+            if (allbeans != null) {
+                messageBeanList.clear();
+                messageBeanList.addAll(allbeans);
+                listAdapter.notifyDataSetChanged();
+            }
         }
     }
 
@@ -68,14 +87,29 @@ public class MessageFragment extends BaseFragment {
         @Override
         public View getView(int position, View convertView, ViewGroup parent) {
             View view = View.inflate(MessageFragment.this.getActivity(), R.layout.item_message_fragment, null);
+            ImageView ivIcon = (ImageView) view.findViewById(R.id.item_messgeicon);
+            TextView tvTitle = (TextView) view.findViewById(R.id.item_message_title);
+            TextView adtitional = (TextView) view.findViewById(R.id.item_message_additional);
             TextView tvMsgNumber = (TextView) view.findViewById(R.id.item_message_number);
-            MessageBean messageBean = messageBeanList.get(position);
+            final MessageBean messageBean = messageBeanList.get(position);
+            String imgurl = messageBean.getIcon();
+            tvTitle.setText(messageBean.getTitle());
+            adtitional.setText(messageBean.getAdditional());
+            ImageLoader.getInstance().displayImage(imgurl, ivIcon, Constant.IMAGE_OPTIONS_FOR_ROUNDCORNER);
             if (messageBean.getNewMsgnumber() > 0) {
                 tvMsgNumber.setVisibility(View.VISIBLE);
                 tvMsgNumber.setText(messageBean.getNewMsgnumber() + "");
             } else {
                 tvMsgNumber.setVisibility(View.GONE);
             }
+            view.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    if (MsgType.TYPE_GROUP.equals(messageBean.getType())) {
+                        IntentUtil.toGroupMessageActivity(MessageFragment.this.getActivity());
+                    }
+                }
+            });
             return view;
         }
     }

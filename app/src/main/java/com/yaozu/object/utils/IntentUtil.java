@@ -17,6 +17,7 @@ import com.yaozu.object.activity.WebViewActivity;
 import com.yaozu.object.activity.group.ApplyEnterGroupActivity;
 import com.yaozu.object.activity.group.EditGroupActivity;
 import com.yaozu.object.activity.group.GroupDetailActivity;
+import com.yaozu.object.activity.group.GroupMessageActivity;
 import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.activity.group.GroupSearchActivity;
 import com.yaozu.object.activity.group.SectionGroupActivity;
@@ -211,6 +212,17 @@ public class IntentUtil {
      */
     public static void toGroupSearchActivity(Context context) {
         Intent intent = new Intent(context, GroupSearchActivity.class);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 群消息页面
+     *
+     * @param context
+     */
+    public static void toGroupMessageActivity(Context context) {
+        Intent intent = new Intent(context, GroupMessageActivity.class);
         context.startActivity(intent);
         overridePendingTransition(context);
     }

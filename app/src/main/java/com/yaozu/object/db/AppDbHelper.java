@@ -34,6 +34,15 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "                         additional varchar(512), " +
                 "                         newMsgnumber int(4), " +
                 "                         icon varchar(32))");
+        db.execSQL("create table groupmessage (_id integer primary key autoincrement," +
+                "                         userid varchar(32), " +
+                "                         username varchar(32), " +
+                "                         groupid varchar(32), " +
+                "                         groupname varchar(64), " +
+                "                         groupicon varchar(64), " +
+                "                         message varchar(512), " +
+                "                         createtime varchar(32), " +
+                "                         status varchar(32))");
     }
 
     @Override

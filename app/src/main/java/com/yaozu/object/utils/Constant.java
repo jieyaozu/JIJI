@@ -31,6 +31,7 @@ public class Constant {
 
     public static boolean IS_CREATEGROUP_SUCCESS = false;
     public static boolean IS_EDITGROUP_SUCCESS = false;
+    public static boolean IS_CLEARGROUP_MESSAGE_SUCCESS = false;
 
     public static final String LOGIN_MSG = "login_msg";
     public static String CRASH_MSG = "crash_msg";
