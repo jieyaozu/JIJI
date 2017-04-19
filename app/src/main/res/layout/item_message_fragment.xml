@@ -12,9 +12,9 @@
             android:id="@+id/item_messgeicon"
             android:layout_width="50dp"
             android:layout_height="50dp"
-            android:layout_marginBottom="@dimen/dimen_5"
+            android:layout_marginBottom="7dp"
             android:layout_marginLeft="10dp"
-            android:layout_marginTop="@dimen/dimen_5"
+            android:layout_marginTop="7dp"
             android:src="@drawable/xiaoma" />
 
         <TextView
@@ -45,7 +45,7 @@
                 android:layout_height="wrap_content"
                 android:text="title"
                 android:textColor="@color/nomralblack"
-                android:textSize="16dp" />
+                android:textSize="15dp" />
 
             <TextView
                 android:id="@+id/item_message_additional"

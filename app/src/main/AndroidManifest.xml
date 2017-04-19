@@ -136,7 +136,7 @@
         <activity
             android:name=".activity.group.GroupMessageActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SwipeBlackBackTheme" />
+            android:theme="@style/SwipeBackTheme" />
     </application>
 
 </manifest>

@@ -93,8 +93,8 @@ public class GroupDao {
     public void updateMessageBean(GroupMessage bean) {
         SQLiteDatabase db = helper.getWritableDatabase();
         if (db.isOpen()) {
-            db.execSQL("update groupmessage set username=?,groupname=?,groupicon=?,message=?,status=?,createtime=? where userid=? and groupid=?",
-                    new Object[]{bean.getUsername(), bean.getGroupname(), bean.getGroupicon(), bean.getMessage(), bean.getStatus(), bean.getCreatetime(), bean.getUserid(), bean.getGroupid()});
+            db.execSQL("update groupmessage set username=?,groupname=?,groupicon=?,message=?,status=? where userid=? and groupid=? and createtime=?",
+                    new Object[]{bean.getUsername(), bean.getGroupname(), bean.getGroupicon(), bean.getMessage(), bean.getStatus(), bean.getUserid(), bean.getGroupid(),bean.getCreatetime()});
         }
         db.close();
     }
@@ -108,7 +108,7 @@ public class GroupDao {
         List<GroupMessage> beanList = new ArrayList<>();
         SQLiteDatabase db = helper.getReadableDatabase();
         if (db.isOpen()) {
-            Cursor cursor = db.rawQuery("select * from groupmessage", null);
+            Cursor cursor = db.rawQuery("select * from groupmessage order by createtime desc", null);
             while (cursor.moveToNext()) {
                 GroupMessage groupBean = new GroupMessage();
                 String userid = cursor.getString(cursor.getColumnIndex("userid"));

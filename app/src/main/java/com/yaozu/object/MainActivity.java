@@ -332,24 +332,24 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         if (messageBean == null) {
                             messageBean = new MessageBean();
                             if ("applying".equals(groupMessage.getStatus())) {
-                                messageBean.setTitle(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
+                                messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
                             } else if ("exit".equals(groupMessage.getStatus())) {
-                                messageBean.setTitle(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
+                                messageBean.setAdditional(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
                             }
                             messageBean.setType(MsgType.TYPE_GROUP);
                             messageBean.setNewMsgnumber(applyList.size());
-                            messageBean.setAdditional(groupMessage.getMessage());
+                            messageBean.setTitle("群消息助手");
                             messageBean.setIcon(groupMessage.getGroupicon());
                             messageBeanDao.addMessage(messageBean);
                         } else {
                             if ("applying".equals(groupMessage.getStatus())) {
-                                messageBean.setTitle(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
+                                messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
                             } else if ("exit".equals(groupMessage.getStatus())) {
-                                messageBean.setTitle(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
+                                messageBean.setAdditional(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
                             }
                             messageBean.setType(MsgType.TYPE_GROUP);
                             messageBean.setNewMsgnumber(applyList.size());
-                            messageBean.setAdditional(groupMessage.getMessage());
+                            messageBean.setTitle("群消息助手");
                             messageBean.setIcon(groupMessage.getGroupicon());
                             messageBeanDao.updateBean(messageBean);
                         }
@@ -358,6 +358,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
                         if (messageBean != null) {
                             messageBean.setNewMsgnumber(0);
+                            messageBean.setTitle("群消息助手");
                             messageBeanDao.updateBean(messageBean);
                         }
                     }

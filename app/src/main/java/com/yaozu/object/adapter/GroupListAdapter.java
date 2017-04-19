@@ -10,10 +10,8 @@ import android.widget.ImageView;
 import android.widget.LinearLayout;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
-import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersAdapter;
@@ -42,8 +40,22 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
     public void addData(List<GroupBean> groupList) {
         if (groupList != null) {
             groupBeanList.addAll(groupList);
+            sortListData();
             notifyDataSetChanged();
         }
+    }
+
+    //分类排序
+    private void sortListData() {
+        List<GroupBean> adminGrouplist = new ArrayList<>();
+        for (int i = groupBeanList.size() - 1; i >= 0; i--) {
+            GroupBean groupBean = groupBeanList.get(i);
+            if ("admin".equals(groupBean.getUsertype())) {
+                groupBeanList.remove(groupBean);
+                adminGrouplist.add(groupBean);
+            }
+        }
+        groupBeanList.addAll(0, adminGrouplist);
     }
 
     @Override

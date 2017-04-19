@@ -11,7 +11,11 @@ public class GroupMessage {
     private String groupname;
     private String groupicon;
     private String message;
-    //是申请入群还是退群
+    /**
+     *
+     * 是申请入群还是退群
+     * applying exit added refuse
+     */
     private String status;
     private String createtime;
 

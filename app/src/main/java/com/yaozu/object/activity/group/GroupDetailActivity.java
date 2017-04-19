@@ -4,8 +4,10 @@ import android.annotation.TargetApi;
 import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
+import android.graphics.Color;
 import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
+import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
 import android.renderscript.Allocation;
 import android.renderscript.Element;
@@ -14,9 +16,14 @@ import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.view.Gravity;
 import android.view.View;
 import android.view.WindowManager;
+import android.view.animation.AlphaAnimation;
+import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.PopupWindow;
 import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
@@ -63,6 +70,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private ObjectBeanCache objectBeanCache;
     private TextView tvPersonNum, tvPostNum, tvFansNum;//成员数，发贴数，粉丝数
     private TextView tvApplyEnter, tvAttention;
+    private PopupWindow popupwindow;
+    private View rootView;
 
     private static final int ACTIVITY_RESULT_GALRY = 0;
     private static final int ACTIVITY_RESULT_CROPIMAGE = 1;
@@ -88,6 +97,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     protected void initView() {
         aCache = ACache.get(this);
         objectBeanCache = ObjectBeanCache.getInstance();
+        rootView = findViewById(R.id.activity_group_detail);
         ivGroupIcon = (ImageView) findViewById(R.id.group_detail_icon);
         ivEditIcon = (ImageView) findViewById(R.id.group_detail_edit_icon);
         ivReturn = (ImageView) findViewById(R.id.actionbar_return);
@@ -284,6 +294,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                     return;
                 }
                 List<MyImage> listData = data.getParcelableArrayListExtra(IntentKey.INTENT_ALBUM_IMAGES);
+                if (listData == null || listData.size() <= 0) {
+                    return;
+                }
                 String path = listData.get(0).getPath();
                 final Bitmap bm = FileUtil.compressUserIcon(1200, path);
                 Intent cropimage = new Intent(this, CropImageActivity.class);
@@ -354,7 +367,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 finish();
                 break;
             case R.id.groupdetail_actionbar_menu:
-                IntentUtil.toEditGroupActivity(this, mGroupbean);
+                showPopupMenuView();
                 break;
             case R.id.group_detail_edit_icon:
                 getimgefromegalry();
@@ -367,5 +380,45 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             case R.id.group_detail_attention:
                 break;
         }
+    }
+
+    /**
+     * @一级菜单
+     */
+    private void showPopupMenuView() {
+        View contentview = View.inflate(this, R.layout.popup_groupdetail_menu, null);
+        //编辑
+        TextView tvEdit = (TextView) contentview.findViewById(R.id.popupwindow_groupdetail_menu_edit);
+        //退出群
+        TextView tvExit = (TextView) contentview.findViewById(R.id.popupwindow_groupdetail_menu_exit);
+        tvEdit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toEditGroupActivity(GroupDetailActivity.this, mGroupbean);
+                popupwindow.dismiss();
+            }
+        });
+
+        tvExit.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                popupwindow.dismiss();
+            }
+        });
+
+        popupwindow = new PopupWindow(contentview, this.getResources().getDimensionPixelSize(R.dimen.detail_menu_width), LinearLayout.LayoutParams.WRAP_CONTENT);
+        //设置消失动画
+        popupwindow.setAnimationStyle(R.style.mypopwindow_anim_style);
+        popupwindow.setFocusable(true);
+        popupwindow.setBackgroundDrawable(new ColorDrawable(Color.TRANSPARENT));
+        int[] location = new int[2];
+        rootView.getLocationInWindow(location);
+        popupwindow.showAtLocation(rootView, Gravity.TOP | Gravity.RIGHT, 10, 0);
+
+        AlphaAnimation scaleAt = new AlphaAnimation(0, 1);
+        scaleAt.setDuration(200);
+        scaleAt.setFillEnabled(true);
+        scaleAt.setInterpolator(new DecelerateInterpolator());
+        contentview.startAnimation(scaleAt);
     }
 }

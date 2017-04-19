@@ -58,4 +58,9 @@
         <item name="android:maxWidth">60dp</item>
         <item name="android:maxHeight">60dp</item>
     </style>
+
+    <style name="mypopwindow_anim_style">
+        <item name="android:windowExitAnimation">@anim/popup_dismiss</item>
+        <!-- 指定消失的动画xml  -->
+    </style>
 </resources>

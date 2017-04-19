@@ -13,6 +13,7 @@ import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.bean.GMStatus;
 import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.db.dao.GroupDao;
@@ -23,6 +24,7 @@ import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.MsgType;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
@@ -151,18 +153,39 @@ public class GroupMessageActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(GroupMessageAdapter.MyViewHolder holder, int position) {
             final GroupMessage groupMessage = groupMessageList.get(position);
-            holder.tvTitle.setText(groupMessage.getUsername() + "申请入群");
+
             holder.tvMessage.setText(groupMessage.getMessage());
+            holder.tvTime.setText(DateUtil.getRelativeTime(groupMessage.getCreatetime()));
             Utils.setUserImg(groupMessage.getGroupicon(), holder.ivGroupIcon);
-            if ("applying".equals(groupMessage.getStatus())) {
+
+            if (GMStatus.EXIT.equals(groupMessage.getStatus())) {
+                holder.tvTitle.setText(groupMessage.getUsername() + " 已退出 " + groupMessage.getGroupname());
+            } else {
+                holder.tvTitle.setText(groupMessage.getUsername() + " 申请加入 " + groupMessage.getGroupname());
+            }
+            if (GMStatus.APPLYING.equals(groupMessage.getStatus())) {
                 holder.opLayout.setVisibility(View.VISIBLE);
             } else {
                 holder.opLayout.setVisibility(View.GONE);
+            }
+            if (GMStatus.ADDED.equals(groupMessage.getStatus())) {
+                holder.tvResult.setVisibility(View.VISIBLE);
+            } else if (GMStatus.REFUSE.equals(groupMessage.getStatus())) {
+                holder.tvResult.setText("已拒绝");
+                holder.tvResult.setVisibility(View.VISIBLE);
             }
             holder.tvAgree.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
                     requestJoinToGroup(groupMessage);
+                }
+            });
+            holder.tvRefuse.setOnClickListener(new View.OnClickListener() {
+                @Override
+                public void onClick(View v) {
+                    groupMessage.setStatus(GMStatus.REFUSE);
+                    groupDao.updateMessageBean(groupMessage);
+                    messageAdapter.notifyDataSetChanged();
                 }
             });
         }
@@ -179,6 +202,8 @@ public class GroupMessageActivity extends BaseActivity {
             public LinearLayout opLayout;//操作
             public TextView tvAgree;
             public TextView tvRefuse;
+            public TextView tvResult;
+            public TextView tvTime;
 
             public MyViewHolder(View itemView) {
                 super(itemView);
@@ -188,12 +213,15 @@ public class GroupMessageActivity extends BaseActivity {
                 opLayout = (LinearLayout) itemView.findViewById(R.id.item_groupmsg_applying);
                 tvAgree = (TextView) itemView.findViewById(R.id.item_groupmsg_agree);
                 tvRefuse = (TextView) itemView.findViewById(R.id.item_groupmsg_refuse);
+                tvResult = (TextView) itemView.findViewById(R.id.item_groupmsg_result);
+                tvTime = (TextView) itemView.findViewById(R.id.item_groupmsg_createtime);
             }
         }
     }
 
     /**
      * 把用户加入群
+     *
      * @param groupMessage
      */
     private void requestJoinToGroup(final GroupMessage groupMessage) {
@@ -204,7 +232,7 @@ public class GroupMessageActivity extends BaseActivity {
                 if (object != null) {
                     RequestData requestData = (RequestData) object;
                     if ("1".equals(requestData.getBody().getCode())) {
-                        groupMessage.setStatus("added");
+                        groupMessage.setStatus(GMStatus.ADDED);
                         groupDao.updateMessageBean(groupMessage);
                         messageAdapter.notifyDataSetChanged();
                     }
