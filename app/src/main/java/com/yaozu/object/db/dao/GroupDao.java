@@ -6,6 +6,7 @@ import android.database.sqlite.SQLiteDatabase;
 
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.GroupMessage;
+import com.yaozu.object.bean.constant.GroupUserType;
 import com.yaozu.object.db.AppDbHelper;
 
 import java.util.ArrayList;
@@ -63,6 +64,25 @@ public class GroupDao {
         return beanList;
     }
 
+    /**
+     * 查出我所管理的群的群ID
+     *
+     * @return
+     */
+    public List<String> findMyAdminGroupid() {
+        List<String> groupids = new ArrayList<>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from mygroup where usertype=?", new String[]{GroupUserType.ADMIN});
+            while (cursor.moveToNext()) {
+                String groupid = cursor.getString(cursor.getColumnIndex("groupid"));
+                groupids.add(groupid);
+            }
+        }
+        db.close();
+        return groupids;
+    }
+
     public void clearTable() {
         SQLiteDatabase db = helper.getWritableDatabase();
         if (db.isOpen()) {
@@ -94,7 +114,7 @@ public class GroupDao {
         SQLiteDatabase db = helper.getWritableDatabase();
         if (db.isOpen()) {
             db.execSQL("update groupmessage set username=?,groupname=?,groupicon=?,message=?,status=? where userid=? and groupid=? and createtime=?",
-                    new Object[]{bean.getUsername(), bean.getGroupname(), bean.getGroupicon(), bean.getMessage(), bean.getStatus(), bean.getUserid(), bean.getGroupid(),bean.getCreatetime()});
+                    new Object[]{bean.getUsername(), bean.getGroupname(), bean.getGroupicon(), bean.getMessage(), bean.getStatus(), bean.getUserid(), bean.getGroupid(), bean.getCreatetime()});
         }
         db.close();
     }

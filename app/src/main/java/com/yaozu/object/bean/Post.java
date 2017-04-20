@@ -12,7 +12,7 @@ public class Post implements Serializable {
     //如果是跟帖的话,parentid是主贴的postid，否则为空
     private String parentid;
     private String parenttitle;
-    //帖子的状态，0是正常，1是精华，2是置顶，3是下沉
+    //帖子的状态，0是普通 1 是置顶 2是热帖
     private String status;
     private String userIcon;
     private String userName;

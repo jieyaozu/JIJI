@@ -36,6 +36,7 @@ import com.yaozu.object.adapter.PostDetailAdapter;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
+import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.entity.DetailReplyPostListInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
@@ -93,6 +94,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     private HeaderViewRecyclerAdapter stringAdapter;
     private View nodataLayout;
     private TextView tvNoData;
+    private GroupDao groupDao;
 
     private Menu mMenu;
 
@@ -119,6 +121,10 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         }
         if (mPost != null && mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
             menu.findItem(R.id.action_post_delete).setVisible(true);
+        }
+        if (mPost != null && isMyAdminGroupid(mPost.getGroupid())) {
+            menu.findItem(R.id.action_set_top).setVisible(true);
+            setTopMenuText(mPost.getStatus());
         }
         return true;
     }
@@ -159,9 +165,41 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.action_post_xiachen:
                 showToast("下沉");
                 return true;
+            case R.id.action_set_top:
+                if ("0".equals(mPost.getStatus())) {
+                    requestChangePostStatus(mPost.getPostid(), "1");
+                } else if ("1".equals(mPost.getStatus())) {
+                    requestChangePostStatus(mPost.getPostid(), "0");
+                }
+                return true;
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    //更改贴子的状态
+    private void requestChangePostStatus(String postid, final String status) {
+        String url = DataInterface.UPDATE_POST_STATUS + "postid=" + postid + "&status=" + status;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    showToast(requestData.getBody().getMessage());
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        setTopMenuText(status);
+                        mPost.setStatus(status);
+                    } else {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
     }
 
     //收藏
@@ -238,6 +276,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void initView() {
+        groupDao = new GroupDao(this);
         imageWidth = Utils.getScreenWidth(this) - getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
 
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
@@ -325,9 +364,42 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             if (mMenu != null)
                 mMenu.findItem(R.id.action_post_delete).setVisible(true);
         }
+
+        if (isMyAdminGroupid(mPost.getGroupid())) {
+            if (mMenu != null) {
+                mMenu.findItem(R.id.action_set_top).setVisible(true);
+                setTopMenuText(mPost.getStatus());
+            }
+        }
     }
 
-    ;
+    private void setTopMenuText(String status) {
+        if (mMenu != null) {
+            if ("0".equals(status)) {
+                mMenu.findItem(R.id.action_set_top).setTitle("设为置顶贴");
+            } else if ("1".equals(status)) {
+                mMenu.findItem(R.id.action_set_top).setTitle("取消置顶");
+            }
+        }
+    }
+
+    /**
+     * 这个群id是否是我管理的
+     *
+     * @param groupid
+     * @return
+     */
+    private boolean isMyAdminGroupid(String groupid) {
+        List<String> groupidList = groupDao.findMyAdminGroupid();
+        boolean isAdminGroupid = false;
+        for (int i = 0; i < groupidList.size(); i++) {
+            if (groupidList.get(i).equals(groupid)) {
+                isAdminGroupid = true;
+                break;
+            }
+        }
+        return isAdminGroupid;
+    }
 
     @Override
     protected void initData() {

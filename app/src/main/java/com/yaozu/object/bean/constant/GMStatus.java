@@ -1,4 +1,4 @@
-package com.yaozu.object.bean;
+package com.yaozu.object.bean.constant;
 
 /**
  * Created by jieyaozu on 2017/4/19.

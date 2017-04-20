@@ -79,4 +79,6 @@ public class DataInterface {
     public static String CLEAR_GROUP_MSG = APP_HOST + "superplan/app/group.do?method=clearGroupMsg&";
     //搜索群
     public static String SEARCH_GROUP = APP_HOST + "superplan/app/group.do?method=searchGroup&";
+    //更改贴子的状态
+    public static String UPDATE_POST_STATUS = APP_HOST + "superplan/post/post.do?method=updatePostStatus&";
 }

@@ -13,7 +13,7 @@ import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
-import com.yaozu.object.bean.GMStatus;
+import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.db.dao.GroupDao;
