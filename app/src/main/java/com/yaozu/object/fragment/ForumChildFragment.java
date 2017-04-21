@@ -139,6 +139,10 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
                 if (object != null) {
                     HomeForumDataInfo postDataInfo = (HomeForumDataInfo) object;
                     if (pageIndex == 1) {
+                        List<Post> topPostList = postDataInfo.getBody().getToplist();
+                        if (topPostList == null || topPostList.size() <= 0) {
+                            mHeaderListView.setVisibility(View.GONE);
+                        }
                         listViewAdapter.clearData();
                         mHeaderAdapter.setData(postDataInfo.getBody().getToplist());
                     }
@@ -172,7 +176,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
     }
 
     public class HeaderListViewAdapter extends BaseAdapter {
-        private List<Post> mDataList = new ArrayList<Post>();
+        private List<Post> mDataList = new ArrayList<>();
 
         @Override
         public int getCount() {

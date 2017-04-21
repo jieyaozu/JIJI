@@ -4,5 +4,6 @@
     <item
         android:id="@+id/action_commit"
         android:title="完成"
+        android:icon="@drawable/send_post"
         app:showAsAction="always" />
 </menu>

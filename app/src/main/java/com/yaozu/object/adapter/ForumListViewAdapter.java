@@ -145,7 +145,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
     }
 
     private class NoScrollGridViewAdapter extends BaseAdapter {
-        private List<MyImage> imagesList = new ArrayList<MyImage>();
+        private List<MyImage> imagesList = new ArrayList<>();
 
         public void setData(List<MyImage> images) {
             if (images == null) {

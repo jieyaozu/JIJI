@@ -4,7 +4,7 @@
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_common_toolsbar" />
+    <include layout="@layout/activity_common_toolsbar_padding" />
 
     <GridView
         android:id="@+id/myalbum_gridview"

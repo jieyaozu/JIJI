@@ -4,5 +4,6 @@
     <item
         android:id="@+id/myalbum_action_commit"
         android:title="完成"
+        android:icon="@drawable/album_selected"
         app:showAsAction="always" />
 </menu>

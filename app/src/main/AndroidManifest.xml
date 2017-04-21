@@ -61,7 +61,7 @@
         <activity
             android:name=".activity.MyAlbumActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SwipeBackTheme" />
+            android:theme="@style/SwipeBlackBackTheme" />
 
         <activity
             android:name=".activity.PostDetailActivity"
