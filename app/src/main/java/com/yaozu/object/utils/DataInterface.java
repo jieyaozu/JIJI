@@ -9,7 +9,7 @@ public class DataInterface {
     //public static String APP_HOST = "http://www.chaojijihua.com:8080/";
     public static String SERVER_APP_HOST = "http://www.chaojijihua.com:8080/";
     //测试地址
-    public static String APP_HOST = "http://192.168.0.105:8080/";
+    public static String APP_HOST = "http://10.0.2.155:8080/";
     //查询用户详情
     public static String FIND_USERINFO = APP_HOST + "superplan/user/finduser.do?method=finduserinfo&";
     public static String LOGIN_URL = APP_HOST + "superplan/login/login.do?method=dologin&";

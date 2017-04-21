@@ -25,6 +25,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.fastjson.JSON;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
@@ -125,7 +126,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 String permission = permissionBeanList.get(permissionSpinner.getSelectedItemPosition()).getPermissioncode();
                 String sectionid = section_data_list.get(sectionSpinner.getSelectedItemPosition()).getSectionid();
                 if (!"private".equals(permission) && content.length() < 140) {
-                    showToast("发表公开或者保护的帖子时，长度至少需要140个字符");
+                    showPermissionRemindDialog();
                     return true;
                 }
                 //Log.d("=====content======>", content);
@@ -190,6 +191,15 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         ivPhotoButton.setOnClickListener(this);
         etTitle.setOnClickListener(this);
         etContent.setOnClickListener(this);
+    }
+
+    private void showPermissionRemindDialog() {
+        new MaterialDialog.Builder(this)
+                .title("Material Design Dialog")
+                .content("发表公开或者保护的帖子时，长度至少需要140个字符")
+                .positiveText("确定")
+                .negativeText("取消")
+                .show();
     }
 
     /**
