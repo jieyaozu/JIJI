@@ -83,7 +83,7 @@
         <activity
             android:name=".activity.user.UserInfoActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SwipeBackTheme" />
+            android:theme="@style/NoTitleBar" />
         <activity
             android:name=".activity.CollectActivity"
             android:screenOrientation="portrait"
@@ -111,7 +111,7 @@
         <activity
             android:name=".activity.group.GroupDetailActivity"
             android:screenOrientation="portrait"
-            android:theme="@style/SwipeBackNoTitleTheme" />
+            android:theme="@style/NoTitleBar" />
         <activity
             android:name=".activity.group.EditGroupActivity"
             android:screenOrientation="portrait"

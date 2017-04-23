@@ -73,7 +73,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 IntentUtil.toCollectActivity(this.getActivity());
                 break;
             case R.id.fragment_usericon:
-                IntentUtil.toUserInfoActivity(this.getActivity(), LoginInfo.getInstance(this.getActivity()).getUserAccount());
+                IntentUtil.toUserInfoActivity(this.getActivity(), "", LoginInfo.getInstance(this.getActivity()).getUserAccount());
                 break;
         }
     }

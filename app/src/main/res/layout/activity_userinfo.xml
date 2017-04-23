@@ -1,10 +1,57 @@
 <?xml version="1.0" encoding="utf-8"?>
 <RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical">
 
-    <include layout="@layout/activity_common_toolsbar" />
+    <com.yaozu.object.widget.UserScrollRootView
+        android:id="@+id/userdetail_scrollview"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        app:content_layout="@layout/userdetail_content" />
 
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="75dp">
 
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="55dp"
+            android:layout_alignParentBottom="true">
+
+            <ImageView
+                android:id="@+id/userinfo_return"
+                style="@style/RippleBackground"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:padding="15dp"
+                android:src="@drawable/android_return" />
+        </RelativeLayout>
+    </RelativeLayout>
+
+    <View
+        android:layout_width="match_parent"
+        android:layout_height="0.5dp"
+        android:layout_above="@+id/userinfo_bottom_layout"
+        android:background="@color/divider_background_color" />
+
+    <LinearLayout
+        android:id="@+id/userinfo_bottom_layout"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_alignParentBottom="true"
+        android:background="@color/colorWhite"
+        android:orientation="horizontal"
+        android:visibility="gone">
+
+        <TextView
+            android:layout_width="0dp"
+            android:layout_height="40dp"
+            android:layout_weight="1"
+            android:gravity="center"
+            android:text="+邀请入群"
+            android:textColor="@color/nomralblack"
+            android:textSize="14dp" />
+    </LinearLayout>
 </RelativeLayout>

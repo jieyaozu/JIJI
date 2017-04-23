@@ -177,7 +177,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         ivUserIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentUtil.toUserInfoActivity(PostReplyDetailActivity.this, mPost.getUserid());
+                IntentUtil.toUserInfoActivity(PostReplyDetailActivity.this, "", mPost.getUserid());
             }
         });
     }
@@ -368,7 +368,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
             @Override
             public void onClick(View v) {
                 String userid = (String) v.getTag();
-                IntentUtil.toUserInfoActivity(PostReplyDetailActivity.this, userid);
+                IntentUtil.toUserInfoActivity(PostReplyDetailActivity.this, "", userid);
             }
         };
         spannable.setSpan(new Clickable(nameclick, comment.getUserid()), 0, userName.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);

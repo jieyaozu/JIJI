@@ -12,6 +12,7 @@ import com.yaozu.object.R;
 import com.yaozu.object.bean.MemberInfo;
 import com.yaozu.object.bean.constant.GroupUserType;
 import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersAdapter;
 
@@ -76,13 +77,19 @@ public class GroupMembersAdapter extends BaseAdapter implements StickyListHeader
         if (position == memberInfos.size() - 1) {
             viewHolder.divider.setVisibility(View.GONE);
         }
-        MemberInfo memberInfo = memberInfos.get(position);
+        final MemberInfo memberInfo = memberInfos.get(position);
         Utils.setUserImg(Constant.APP_IMAGE_HOST + memberInfo.getSiconpath(), viewHolder.ivUserIcon);
         if (!TextUtils.isEmpty(memberInfo.getNickname())) {
             viewHolder.tvUserName.setText(memberInfo.getNickname());
         } else {
             viewHolder.tvUserName.setText(memberInfo.getUsername());
         }
+        view.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                IntentUtil.toUserInfoActivity(mContext, memberInfo.getGroupid(), memberInfo.getUserid());
+            }
+        });
         return view;
     }
 
@@ -98,7 +105,7 @@ public class GroupMembersAdapter extends BaseAdapter implements StickyListHeader
         TextView tvHeaderName = (TextView) view.findViewById(R.id.item_member_headername);
         MemberInfo memberInfo = memberInfos.get(position);
         if (GroupUserType.ADMIN.equals(memberInfo.getUsertype()) || GroupUserType.MASTER.equals(memberInfo.getUsertype())) {
-            tvHeaderName.setText("群主、管理员(" + (position + 1) + "人)");
+            tvHeaderName.setText("群主、管理员");
         } else if (GroupUserType.NORMAL.equals(memberInfo.getUsertype())) {
             tvHeaderName.setText("群成员");
         }

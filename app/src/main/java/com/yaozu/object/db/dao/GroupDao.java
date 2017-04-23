@@ -83,6 +83,25 @@ public class GroupDao {
         return groupids;
     }
 
+    /**
+     * 查出我所创建的群的群ID
+     *
+     * @return
+     */
+    public List<String> findMyCreateGroupid() {
+        List<String> groupids = new ArrayList<>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from mygroup where usertype=?", new String[]{GroupUserType.MASTER});
+            while (cursor.moveToNext()) {
+                String groupid = cursor.getString(cursor.getColumnIndex("groupid"));
+                groupids.add(groupid);
+            }
+        }
+        db.close();
+        return groupids;
+    }
+
     public void clearTable() {
         SQLiteDatabase db = helper.getWritableDatabase();
         if (db.isOpen()) {

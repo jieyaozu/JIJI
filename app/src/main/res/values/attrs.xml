@@ -64,4 +64,11 @@
         <attr name="hasStickyHeaders" format="boolean" />
         <attr name="isDrawingListUnderStickyHeader" format="boolean" />
     </declare-styleable>
+
+    <declare-styleable name="ScrollRootView">
+        <attr name="bottom_viewpage" format="reference" />
+        <attr name="ifeng_toplayout" format="reference" />
+        <attr name="middle_tabview" format="reference" />
+        <attr name="content_layout" format="reference" />
+    </declare-styleable>
 </resources>

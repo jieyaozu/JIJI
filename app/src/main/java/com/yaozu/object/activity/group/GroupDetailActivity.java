@@ -5,20 +5,13 @@ import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Color;
-import android.graphics.Matrix;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
-import android.renderscript.Allocation;
-import android.renderscript.Element;
-import android.renderscript.RenderScript;
-import android.renderscript.ScriptIntrinsicBlur;
 import android.support.annotation.RequiresApi;
-import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.Gravity;
 import android.view.View;
-import android.view.WindowManager;
 import android.view.animation.AlphaAnimation;
 import android.view.animation.DecelerateInterpolator;
 import android.widget.ImageView;
@@ -30,7 +23,7 @@ import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
-import com.yaozu.object.activity.BaseActivity;
+import com.yaozu.object.activity.BaseNoTitleActivity;
 import com.yaozu.object.activity.CropImageActivity;
 import com.yaozu.object.activity.MyAlbumActivity;
 import com.yaozu.object.bean.GroupBean;
@@ -59,7 +52,7 @@ import java.util.List;
  * Created by jxj42 on 2017/4/9.
  */
 @RequiresApi(api = Build.VERSION_CODES.JELLY_BEAN)
-public class GroupDetailActivity extends BaseActivity implements View.OnClickListener {
+public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnClickListener {
     private ImageView ivGroupIcon, ivEditIcon;
     private ImageView ivReturn;
     private RelativeLayout rlHeaderBackground;
@@ -72,6 +65,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private TextView tvPersonNum, tvPostNum, tvFansNum;//成员数，发贴数，粉丝数
     private TextView tvPersonCount;
     private TextView tvApplyEnter, tvAttention;
+    private LinearLayout bottomLayout;
     private LinearLayout iconLayout;
     // 群名片Layout
     private RelativeLayout rlNicknameLayout;
@@ -90,15 +84,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_group_detail);
-        if (Build.VERSION.SDK_INT > 16) {
-            getWindow().clearFlags(WindowManager.LayoutParams.FLAG_TRANSLUCENT_STATUS
-                    | WindowManager.LayoutParams.FLAG_TRANSLUCENT_NAVIGATION);
-            getWindow().getDecorView().setSystemUiVisibility(View.SYSTEM_UI_FLAG_LAYOUT_STABLE
-                    | View.SYSTEM_UI_LAYOUT_FLAGS | View.SYSTEM_UI_FLAG_LAYOUT_FULLSCREEN
-                    | View.SYSTEM_UI_FLAG_LAYOUT_HIDE_NAVIGATION);
-            getWindow().getDecorView().setFitsSystemWindows(true);
-            getWindow().addFlags(WindowManager.LayoutParams.FLAG_DRAWS_SYSTEM_BAR_BACKGROUNDS);
-        }
     }
 
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
@@ -119,6 +104,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvFansNum = (TextView) findViewById(R.id.group_detail_fansnum);
         tvGroupIntroduce = (TextView) findViewById(R.id.group_detail_groupintroduce);
         ivGroupMenu = (ImageView) findViewById(R.id.groupdetail_actionbar_menu);
+        bottomLayout = (LinearLayout) findViewById(R.id.group_detail_bottom_layout);
         tvApplyEnter = (TextView) findViewById(R.id.group_detail_apply);
         tvAttention = (TextView) findViewById(R.id.group_detail_attention);
         rlLookMember = (RelativeLayout) findViewById(R.id.group_detail_lookmember);
@@ -127,51 +113,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         rlNicknameLayout = (RelativeLayout) findViewById(R.id.group_detail_groupnickname_layout);
         tvNickname = (TextView) findViewById(R.id.group_detail_groupnickname);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.xiaoma);
-        rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
-    }
-
-    /**
-     * 模糊
-     *
-     * @param bkg
-     * @return
-     */
-    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
-    private Bitmap blur(Bitmap bkg) {
-        long startMs = System.currentTimeMillis();
-        float radius = 25;
-
-        bkg = small(bkg);
-        Bitmap bitmap = bkg.copy(bkg.getConfig(), true);
-
-        final RenderScript rs = RenderScript.create(this);
-        final Allocation input = Allocation.createFromBitmap(rs, bkg, Allocation.MipmapControl.MIPMAP_NONE,
-                Allocation.USAGE_SCRIPT);
-        final Allocation output = Allocation.createTyped(rs, input.getType());
-        final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
-        script.setRadius(radius);
-        script.setInput(input);
-        script.forEach(output);
-        output.copyTo(bitmap);
-
-        bitmap = big(bitmap);
-        //setBackground(new BitmapDrawable(getResources(), bitmap));
-        rs.destroy();
-        return bitmap;
-    }
-
-    private Bitmap big(Bitmap bitmap) {
-        Matrix matrix = new Matrix();
-        matrix.postScale(10f, 10f); //长和宽放大缩小的比例
-        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return resizeBmp;
-    }
-
-    private Bitmap small(Bitmap bitmap) {
-        Matrix matrix = new Matrix();
-        matrix.postScale(0.1f, 0.1f); //长和宽放大缩小的比例
-        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
-        return resizeBmp;
+        rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), Utils.blur(this, bitmap)));
     }
 
     @Override
@@ -193,8 +135,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         }
     }
 
-
-    /**
+    /**9
      * 查找群的详情
      */
     private void requestGroupDetail(final String groupid) {
@@ -250,11 +191,9 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
 
         String isMember = groupBean.getIsGroupMember();
         if ("0".equals(isMember)) {
-            tvApplyEnter.setVisibility(View.VISIBLE);
-            tvAttention.setVisibility(View.VISIBLE);
+            bottomLayout.setVisibility(View.VISIBLE);
         } else {
-            tvApplyEnter.setVisibility(View.GONE);
-            tvAttention.setVisibility(View.GONE);
+            bottomLayout.setVisibility(View.GONE);
         }
 
         downloadBackgroundImage(groupBean.getGroupicon());
@@ -263,7 +202,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private void downloadBackgroundImage(final String iconUrl) {
         Bitmap bitmap = aCache.getAsBitmap(iconUrl);
         if (bitmap != null) {
-            rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
+            rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), Utils.blur(this, bitmap)));
             return;
         }
         NetUtil.downLoadBitmap(iconUrl, new DownLoadIconListener() {
@@ -271,7 +210,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
             @Override
             public void downLoadSuccess(Bitmap bitmap) {
                 aCache.put(iconUrl, bitmap);
-                rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
+                rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), Utils.blur(GroupDetailActivity.this, bitmap)));
             }
 
             @Override
@@ -291,11 +230,6 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvAttention.setOnClickListener(this);
         rlLookMember.setOnClickListener(this);
         rlNicknameLayout.setOnClickListener(this);
-    }
-
-    @Override
-    protected void settingActionBar(ActionBar actionBar) {
-
     }
 
     @Override
@@ -356,7 +290,7 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                         if (bitmap != null) {
                             objectBeanCache.cleanCache();
                             ivGroupIcon.setImageBitmap(bitmap);
-                            rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
+                            rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), Utils.blur(GroupDetailActivity.this, bitmap)));
                         }
                     }
 

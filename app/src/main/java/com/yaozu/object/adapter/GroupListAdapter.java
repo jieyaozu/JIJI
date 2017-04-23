@@ -48,15 +48,25 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
 
     //分类排序
     private void sortListData() {
+        List<GroupBean> createGrouplist = new ArrayList<>();
+        for (int i = groupBeanList.size() - 1; i >= 0; i--) {
+            GroupBean groupBean = groupBeanList.get(i);
+            if (GroupUserType.MASTER.equals(groupBean.getUsertype())) {
+                groupBeanList.remove(groupBean);
+                createGrouplist.add(groupBean);
+            }
+        }
+
         List<GroupBean> adminGrouplist = new ArrayList<>();
         for (int i = groupBeanList.size() - 1; i >= 0; i--) {
             GroupBean groupBean = groupBeanList.get(i);
-            if (GroupUserType.ADMIN.equals(groupBean.getUsertype()) || GroupUserType.MASTER.equals(groupBean.getUsertype())) {
+            if (GroupUserType.ADMIN.equals(groupBean.getUsertype())) {
                 groupBeanList.remove(groupBean);
                 adminGrouplist.add(groupBean);
             }
         }
-        groupBeanList.addAll(0, adminGrouplist);
+        groupBeanList.addAll(0, createGrouplist);
+        groupBeanList.addAll(createGrouplist.size(), adminGrouplist);
     }
 
     @Override
@@ -84,10 +94,14 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
             holder.layout = (LinearLayout) view.findViewById(R.id.item_group_layout);
             holder.tvGroupName = (TextView) view.findViewById(R.id.item_groupname);
             holder.ivGroupIcon = (ImageView) view.findViewById(R.id.item_group_icon);
+            holder.divider = view.findViewById(R.id.item_group_divider);
             view.setTag(holder);
         } else {
             view = convertView;
             holder = (MyViewHolder) view.getTag();
+        }
+        if (position == groupBeanList.size() - 1) {
+            holder.divider.setVisibility(View.GONE);
         }
         final GroupBean groupBean = groupBeanList.get(position);
         holder.tvGroupName.setText(groupBean.getGroupname());
@@ -106,7 +120,9 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_group_header, parent, false);
         TextView textView = (TextView) view.findViewById(R.id.item_group_title);
         final GroupBean groupBean = groupBeanList.get(position);
-        if (GroupUserType.ADMIN.equals(groupBean.getUsertype()) || GroupUserType.MASTER.equals(groupBean.getUsertype())) {
+        if (GroupUserType.MASTER.equals(groupBean.getUsertype())) {
+            textView.setText("我创建的群");
+        } else if (GroupUserType.ADMIN.equals(groupBean.getUsertype())) {
             textView.setText("我管理的群");
         } else if (GroupUserType.NORMAL.equals(groupBean.getUsertype())) {
             textView.setText("我加入的群");
@@ -117,18 +133,21 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
     @Override
     public long getHeaderId(int position) {
         final GroupBean groupBean = groupBeanList.get(position);
-        if (GroupUserType.ADMIN.equals(groupBean.getUsertype()) || GroupUserType.MASTER.equals(groupBean.getUsertype())) {
+        if (GroupUserType.MASTER.equals(groupBean.getUsertype())) {
             return 0;
-        } else if (GroupUserType.NORMAL.equals(groupBean.getUsertype())) {
+        } else if (GroupUserType.ADMIN.equals(groupBean.getUsertype())) {
             return 1;
+        } else if (GroupUserType.NORMAL.equals(groupBean.getUsertype())) {
+            return 2;
         }
-        return 0;
+        return 3;
     }
 
     class MyViewHolder {
         private LinearLayout layout;
         private TextView tvGroupName;
         private ImageView ivGroupIcon;
+        private View divider;
     }
 
 }

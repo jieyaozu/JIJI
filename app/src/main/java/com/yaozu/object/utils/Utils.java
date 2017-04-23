@@ -1,5 +1,6 @@
 package com.yaozu.object.utils;
 
+import android.annotation.TargetApi;
 import android.content.ContentResolver;
 import android.content.Context;
 import android.content.pm.ApplicationInfo;
@@ -9,6 +10,7 @@ import android.database.Cursor;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Canvas;
+import android.graphics.Matrix;
 import android.graphics.Paint;
 import android.graphics.PorterDuffXfermode;
 import android.graphics.Rect;
@@ -19,6 +21,10 @@ import android.net.NetworkInfo;
 import android.net.Uri;
 import android.os.Build;
 import android.provider.MediaStore;
+import android.renderscript.Allocation;
+import android.renderscript.Element;
+import android.renderscript.RenderScript;
+import android.renderscript.ScriptIntrinsicBlur;
 import android.support.v4.content.PermissionChecker;
 import android.telephony.TelephonyManager;
 import android.text.TextUtils;
@@ -756,5 +762,49 @@ public class Utils {
         mainMethod.setAccessible(true);
         Object retObj = mainMethod.invoke(null, input);
         return (byte[]) retObj;
+    }
+
+    /**
+     * 模糊
+     *
+     * @param bkg
+     * @return
+     */
+    @TargetApi(Build.VERSION_CODES.JELLY_BEAN_MR1)
+    public static Bitmap blur(Context context, Bitmap bkg) {
+        long startMs = System.currentTimeMillis();
+        float radius = 25;
+
+        bkg = small(bkg);
+        Bitmap bitmap = bkg.copy(bkg.getConfig(), true);
+
+        final RenderScript rs = RenderScript.create(context);
+        final Allocation input = Allocation.createFromBitmap(rs, bkg, Allocation.MipmapControl.MIPMAP_NONE,
+                Allocation.USAGE_SCRIPT);
+        final Allocation output = Allocation.createTyped(rs, input.getType());
+        final ScriptIntrinsicBlur script = ScriptIntrinsicBlur.create(rs, Element.U8_4(rs));
+        script.setRadius(radius);
+        script.setInput(input);
+        script.forEach(output);
+        output.copyTo(bitmap);
+
+        bitmap = big(bitmap);
+        //setBackground(new BitmapDrawable(getResources(), bitmap));
+        rs.destroy();
+        return bitmap;
+    }
+
+    private static Bitmap big(Bitmap bitmap) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(10f, 10f); //长和宽放大缩小的比例
+        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizeBmp;
+    }
+
+    private static Bitmap small(Bitmap bitmap) {
+        Matrix matrix = new Matrix();
+        matrix.postScale(0.1f, 0.1f); //长和宽放大缩小的比例
+        Bitmap resizeBmp = Bitmap.createBitmap(bitmap, 0, 0, bitmap.getWidth(), bitmap.getHeight(), matrix, true);
+        return resizeBmp;
     }
 }

@@ -174,7 +174,7 @@ public class PostDetailAdapter extends RecyclerView.Adapter<RecyclerView.ViewHol
             usericon.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IntentUtil.toUserInfoActivity(mContext, post.getUserid());
+                    IntentUtil.toUserInfoActivity(mContext, post.getGroupid(), post.getUserid());
                 }
             });
         }

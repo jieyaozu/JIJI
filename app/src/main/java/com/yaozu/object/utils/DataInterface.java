@@ -85,4 +85,8 @@ public class DataInterface {
     public static String FIND_GROUP_MEMBERS = APP_HOST + "superplan/app/group.do?method=findGroupMembers&";
     // 编辑群名片
     public static String EDIT_NICKNAME = APP_HOST + "superplan/app/group.do?method=editnickname&";
+    //查询群成员类型
+    public static String SELECT_USERTYPE = APP_HOST + "superplan/app/group.do?method=isAdmin&";
+    //设置用户成员类型
+    public static String SET_USERTYPE = APP_HOST + "superplan/app/group.do?method=setAdmin&";
 }

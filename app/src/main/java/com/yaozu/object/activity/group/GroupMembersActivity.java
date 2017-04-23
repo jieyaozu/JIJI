@@ -8,6 +8,7 @@ import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.GroupMembersAdapter;
 import com.yaozu.object.entity.GroupMembersData;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView;
@@ -38,6 +39,7 @@ public class GroupMembersActivity extends BaseActivity {
         mGroupid = getIntent().getStringExtra(IntentKey.INTENT_GROUP_ID);
         groupMembersAdapter = new GroupMembersAdapter(this);
         listView.setAdapter(groupMembersAdapter);
+        swipeRefreshLayout.setRefreshing(true);
         requestGetMembers(mGroupid);
     }
 
@@ -57,6 +59,15 @@ public class GroupMembersActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Constant.IS_SET_USERTYPE_SUCCESS) {
+            Constant.IS_SET_USERTYPE_SUCCESS = false;
+            requestGetMembers(mGroupid);
+        }
+    }
+
     /**
      * 从服务器上获取成员信息
      *
@@ -67,6 +78,7 @@ public class GroupMembersActivity extends BaseActivity {
         RequestManager.getInstance().getRequest(this, url, GroupMembersData.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
+                swipeRefreshLayout.setRefreshing(false);
                 if (object != null) {
                     GroupMembersData groupMembersData = (GroupMembersData) object;
                     groupMembersAdapter.clearData();
@@ -76,7 +88,7 @@ public class GroupMembersActivity extends BaseActivity {
 
             @Override
             public void onFailure(int code, String message) {
-
+                swipeRefreshLayout.setRefreshing(false);
             }
         });
     }

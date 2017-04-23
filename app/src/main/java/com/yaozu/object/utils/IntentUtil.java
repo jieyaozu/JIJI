@@ -105,8 +105,9 @@ public class IntentUtil {
         overridePendingTransition(context);
     }
 
-    public static void toUserInfoActivity(Context context, String userid) {
+    public static void toUserInfoActivity(Context context, String groupid, String userid) {
         Intent intent = new Intent(context, UserInfoActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
         intent.putExtra(IntentKey.INTENT_USERID, userid);
         context.startActivity(intent);
         overridePendingTransition(context);
@@ -204,7 +205,6 @@ public class IntentUtil {
         Intent intent = new Intent(context, ApplyEnterGroupActivity.class);
         intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
         context.startActivity(intent);
-        overridePendingTransition(context);
     }
 
     /**
@@ -239,7 +239,6 @@ public class IntentUtil {
         Intent intent = new Intent(context, GroupMembersActivity.class);
         intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
         context.startActivity(intent);
-        overridePendingTransition(context);
     }
 
     /**
@@ -253,6 +252,5 @@ public class IntentUtil {
         intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
         intent.putExtra(IntentKey.INTENT_NICKNAME, nickname);
         context.startActivity(intent);
-        overridePendingTransition(context);
     }
 }

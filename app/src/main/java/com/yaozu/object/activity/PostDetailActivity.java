@@ -345,7 +345,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         userIcon.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentUtil.toUserInfoActivity(PostDetailActivity.this, mPost.getUserid());
+                IntentUtil.toUserInfoActivity(PostDetailActivity.this, mPost.getGroupid(), mPost.getUserid());
             }
         });
         groupName.setOnClickListener(new View.OnClickListener() {
