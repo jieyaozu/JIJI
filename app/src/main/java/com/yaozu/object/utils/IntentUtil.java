@@ -16,7 +16,9 @@ import com.yaozu.object.activity.ThemePostActivity;
 import com.yaozu.object.activity.WebViewActivity;
 import com.yaozu.object.activity.group.ApplyEnterGroupActivity;
 import com.yaozu.object.activity.group.EditGroupActivity;
+import com.yaozu.object.activity.group.EditNicknameActivity;
 import com.yaozu.object.activity.group.GroupDetailActivity;
+import com.yaozu.object.activity.group.GroupMembersActivity;
 import com.yaozu.object.activity.group.GroupMessageActivity;
 import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.activity.group.GroupSearchActivity;
@@ -223,6 +225,33 @@ public class IntentUtil {
      */
     public static void toGroupMessageActivity(Context context) {
         Intent intent = new Intent(context, GroupMessageActivity.class);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 群成员列表页面
+     *
+     * @param context
+     * @param groupid
+     */
+    public static void toGroupMembersActivity(Context context, String groupid) {
+        Intent intent = new Intent(context, GroupMembersActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
+        context.startActivity(intent);
+        overridePendingTransition(context);
+    }
+
+    /**
+     * 编辑群名片
+     *
+     * @param context
+     * @param nickname
+     */
+    public static void toEditNicknameActivity(Context context, String groupid, String nickname) {
+        Intent intent = new Intent(context, EditNicknameActivity.class);
+        intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
+        intent.putExtra(IntentKey.INTENT_NICKNAME, nickname);
         context.startActivity(intent);
         overridePendingTransition(context);
     }

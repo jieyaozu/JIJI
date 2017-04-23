@@ -73,7 +73,7 @@ public class GroupDao {
         List<String> groupids = new ArrayList<>();
         SQLiteDatabase db = helper.getReadableDatabase();
         if (db.isOpen()) {
-            Cursor cursor = db.rawQuery("select * from mygroup where usertype=?", new String[]{GroupUserType.ADMIN});
+            Cursor cursor = db.rawQuery("select * from mygroup where usertype=? or usertype=?", new String[]{GroupUserType.ADMIN, GroupUserType.MASTER});
             while (cursor.moveToNext()) {
                 String groupid = cursor.getString(cursor.getColumnIndex("groupid"));
                 groupids.add(groupid);

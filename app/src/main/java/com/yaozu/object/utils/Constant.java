@@ -13,6 +13,7 @@ import com.yaozu.object.R;
 
 public class Constant {
     public static final int PAGE_SIZE = 15;
+    public static String APP_IMAGE_HOST = "http://www.chaojijihua.com:8080/superplan/images/";
     public static final DisplayImageOptions IMAGE_OPTIONS_FOR_USER = new DisplayImageOptions.Builder()
             .showImageOnLoading(R.mipmap.icon_user_image_default)
             .showImageForEmptyUri(R.mipmap.icon_user_image_default)

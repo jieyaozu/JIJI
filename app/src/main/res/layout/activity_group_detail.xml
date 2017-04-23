@@ -7,255 +7,325 @@
     android:orientation="vertical"
     tools:context=".activity.group.GroupDetailActivity">
 
-    <LinearLayout
+    <ScrollView
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:layout_height="wrap_content">
 
-        <RelativeLayout
-            android:id="@+id/group_detail_header_background"
-            android:layout_width="match_parent"
-            android:layout_height="260dp"
-            android:background="@color/gray_white">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_above="@+id/group_detail_msglayout"
-                android:layout_marginBottom="15dp"
-                android:orientation="horizontal">
-
-                <RelativeLayout
-                    android:layout_width="100dp"
-                    android:layout_height="100dp"
-                    android:layout_marginLeft="@dimen/dimen_20">
-
-                    <ImageView
-                        android:id="@+id/group_detail_icon"
-                        android:layout_width="100dp"
-                        android:layout_height="100dp"
-                        android:scaleType="centerCrop"
-                        android:src="@drawable/loading_bg" />
-
-                    <ImageView
-                        android:id="@+id/group_detail_edit_icon"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentBottom="true"
-                        android:layout_alignParentRight="true"
-                        android:layout_marginBottom="5dp"
-                        android:layout_marginRight="5dp"
-                        android:src="@drawable/icon_edit" />
-                </RelativeLayout>
-
-                <RelativeLayout
-                    android:layout_width="wrap_content"
-                    android:layout_height="match_parent">
-
-                    <LinearLayout
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:orientation="vertical">
-
-                        <TextView
-                            android:id="@+id/group_detail_groupname"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:ellipsize="marquee"
-                            android:maxLines="1"
-                            android:text="dsa"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="18dp" />
-
-                        <TextView
-                            android:id="@+id/group_detail_groupid"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:maxLines="1"
-                            android:text="2123213"
-                            android:textColor="@color/colorWhite"
-                            android:textSize="12dp" />
-
-                        <TextView
-                            android:id="@+id/group_detail_section"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
-                            android:layout_marginLeft="10dp"
-                            android:layout_marginTop="10dp"
-                            android:background="@drawable/main_transparent_listview_selector"
-                            android:drawablePadding="@dimen/dimen_5"
-                            android:drawableRight="@drawable/text_arrow_white"
-                            android:text=""
-                            android:textColor="@color/colorWhite"
-                            android:textSize="13dp" />
-                    </LinearLayout>
-
-                    <TextView
-                        android:id="@+id/group_detail_apply"
-                        android:layout_width="60dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="10dp"
-                        android:background="@drawable/text_white_shape"
-                        android:gravity="center"
-                        android:text="申请入群"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="10dp"
-                        android:visibility="gone" />
-
-                    <TextView
-                        android:id="@+id/group_detail_attention"
-                        android:layout_width="60dp"
-                        android:layout_height="20dp"
-                        android:layout_alignParentBottom="true"
-                        android:layout_marginLeft="5dp"
-                        android:layout_marginRight="10dp"
-                        android:layout_toRightOf="@+id/group_detail_apply"
-                        android:background="@drawable/text_white_shape"
-                        android:gravity="center"
-                        android:text="+关注"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="10dp"
-                        android:visibility="gone" />
-                </RelativeLayout>
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/group_detail_msglayout"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:layout_alignParentBottom="true"
-                android:orientation="horizontal">
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="群成员"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/group_detail_personnum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="0"
-                        android:textColor="@color/colorWhite" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="发贴"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/group_detail_postnum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="0"
-                        android:textColor="@color/colorWhite" />
-                </LinearLayout>
-
-                <LinearLayout
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_weight="1"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:text="粉丝"
-                        android:textColor="@color/colorWhite"
-                        android:textSize="12dp" />
-
-                    <TextView
-                        android:id="@+id/group_detail_fansnum"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:padding="5dp"
-                        android:text="0"
-                        android:textColor="@color/colorWhite" />
-                </LinearLayout>
-            </LinearLayout>
-        </RelativeLayout>
-
-        <RelativeLayout
-            android:layout_width="match_parent"
-            android:layout_height="60dp"
-            android:layout_marginTop="10dp">
-
-            <LinearLayout
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:orientation="horizontal">
-
-            </LinearLayout>
-
-        </RelativeLayout>
-
-        <View
-            android:layout_width="match_parent"
-            android:layout_height="0.5dp"
-            android:layout_marginLeft="15dp"
-            android:layout_marginRight="15dp"
-            android:background="@color/divider_background_color" />
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="5dp"
             android:orientation="vertical">
 
-            <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginTop="@dimen/dimen_5"
-                android:text="群介绍"
-                android:textColor="@color/nomralblack"
-                android:textSize="16dp" />
+            <RelativeLayout
+                android:id="@+id/group_detail_header_background"
+                android:layout_width="match_parent"
+                android:layout_height="260dp"
+                android:background="@color/gray_white">
 
-            <TextView
-                android:id="@+id/group_detail_groupintroduce"
+                <LinearLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_above="@+id/group_detail_msglayout"
+                    android:layout_marginBottom="15dp"
+                    android:orientation="horizontal">
+
+                    <RelativeLayout
+                        android:layout_width="100dp"
+                        android:layout_height="100dp"
+                        android:layout_marginLeft="@dimen/dimen_20">
+
+                        <ImageView
+                            android:id="@+id/group_detail_icon"
+                            android:layout_width="100dp"
+                            android:layout_height="100dp"
+                            android:scaleType="centerCrop"
+                            android:src="@drawable/loading_bg" />
+
+                        <ImageView
+                            android:id="@+id/group_detail_edit_icon"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:layout_alignParentBottom="true"
+                            android:layout_alignParentRight="true"
+                            android:layout_marginBottom="5dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/icon_edit" />
+                    </RelativeLayout>
+
+                    <RelativeLayout
+                        android:layout_width="wrap_content"
+                        android:layout_height="match_parent">
+
+                        <LinearLayout
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:orientation="vertical">
+
+                            <TextView
+                                android:id="@+id/group_detail_groupname"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:ellipsize="marquee"
+                                android:maxLines="1"
+                                android:text="dsa"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="18dp" />
+
+                            <TextView
+                                android:id="@+id/group_detail_groupid"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:maxLines="1"
+                                android:text="2123213"
+                                android:textColor="@color/colorWhite"
+                                android:textSize="12dp" />
+
+                            <TextView
+                                android:id="@+id/group_detail_section"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_marginLeft="10dp"
+                                android:layout_marginTop="10dp"
+                                android:background="@drawable/main_transparent_listview_selector"
+                                android:drawablePadding="@dimen/dimen_5"
+                                android:drawableRight="@drawable/text_arrow_white"
+                                android:text=""
+                                android:textColor="@color/colorWhite"
+                                android:textSize="13dp" />
+                        </LinearLayout>
+
+                        <TextView
+                            android:id="@+id/group_detail_apply"
+                            android:layout_width="60dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="10dp"
+                            android:background="@drawable/text_white_shape"
+                            android:gravity="center"
+                            android:text="申请入群"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="10dp"
+                            android:visibility="gone" />
+
+                        <TextView
+                            android:id="@+id/group_detail_attention"
+                            android:layout_width="60dp"
+                            android:layout_height="20dp"
+                            android:layout_alignParentBottom="true"
+                            android:layout_marginLeft="5dp"
+                            android:layout_marginRight="10dp"
+                            android:layout_toRightOf="@+id/group_detail_apply"
+                            android:background="@drawable/text_white_shape"
+                            android:gravity="center"
+                            android:text="+关注"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="10dp"
+                            android:visibility="gone" />
+                    </RelativeLayout>
+                </LinearLayout>
+
+                <LinearLayout
+                    android:id="@+id/group_detail_msglayout"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentBottom="true"
+                    android:orientation="horizontal">
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="群成员"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/group_detail_personnum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="0"
+                            android:textColor="@color/colorWhite" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="发贴"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/group_detail_postnum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="0"
+                            android:textColor="@color/colorWhite" />
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_weight="1"
+                        android:gravity="center"
+                        android:orientation="vertical">
+
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:text="粉丝"
+                            android:textColor="@color/colorWhite"
+                            android:textSize="12dp" />
+
+                        <TextView
+                            android:id="@+id/group_detail_fansnum"
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:padding="5dp"
+                            android:text="0"
+                            android:textColor="@color/colorWhite" />
+                    </LinearLayout>
+                </LinearLayout>
+            </RelativeLayout>
+
+            <LinearLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:paddingBottom="@dimen/dimen_5"
-                android:paddingTop="@dimen/dimen_5"
-                android:text="."
-                android:textColor="@color/gray_white"
-                android:textSize="14dp" />
+                android:layout_marginTop="10dp"
+                android:background="@color/colorWhite"
+                android:layout_marginBottom="10dp"
+                android:orientation="vertical">
 
-            <View
-                android:layout_width="match_parent"
-                android:layout_height="0.5dp"
-                android:layout_marginLeft="15dp"
-                android:layout_marginRight="15dp"
-                android:background="@color/divider_background_color" />
+                <RelativeLayout
+                    android:id="@+id/group_detail_groupnickname_layout"
+                    style="@style/RippleBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:paddingBottom="10dp"
+                        android:paddingTop="10dp"
+                        android:text="我的群名片"
+                        android:textColor="@color/nomralblack"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_groupnickname"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:drawablePadding="5dp"
+                        android:drawableRight="@drawable/text_arrow_gray"
+                        android:text="" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@color/divider_background_color" />
+
+                <RelativeLayout
+                    android:id="@+id/group_detail_lookmember"
+                    style="@style/RippleBackground"
+                    android:layout_width="match_parent"
+                    android:layout_height="60dp">
+
+                    <LinearLayout
+                        android:id="@+id/group_detail_iconlayout"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_centerVertical="true"
+                        android:gravity="center_vertical"
+                        android:orientation="horizontal">
+
+                        <ImageView
+                            android:layout_width="25dp"
+                            android:layout_height="25dp"
+                            android:layout_marginLeft="15dp"
+                            android:layout_marginRight="5dp"
+                            android:src="@drawable/icon_group" />
+                    </LinearLayout>
+
+                    <TextView
+                        android:id="@+id/group_detail_personcount"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_alignParentRight="true"
+                        android:layout_centerVertical="true"
+                        android:layout_marginRight="15dp"
+                        android:drawablePadding="5dp"
+                        android:drawableRight="@drawable/text_arrow_gray"
+                        android:text="" />
+                </RelativeLayout>
+
+                <View
+                    android:layout_width="match_parent"
+                    android:layout_height="0.5dp"
+                    android:layout_marginLeft="15dp"
+                    android:layout_marginRight="15dp"
+                    android:background="@color/divider_background_color" />
+
+                <LinearLayout
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:orientation="vertical"
+                    android:paddingTop="5dp">
+
+                    <TextView
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginTop="@dimen/dimen_5"
+                        android:text="群介绍"
+                        android:textColor="@color/nomralblack"
+                        android:textSize="16dp" />
+
+                    <TextView
+                        android:id="@+id/group_detail_groupintroduce"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:paddingBottom="@dimen/dimen_5"
+                        android:paddingTop="@dimen/dimen_5"
+                        android:text="."
+                        android:textColor="@color/gray_white"
+                        android:textSize="14dp" />
+
+                    <View
+                        android:layout_width="match_parent"
+                        android:layout_height="0.5dp"
+                        android:layout_marginLeft="15dp"
+                        android:layout_marginRight="15dp"
+                        android:background="@color/divider_background_color" />
+                </LinearLayout>
+            </LinearLayout>
         </LinearLayout>
-    </LinearLayout>
+    </ScrollView>
 
     <LinearLayout
         android:layout_width="match_parent"

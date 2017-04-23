@@ -7,6 +7,7 @@ import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.graphics.Matrix;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
 import android.view.LayoutInflater;
@@ -25,6 +26,7 @@ import android.widget.Spinner;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.fastjson.JSON;
 import com.yaozu.object.R;
@@ -195,10 +197,19 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     private void showPermissionRemindDialog() {
         new MaterialDialog.Builder(this)
-                .title("Material Design Dialog")
-                .content("发表公开或者保护的帖子时，长度至少需要140个字符")
+                .title("提示")
+                .titleColorRes(R.color.nomralblack)
+                .contentColorRes(R.color.gray)
+                .content("发表『公开』或者『保护』的帖子时，长度至少需要140个字符，或者你可以把权限设置为『私有』来发送少于140字符的贴子。")
+                .backgroundColorRes(R.color.colorWhite)
                 .positiveText("确定")
-                .negativeText("取消")
+                .positiveColorRes(R.color.colorPrimary)
+                .onPositive(new MaterialDialog.SingleButtonCallback() {
+                    @Override
+                    public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                        permissionSpinner.performClick();
+                    }
+                })
                 .show();
     }
 

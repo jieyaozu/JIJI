@@ -49,6 +49,7 @@ import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.utils.ObjectBeanCache;
+import com.yaozu.object.utils.Utils;
 
 import java.io.File;
 import java.util.ArrayList;
@@ -69,9 +70,17 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
     private ACache aCache;
     private ObjectBeanCache objectBeanCache;
     private TextView tvPersonNum, tvPostNum, tvFansNum;//成员数，发贴数，粉丝数
+    private TextView tvPersonCount;
     private TextView tvApplyEnter, tvAttention;
+    private LinearLayout iconLayout;
+    // 群名片Layout
+    private RelativeLayout rlNicknameLayout;
+    //群名片
+    private TextView tvNickname;
     private PopupWindow popupwindow;
     private View rootView;
+
+    private RelativeLayout rlLookMember;
 
     private static final int ACTIVITY_RESULT_GALRY = 0;
     private static final int ACTIVITY_RESULT_CROPIMAGE = 1;
@@ -105,13 +114,18 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvGroupId = (TextView) findViewById(R.id.group_detail_groupid);
         tvSection = (TextView) findViewById(R.id.group_detail_section);
         tvPersonNum = (TextView) findViewById(R.id.group_detail_personnum);
+        tvPersonCount = (TextView) findViewById(R.id.group_detail_personcount);
         tvPostNum = (TextView) findViewById(R.id.group_detail_postnum);
         tvFansNum = (TextView) findViewById(R.id.group_detail_fansnum);
         tvGroupIntroduce = (TextView) findViewById(R.id.group_detail_groupintroduce);
         ivGroupMenu = (ImageView) findViewById(R.id.groupdetail_actionbar_menu);
         tvApplyEnter = (TextView) findViewById(R.id.group_detail_apply);
         tvAttention = (TextView) findViewById(R.id.group_detail_attention);
+        rlLookMember = (RelativeLayout) findViewById(R.id.group_detail_lookmember);
+        iconLayout = (LinearLayout) findViewById(R.id.group_detail_iconlayout);
         rlHeaderBackground = (RelativeLayout) findViewById(R.id.group_detail_header_background);
+        rlNicknameLayout = (RelativeLayout) findViewById(R.id.group_detail_groupnickname_layout);
+        tvNickname = (TextView) findViewById(R.id.group_detail_groupnickname);
         Bitmap bitmap = BitmapFactory.decodeResource(getResources(), R.drawable.xiaoma);
         rlHeaderBackground.setBackground(new BitmapDrawable(getResources(), blur(bitmap)));
     }
@@ -216,7 +230,23 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvSection.setText(groupBean.getSectionname());
         tvGroupIntroduce.setText(groupBean.getIntroduce());
         tvPersonNum.setText(groupBean.getPnumber());
+        tvPersonCount.setText(groupBean.getPnumber() + "名成员");
         tvPostNum.setText(groupBean.getMptnumber());
+        tvNickname.setText(TextUtils.isEmpty(groupBean.getNickname()) ? "未设置" : groupBean.getNickname());
+
+        //成员头像
+        List<String> iconList = groupBean.getMembericonlist();
+        if (iconList != null) {
+            iconLayout.removeViews(1, iconLayout.getChildCount() - 1);
+            for (String icon : iconList) {
+                ImageView imageView = (ImageView) View.inflate(this, R.layout.item_member_usericon, null);
+                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(getResources().getDimensionPixelSize(R.dimen.dimen_45), getResources().getDimensionPixelSize(R.dimen.dimen_45));
+                layoutParams.leftMargin = getResources().getDimensionPixelSize(R.dimen.dimen_5);
+                imageView.setLayoutParams(layoutParams);
+                Utils.setUserImg(icon, imageView);
+                iconLayout.addView(imageView);
+            }
+        }
 
         String isMember = groupBean.getIsGroupMember();
         if ("0".equals(isMember)) {
@@ -259,6 +289,8 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
         tvSection.setOnClickListener(this);
         tvApplyEnter.setOnClickListener(this);
         tvAttention.setOnClickListener(this);
+        rlLookMember.setOnClickListener(this);
+        rlNicknameLayout.setOnClickListener(this);
     }
 
     @Override
@@ -378,6 +410,12 @@ public class GroupDetailActivity extends BaseActivity implements View.OnClickLis
                 IntentUtil.toApplyEnterGroupActivity(this, mGroupbean.getGroupid());
                 break;
             case R.id.group_detail_attention:
+                break;
+            case R.id.group_detail_lookmember:
+                IntentUtil.toGroupMembersActivity(this, mGroupbean.getGroupid());
+                break;
+            case R.id.group_detail_groupnickname_layout:
+                IntentUtil.toEditNicknameActivity(this, mGroupbean.getGroupid(), mGroupbean.getNickname());
                 break;
         }
     }

@@ -6,6 +6,7 @@ package com.yaozu.object.bean.constant;
  */
 
 public class GroupUserType {
+    public static String MASTER = "master";
     public static String ADMIN = "admin";
     public static String NORMAL = "normal";
 }

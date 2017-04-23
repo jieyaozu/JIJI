@@ -23,4 +23,5 @@ public class IntentKey {
     public static final String INTENT_GROUP_ID = "intent_group_id";
     public static final String INTENT_SECTION_ID = "intent_section_id";
     public static final String INTENT_SECTION_NAME = "intent_section_name";
+    public static final String INTENT_NICKNAME = "intent_nickname";
 }

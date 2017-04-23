@@ -1,6 +1,7 @@
 package com.yaozu.object.bean;
 
 import java.io.Serializable;
+import java.util.List;
 
 /**
  * Created by jxj42 on 2017/4/4.
@@ -9,6 +10,8 @@ import java.io.Serializable;
 public class GroupBean implements Serializable {
     private String groupid;
     private String groupname;
+    //我在群中的名片
+    private String nickname;
     //群的头像
     private String groupicon;
     //自己在本群内的身份类型
@@ -26,6 +29,24 @@ public class GroupBean implements Serializable {
     private String mptnumber;
 
     private String isGroupMember;
+
+    private List<String> membericonlist;
+
+    public String getNickname() {
+        return nickname;
+    }
+
+    public void setNickname(String nickname) {
+        this.nickname = nickname;
+    }
+
+    public List<String> getMembericonlist() {
+        return membericonlist;
+    }
+
+    public void setMembericonlist(List<String> membericonlist) {
+        this.membericonlist = membericonlist;
+    }
 
     public String getIsGroupMember() {
         return isGroupMember;

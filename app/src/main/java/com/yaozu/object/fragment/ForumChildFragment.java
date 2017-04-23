@@ -61,7 +61,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());
         stringAdapter = new HeaderViewRecyclerAdapter(listViewAdapter);
-        stringAdapter.addHeaderView(mViewHeader);
+        //stringAdapter.addHeaderView(mViewHeader);
         mRecyclerView.setAdapter(stringAdapter);
         refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
 

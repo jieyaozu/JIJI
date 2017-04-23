@@ -12,6 +12,7 @@ import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.bean.constant.GroupUserType;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersAdapter;
@@ -50,7 +51,7 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
         List<GroupBean> adminGrouplist = new ArrayList<>();
         for (int i = groupBeanList.size() - 1; i >= 0; i--) {
             GroupBean groupBean = groupBeanList.get(i);
-            if ("admin".equals(groupBean.getUsertype())) {
+            if (GroupUserType.ADMIN.equals(groupBean.getUsertype()) || GroupUserType.MASTER.equals(groupBean.getUsertype())) {
                 groupBeanList.remove(groupBean);
                 adminGrouplist.add(groupBean);
             }
@@ -91,7 +92,6 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
         final GroupBean groupBean = groupBeanList.get(position);
         holder.tvGroupName.setText(groupBean.getGroupname());
         Utils.setUserImg(groupBean.getGroupicon(), holder.ivGroupIcon);
-        Log.d("======>", groupBean.getUsertype());
         holder.layout.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
@@ -106,9 +106,9 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
         View view = LayoutInflater.from(mContext).inflate(R.layout.item_group_header, parent, false);
         TextView textView = (TextView) view.findViewById(R.id.item_group_title);
         final GroupBean groupBean = groupBeanList.get(position);
-        if ("admin".equals(groupBean.getUsertype())) {
+        if (GroupUserType.ADMIN.equals(groupBean.getUsertype()) || GroupUserType.MASTER.equals(groupBean.getUsertype())) {
             textView.setText("我管理的群");
-        } else if ("normal".equals(groupBean.getUsertype())) {
+        } else if (GroupUserType.NORMAL.equals(groupBean.getUsertype())) {
             textView.setText("我加入的群");
         }
         return view;
@@ -117,9 +117,9 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
     @Override
     public long getHeaderId(int position) {
         final GroupBean groupBean = groupBeanList.get(position);
-        if ("admin".equals(groupBean.getUsertype())) {
+        if (GroupUserType.ADMIN.equals(groupBean.getUsertype()) || GroupUserType.MASTER.equals(groupBean.getUsertype())) {
             return 0;
-        } else if ("normal".equals(groupBean.getUsertype())) {
+        } else if (GroupUserType.NORMAL.equals(groupBean.getUsertype())) {
             return 1;
         }
         return 0;
