@@ -17,9 +17,10 @@
         android:orientation="vertical">
 
         <RelativeLayout
+            android:id="@+id/user_detail_themepost"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@color/colorWhite">
+            android:background="@drawable/main_listview_selector">
 
             <TextView
                 android:layout_width="wrap_content"
@@ -47,9 +48,10 @@
             android:background="@color/divider_background_color" />
 
         <RelativeLayout
+            android:id="@+id/user_detail_replypost"
             android:layout_width="match_parent"
             android:layout_height="45dp"
-            android:background="@color/colorWhite">
+            android:background="@drawable/main_listview_selector">
 
             <TextView
                 android:layout_width="wrap_content"

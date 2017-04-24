@@ -30,6 +30,7 @@ import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.GroupPermission;
 import com.yaozu.object.utils.IntentKey;
+import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.UserScrollRootView;
 
@@ -54,6 +55,7 @@ public class UserInfoActivity extends BaseNoTitleActivity implements View.OnClic
     private LinearLayout layoutInvite;
     private RelativeLayout user_detail_set_admin_layout;
     private SwitchCompat scSetAdmin;
+    private RelativeLayout layoutThemePost, layoutReplyPost;
 
     private ImageView ivUserBackground;
     private UserScrollRootView scrollRootView;
@@ -99,6 +101,8 @@ public class UserInfoActivity extends BaseNoTitleActivity implements View.OnClic
         layoutInvite = (LinearLayout) findViewById(R.id.userinfo_bottom_layout);
         user_detail_set_admin_layout = (RelativeLayout) headerView.findViewById(R.id.user_detail_set_admin_layout);
         scSetAdmin = (SwitchCompat) headerView.findViewById(R.id.user_detail_set_admin);
+        layoutThemePost = (RelativeLayout) headerView.findViewById(R.id.user_detail_themepost);
+        layoutReplyPost = (RelativeLayout) headerView.findViewById(R.id.user_detail_replypost);
 
         ivUserIcon = (ImageView) findViewById(R.id.userdetail_usericon);
         tvUserName = (TextView) findViewById(R.id.userdetail_username);
@@ -124,6 +128,8 @@ public class UserInfoActivity extends BaseNoTitleActivity implements View.OnClic
     @Override
     protected void setListener() {
         ivReturn.setOnClickListener(this);
+        layoutThemePost.setOnClickListener(this);
+        layoutReplyPost.setOnClickListener(this);
         scSetAdmin.setOnCheckedChangeListener(new CompoundButton.OnCheckedChangeListener() {
             @Override
             public void onCheckedChanged(CompoundButton buttonView, boolean isChecked) {
@@ -311,6 +317,12 @@ public class UserInfoActivity extends BaseNoTitleActivity implements View.OnClic
         switch (v.getId()) {
             case R.id.userinfo_return:
                 finish();
+                break;
+            case R.id.user_detail_themepost:
+                IntentUtil.toUserThemePostActivity(this, userid, userInfoData.getBody().getUserinfo().getUsername());
+                break;
+            case R.id.user_detail_replypost:
+                IntentUtil.toUserReplyPostActivity(this, userid, userInfoData.getBody().getUserinfo().getUsername());
                 break;
         }
     }

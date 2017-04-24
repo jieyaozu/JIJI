@@ -13,6 +13,8 @@ import com.yaozu.object.activity.PostReplyDetailActivity;
 import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.ThemePostActivity;
+import com.yaozu.object.activity.UserReplyPostActivity;
+import com.yaozu.object.activity.UserThemePostActivity;
 import com.yaozu.object.activity.WebViewActivity;
 import com.yaozu.object.activity.group.ApplyEnterGroupActivity;
 import com.yaozu.object.activity.group.EditGroupActivity;
@@ -251,6 +253,34 @@ public class IntentUtil {
         Intent intent = new Intent(context, EditNicknameActivity.class);
         intent.putExtra(IntentKey.INTENT_GROUP_ID, groupid);
         intent.putExtra(IntentKey.INTENT_NICKNAME, nickname);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 去用户贴子列表页面
+     *
+     * @param context
+     * @param userid
+     * @param username
+     */
+    public static void toUserThemePostActivity(Context context, String userid, String username) {
+        Intent intent = new Intent(context, UserThemePostActivity.class);
+        intent.putExtra(IntentKey.INTENT_USERID, userid);
+        intent.putExtra(IntentKey.INTENT_USERNAME, username);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 去用户回复的帖子列表页面
+     *
+     * @param context
+     * @param userid
+     * @param username
+     */
+    public static void toUserReplyPostActivity(Context context, String userid, String username) {
+        Intent intent = new Intent(context, UserReplyPostActivity.class);
+        intent.putExtra(IntentKey.INTENT_USERID, userid);
+        intent.putExtra(IntentKey.INTENT_USERNAME, username);
         context.startActivity(intent);
     }
 }

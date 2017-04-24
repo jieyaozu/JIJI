@@ -93,6 +93,14 @@
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
         <activity
+            android:name=".activity.UserThemePostActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.UserReplyPostActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+        <activity
             android:name=".activity.WebViewActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
