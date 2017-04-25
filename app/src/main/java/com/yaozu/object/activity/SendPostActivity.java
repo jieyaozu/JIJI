@@ -213,6 +213,21 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 .show();
     }
 
+    private Post createPost(String postid, String groupid, String sectionid, String permission, String userid, String status, String createTime, String title, String content, List<MyImage> myImageList) {
+        Post post = new Post();
+        post.setPostid(postid);
+        post.setGroupid(groupid);
+        post.setSectionid(sectionid);
+        post.setPermission(permission);
+        post.setUserid(userid);
+        post.setStatus(status);
+        post.setCreatetime(createTime);
+        post.setTitle(title);
+        post.setContent(content);
+        post.setImages(myImageList);
+        return post;
+    }
+
     /**
      * 新增一个帖子
      *
@@ -224,19 +239,22 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         String url = DataInterface.ADD_POST;
         ParamList parameters = new ParamList();
         postid = EncodingConvert.getRandomString(4) + ((System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "");
+        String createtime = DateUtil.generateDateOfTime(System.currentTimeMillis());
         parameters.add(new ParamList.Parameter("postid", postid));
         parameters.add(new ParamList.Parameter("groupid", groupid));
         parameters.add(new ParamList.Parameter("sectionid", sectionid));
         parameters.add(new ParamList.Parameter("permission", permission));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("status", "0"));
-        parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
+        parameters.add(new ParamList.Parameter("createtime", createtime));
         parameters.add(new ParamList.Parameter("title", title));
         try {
             parameters.add(new ParamList.Parameter("content", URLEncoder.encode(content, "utf-8")));
         } catch (UnsupportedEncodingException e) {
             e.printStackTrace();
         }
+
+        Post post = createPost(postid, groupid, sectionid, permission, LoginInfo.getInstance(this).getUserAccount(), "0", createtime, title, content, mListData);
 
         RequestManager.getInstance().postRequest(this, url, parameters, RequestData.class, new RequestManager.OnResponseListener() {
             @Override

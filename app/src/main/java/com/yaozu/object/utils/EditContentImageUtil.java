@@ -99,7 +99,7 @@ public class EditContentImageUtil {
                     String path = "<img>" + image.getDisplayName() + "</img>";
                     SpannableString spannableString = new SpannableString(path);
                     spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    content.append("\r\n");
+                    //content.append("\r\n");
                     content.append(spannableString);
                 }
             }
@@ -120,7 +120,7 @@ public class EditContentImageUtil {
                         String path = "<img>" + image.getDisplayName() + "</img>";
                         SpannableString spannableString = new SpannableString(path);
                         spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                        content.append("\r\n");
+                        //content.append("\r\n");
                         content.append(spannableString);
                     } else {
                         Toast.makeText(context, "数组越界错误", Toast.LENGTH_SHORT).show();
