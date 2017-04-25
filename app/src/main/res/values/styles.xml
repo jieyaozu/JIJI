@@ -7,6 +7,7 @@
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
         <item name="android:textColorPrimary">@color/colorWhite</item>
+        <item name="toolbarStyle">@style/NoSpaceActionBarTheme</item>
     </style>
 
     <style name="BlackTheme" parent="Theme.AppCompat.Light.NoActionBar">
@@ -69,9 +70,16 @@
     <style name="mToolbarStyle" parent="@style/Widget.AppCompat.Toolbar">
         <item name="android:paddingRight">5dp</item>
         <item name="android:paddingLeft">0dp</item>
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
     </style>
 
     <style name="SwitchCompatStyle" parent="Theme.AppCompat.Light">
         <item name="colorControlActivated">@color/colorPrimary</item>
+    </style>
+
+    <style name="NoSpaceActionBarTheme" parent="Base.Widget.AppCompat.Toolbar">
+        <item name="contentInsetStart">0dp</item>
+        <item name="contentInsetStartWithNavigation">0dp</item>
     </style>
 </resources>

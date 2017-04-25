@@ -16,6 +16,7 @@ public class IntentKey {
     public static final String INTENT_POST = "intent_post";
     public static final String INTENT_POST_ID = "intent_post_id";
     public static final String INTENT_USERID = "intent_userid";
+    public static final String INTENT_USERNAME = "intent_username";
     public static final String INTENT_POST_POSITION = "intent_post_position";
     public static final String INTENT_ALBUM_IMAGES_INDEX = "intent_album_images_index";
     public static final String INTENT_IS_EDIT_POST = "intent_is_edit_post";
