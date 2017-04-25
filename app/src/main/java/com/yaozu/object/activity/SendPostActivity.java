@@ -10,6 +10,7 @@ import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
 import android.text.TextUtils;
+import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -29,6 +30,7 @@ import android.widget.Toast;
 import com.afollestad.materialdialogs.DialogAction;
 import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.fastjson.JSON;
+import com.yaozu.object.ObjectApplication;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
@@ -220,11 +222,15 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         post.setSectionid(sectionid);
         post.setPermission(permission);
         post.setUserid(userid);
+        post.setUserName(LoginInfo.getInstance(this).getUserName());
         post.setStatus(status);
         post.setCreatetime(createTime);
         post.setTitle(title);
         post.setContent(content);
+        post.setReplyNum("0");
+        post.setSupportNum("0");
         post.setImages(myImageList);
+        post.setUploadstatus("uploading");
         return post;
     }
 
@@ -234,7 +240,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      * @param title
      * @param content
      */
-    private void sendPostRequest(String title, String content, String groupid, String sectionid, String permission) {
+    private void sendPostRequest(final String title, String content, String groupid, String sectionid, String permission) {
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POST;
         ParamList parameters = new ParamList();
@@ -254,7 +260,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             e.printStackTrace();
         }
 
-        Post post = createPost(postid, groupid, sectionid, permission, LoginInfo.getInstance(this).getUserAccount(), "0", createtime, title, content, mListData);
+        final Post post = createPost(postid, groupid, sectionid, permission, LoginInfo.getInstance(this).getUserAccount(), "0", createtime, title, content, mListData);
+        ObjectApplication.tempPost = post;
 
         RequestManager.getInstance().postRequest(this, url, parameters, RequestData.class, new RequestManager.OnResponseListener() {
             @Override
@@ -263,11 +270,13 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                     RequestData requestData = (RequestData) object;
                     if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
                         //图片的处理
-                        uploadImagesToServer();
+                        uploadImagesToServer(post);
                         if (mListData == null || mListData.size() == 0) {
-                            closeBaseProgressDialog();
-                            finish();
+                            post.setUploadstatus("");
                         }
+                        closeBaseProgressDialog();
+                        Constant.SENDING_POST = true;
+                        finish();
                     } else {
                         showToast(requestData.getBody().getMessage());
                     }
@@ -286,42 +295,8 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      * 把发布的图片另存一份到指定的本地位置
      * 然后在把图片上传到服务器上
      */
-    private void uploadImagesToServer() {
-        for (int i = 0; i < mListData.size(); i++) {
-            final MyImage image = mListData.get(i);
-            //保存一份到本地
-            Bitmap bitmap = FileUtil.compressUserIcon(1200, image.getPath());
-            String savePath = getDir("images", MODE_PRIVATE).getPath();
-            String displayName = image.getDisplayName();
-
-            savePath = createSavePath(savePath, displayName);
-            FileUtil.saveOutput(bitmap, savePath);
-            image.setPath(savePath);
-            image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
-            //上传到服务器
-            NetUtil.uploadImageFile(this, postid, image.getCreatetime(), image.getPath(), new UploadListener() {
-                @Override
-                public void uploadSuccess(String jsonstring) {
-                    com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(jsonstring);
-                    int code = jsonObject.getIntValue("code");
-                    if (code == 1) {
-                        count++;
-                    } else {
-                        Toast.makeText(SendPostActivity.this, "图片发布失败，请重新发送", Toast.LENGTH_SHORT).show();
-                    }
-                    if (count == mListData.size()) {
-                        //数据回传
-                        closeBaseProgressDialog();
-                        finish();
-                    }
-                }
-
-                @Override
-                public void uploadFailed() {
-                    Toast.makeText(SendPostActivity.this, "图片发布失败，请重新发送", Toast.LENGTH_SHORT).show();
-                }
-            });
-        }
+    private void uploadImagesToServer(Post post) {
+        NetUtil.uploadPostImagesToServer(getApplicationContext(), post, mListData, postid);
     }
 
     /**

@@ -20,6 +20,7 @@ public class MyImage implements Parcelable, Serializable {
     public String createtime;
     public String width;
     public String height;
+    public int isSendSuccess = -1;
 
     public MyImage() {
 
@@ -35,6 +36,7 @@ public class MyImage implements Parcelable, Serializable {
         createtime = in.readString();
         width = in.readString();
         height = in.readString();
+        isSendSuccess = in.readInt();
     }
 
     public static final Creator<MyImage> CREATOR = new Creator<MyImage>() {
@@ -48,6 +50,14 @@ public class MyImage implements Parcelable, Serializable {
             return new MyImage[size];
         }
     };
+
+    public int isSendSuccess() {
+        return isSendSuccess;
+    }
+
+    public void setSendSuccess(int sendSuccess) {
+        isSendSuccess = sendSuccess;
+    }
 
     public String getImageurl_small() {
         return imageurl_small;
@@ -137,5 +147,6 @@ public class MyImage implements Parcelable, Serializable {
         dest.writeString(createtime);
         dest.writeString(width);
         dest.writeString(height);
+        dest.writeInt(isSendSuccess);
     }
 }

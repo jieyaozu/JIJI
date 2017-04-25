@@ -14,6 +14,7 @@ import android.widget.TextView;
 import android.widget.Toast;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
+import com.yaozu.object.ObjectApplication;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
@@ -21,6 +22,7 @@ import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.utils.NetUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.NoScrollGridView;
 
@@ -47,6 +49,13 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         notifyDataSetChanged();
     }
 
+    public void addDataToFirst(Post post) {
+        if (dataList != null) {
+            dataList.add(0, post);
+            notifyDataSetChanged();
+        }
+    }
+
     public void clearData() {
         dataList.clear();
     }
@@ -59,19 +68,32 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
 
     @Override
     public void onBindViewHolder(MyViewHolder holder, int position) {
-        final Post post = dataList.get(position);
+        Post post = dataList.get(position);
+        if (ObjectApplication.tempPost != null && ObjectApplication.tempPost.getPostid().equals(post.getPostid())) {
+            post = ObjectApplication.tempPost;
+        }
         Utils.setUserImg(post.getUserIcon(), holder.userIcon);
         holder.userName.setText(post.getUserName());
         holder.createTime.setText(DateUtil.getRelativeTime(post.getCreatetime()));
         holder.title.setText(post.getTitle());
         if (!TextUtils.isEmpty(post.getContent())) {
-            holder.content.setText(getNoImageContent(post.getContent()));
+            holder.content.setText(getNoImageContent(post.getContent()).trim());
             holder.content.setVisibility(View.VISIBLE);
         } else {
             holder.content.setVisibility(View.GONE);
         }
         if (!"0".equals(LoginInfo.getInstance(mContext).getAccountType())) {
             holder.superOperator.setVisibility(View.VISIBLE);
+        }
+        if (TextUtils.isEmpty(post.getUploadstatus()) || "success".equals(post.getUploadstatus())) {
+            holder.tvSendStatus.setVisibility(View.GONE);
+        } else {
+            holder.tvSendStatus.setVisibility(View.VISIBLE);
+            if ("failed".equals(post.getUploadstatus())) {
+                holder.tvSendStatus.setText("发送失败点击重试");
+            } else {
+                holder.tvSendStatus.setText("发送中...");
+            }
         }
         holder.support.setText(post.getSupportNum() + "赞");
         holder.reply.setText(post.getReplyNum() + "回复");
@@ -90,10 +112,24 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
                 Toast.makeText(mContext, "下沉", Toast.LENGTH_SHORT).show();
             }
         });
+        final Post finalPost = post;
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
-                IntentUtil.toPostDetailActivity(mContext, post);
+                IntentUtil.toPostDetailActivity(mContext, finalPost);
+            }
+        });
+        holder.tvSendStatus.setOnClickListener(new View.OnClickListener() {
+            @Override
+            public void onClick(View v) {
+                List<MyImage> imageList = new ArrayList<>();
+                for (MyImage image : ObjectApplication.tempPost.getImages()) {
+                    if (image.isSendSuccess != 1) {
+                        imageList.add(image);
+                    }
+                }
+                NetUtil.uploadPostImagesToServer(mContext, ObjectApplication.tempPost, imageList, ObjectApplication.tempPost.getPostid());
+                notifyDataSetChanged();
             }
         });
     }
@@ -123,6 +159,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         TextView content;
         TextView delete;
         TextView xiachen;
+        TextView tvSendStatus;
         LinearLayout superOperator;
         NoScrollGridView noScrollGridView;
         View itemView;
@@ -139,6 +176,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
             support = (TextView) itemView.findViewById(R.id.item_listview_forum_support);
             reply = (TextView) itemView.findViewById(R.id.item_listview_forum_reply);
             delete = (TextView) itemView.findViewById(R.id.forum_delete);
+            tvSendStatus = (TextView) itemView.findViewById(R.id.post_sendstatud);
             xiachen = (TextView) itemView.findViewById(R.id.forum_xiachen);
             superOperator = (LinearLayout) itemView.findViewById(R.id.forum_superadmin_operator);
         }

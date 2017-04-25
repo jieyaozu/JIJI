@@ -1,6 +1,11 @@
 package com.yaozu.object.activity.group;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Build;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.view.ViewCompat;
 import android.support.v4.view.ViewPropertyAnimatorListener;
 import android.support.v4.view.animation.FastOutSlowInInterpolator;
@@ -19,6 +24,7 @@ import android.view.animation.Interpolator;
 import android.widget.BaseAdapter;
 import android.widget.TextView;
 
+import com.yaozu.object.ObjectApplication;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.adapter.ForumListViewAdapter;
@@ -27,6 +33,7 @@ import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.GroupForumDataInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
@@ -64,6 +71,14 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_group_of_post);
+        Constant.SENDING_POST = false;
+        registerUpdateReceiver();
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterUpdateRecevier();
     }
 
     @Override
@@ -161,6 +176,15 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
         mActionBar = actionBar;
         actionBar.setTitle(groupBean.getGroupname());
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Constant.SENDING_POST) {
+            Constant.SENDING_POST = false;
+            listViewAdapter.addDataToFirst(ObjectApplication.tempPost);
+        }
     }
 
     /**
@@ -314,6 +338,49 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
             anim.setDuration(200L);
             anim.setInterpolator(INTERPOLATOR);
             button.startAnimation(anim);
+        }
+    }
+
+    /**
+     * @Description:
+     * @author
+     * @date 2013-10-28 jieyaozu 10:30:27
+     */
+    protected void registerUpdateReceiver() {
+        if (updataroadcastReceiver == null) {
+            updataroadcastReceiver = new UpdataBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(IntentKey.NOTIFY_UPLOAD_IMAGE_SUCCESS);
+            filter.addAction(IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED);
+            localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.registerReceiver(updataroadcastReceiver, filter);
+        }
+    }
+
+    protected void unRegisterUpdateRecevier() {
+        if (updataroadcastReceiver != null) {
+            localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.unregisterReceiver(updataroadcastReceiver);
+            updataroadcastReceiver = null;
+        }
+    }
+
+    private UpdataBroadcastReceiver updataroadcastReceiver;
+    private LocalBroadcastManager localBroadcastManager;
+
+    /**
+     * 2015-11-5
+     */
+    private class UpdataBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (IntentKey.NOTIFY_UPLOAD_IMAGE_SUCCESS.equals(intent.getAction())) {
+                listViewAdapter.notifyDataSetChanged();
+                refreshLayout.doRefreshing();
+            } else if (IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED.equals(intent.getAction())) {
+                listViewAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

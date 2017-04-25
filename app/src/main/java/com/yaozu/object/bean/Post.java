@@ -30,6 +30,16 @@ public class Post implements Serializable {
     private String groupname;
     private String sectionid;
     private String permission;
+    //发送贴子的状态
+    private String uploadstatus;
+
+    public String getUploadstatus() {
+        return uploadstatus;
+    }
+
+    public void setUploadstatus(String uploadstatus) {
+        this.uploadstatus = uploadstatus;
+    }
 
     public String getSectionid() {
         return sectionid;

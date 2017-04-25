@@ -1,18 +1,23 @@
 package com.yaozu.object.utils;
 
 import android.content.Context;
+import android.content.Intent;
 import android.graphics.Bitmap;
 import android.graphics.BitmapFactory;
 import android.net.ConnectivityManager;
 import android.net.NetworkInfo;
 import android.os.Handler;
 import android.os.Message;
+import android.support.v4.content.LocalBroadcastManager;
 import android.util.Log;
 import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
+import com.yaozu.object.ObjectApplication;
+import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.group.UploadGroupIconActivity;
 import com.yaozu.object.bean.MyImage;
+import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.listener.DownLoadIconListener;
 import com.yaozu.object.listener.UploadListener;
@@ -179,6 +184,7 @@ public class NetUtil {
     }
 
     /**
+     * 上传群封面图片
      * 保存本地并上传图片
      * 把发布的图片另存一份到指定的本地位置
      * 然后在把图片上传到服务器上
@@ -198,6 +204,69 @@ public class NetUtil {
             image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
             //上传到服务器
             NetUtil.uploadGroupImageFile(context, groupid, image.getCreatetime(), image.getPath(), listener);
+        }
+    }
+
+    private static int count = 0;
+
+    /**
+     * 发送主题贴子图片
+     *
+     * @param context
+     * @param mListData
+     * @param postid
+     */
+    public static void uploadPostImagesToServer(final Context context, final Post post, final List<MyImage> mListData, String postid) {
+        post.setUploadstatus("uploading");
+        count = 0;
+        for (int i = 0; i < mListData.size(); i++) {
+            final MyImage image = mListData.get(i);
+            //保存一份到本地
+            Bitmap bitmap = FileUtil.compressUserIcon(1200, image.getPath());
+            String savePath = context.getDir("images", Context.MODE_PRIVATE).getPath();
+            String displayName = image.getDisplayName();
+
+            savePath = createSavePath(savePath, displayName);
+            FileUtil.saveOutput(bitmap, savePath);
+            image.setPath(savePath);
+            image.setCreatetime((System.currentTimeMillis() + (i * 1000)) + "");
+            //上传到服务器
+            NetUtil.uploadImageFile(context, postid, image.getCreatetime(), image.getPath(), new UploadListener() {
+                @Override
+                public void uploadSuccess(String jsonstring) {
+                    com.alibaba.fastjson.JSONObject jsonObject = JSON.parseObject(jsonstring);
+                    int code = jsonObject.getIntValue("code");
+                    if (code == 1) {
+                        count++;
+                        image.setSendSuccess(1);
+                    } else {
+                        image.setSendSuccess(0);
+                        post.setUploadstatus("failed");
+
+                        Intent playingintent = new Intent(IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED);
+                        LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
+                        playinglocalBroadcastManager.sendBroadcast(playingintent);
+                        Log.i("", "图片发布失败:" + image.getDisplayName());
+                    }
+                    if (count == mListData.size()) {
+                        post.setUploadstatus("success");
+                        Intent playingintent = new Intent(IntentKey.NOTIFY_UPLOAD_IMAGE_SUCCESS);
+                        LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
+                        playinglocalBroadcastManager.sendBroadcast(playingintent);
+                        ObjectApplication.tempPost = null;
+                        Log.i("", "图片发布成功:" + image.getDisplayName());
+                    }
+                }
+
+                @Override
+                public void uploadFailed() {
+                    post.setUploadstatus("failed");
+                    Intent playingintent = new Intent(IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED);
+                    LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
+                    playinglocalBroadcastManager.sendBroadcast(playingintent);
+                    Toast.makeText(context, "网络错误，图片发布失败", Toast.LENGTH_SHORT).show();
+                }
+            });
         }
     }
 
