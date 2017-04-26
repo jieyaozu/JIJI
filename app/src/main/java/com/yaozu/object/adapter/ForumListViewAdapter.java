@@ -18,6 +18,7 @@ import com.yaozu.object.ObjectApplication;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
+import com.yaozu.object.bean.constant.SendStatus;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DateUtil;
@@ -85,11 +86,11 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         if (!"0".equals(LoginInfo.getInstance(mContext).getAccountType())) {
             holder.superOperator.setVisibility(View.VISIBLE);
         }
-        if (TextUtils.isEmpty(post.getUploadstatus()) || "success".equals(post.getUploadstatus())) {
+        if (TextUtils.isEmpty(post.getUploadstatus()) || SendStatus.SUCCESS.equals(post.getUploadstatus())) {
             holder.tvSendStatus.setVisibility(View.GONE);
         } else {
             holder.tvSendStatus.setVisibility(View.VISIBLE);
-            if ("failed".equals(post.getUploadstatus())) {
+            if (SendStatus.FAILED.equals(post.getUploadstatus())) {
                 holder.tvSendStatus.setText("发送失败点击重试");
             } else {
                 holder.tvSendStatus.setText("发送中...");
@@ -122,6 +123,9 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         holder.tvSendStatus.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                if (SendStatus.UPLOADING.equals(finalPost.getUploadstatus())) {
+                    return;
+                }
                 List<MyImage> imageList = new ArrayList<>();
                 for (MyImage image : ObjectApplication.tempPost.getImages()) {
                     if (image.isSendSuccess != 1) {

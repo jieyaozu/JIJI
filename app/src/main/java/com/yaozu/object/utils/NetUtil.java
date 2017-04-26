@@ -14,10 +14,9 @@ import android.widget.Toast;
 
 import com.alibaba.fastjson.JSON;
 import com.yaozu.object.ObjectApplication;
-import com.yaozu.object.activity.SendPostActivity;
-import com.yaozu.object.activity.group.UploadGroupIconActivity;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
+import com.yaozu.object.bean.constant.SendStatus;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.listener.DownLoadIconListener;
 import com.yaozu.object.listener.UploadListener;
@@ -217,7 +216,7 @@ public class NetUtil {
      * @param postid
      */
     public static void uploadPostImagesToServer(final Context context, final Post post, final List<MyImage> mListData, String postid) {
-        post.setUploadstatus("uploading");
+        post.setUploadstatus(SendStatus.UPLOADING);
         count = 0;
         for (int i = 0; i < mListData.size(); i++) {
             final MyImage image = mListData.get(i);
@@ -241,7 +240,7 @@ public class NetUtil {
                         image.setSendSuccess(1);
                     } else {
                         image.setSendSuccess(0);
-                        post.setUploadstatus("failed");
+                        post.setUploadstatus(SendStatus.FAILED);
 
                         Intent playingintent = new Intent(IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED);
                         LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
@@ -249,7 +248,7 @@ public class NetUtil {
                         Log.i("", "图片发布失败:" + image.getDisplayName());
                     }
                     if (count == mListData.size()) {
-                        post.setUploadstatus("success");
+                        post.setUploadstatus(SendStatus.SUCCESS);
                         Intent playingintent = new Intent(IntentKey.NOTIFY_UPLOAD_IMAGE_SUCCESS);
                         LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
                         playinglocalBroadcastManager.sendBroadcast(playingintent);
@@ -260,7 +259,7 @@ public class NetUtil {
 
                 @Override
                 public void uploadFailed() {
-                    post.setUploadstatus("failed");
+                    post.setUploadstatus(SendStatus.FAILED);
                     Intent playingintent = new Intent(IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED);
                     LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
                     playinglocalBroadcastManager.sendBroadcast(playingintent);
