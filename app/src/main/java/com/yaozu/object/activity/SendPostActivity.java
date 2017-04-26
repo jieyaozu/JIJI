@@ -125,7 +125,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 }
                 String permission = permissionBeanList.get(permissionSpinner.getSelectedItemPosition()).getPermissioncode();
                 String sectionid = section_data_list.get(sectionSpinner.getSelectedItemPosition()).getSectionid();
-                if (!"private".equals(permission) && content.length() < 140) {
+                if (!"private".equals(permission) && getNoImageContent(content).length() < 140) {
                     showPermissionRemindDialog();
                     return true;
                 }
@@ -151,6 +151,17 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
             default:
                 return super.onOptionsItemSelected(item);
         }
+    }
+
+    /**
+     * 获得没有图片标签的文本
+     *
+     * @param contentString
+     * @return
+     */
+    private String getNoImageContent(String contentString) {
+        String content = contentString.replaceAll("<img>(.+)</img>", "");
+        return content;
     }
 
     @Override
