@@ -153,6 +153,10 @@
             android:name=".activity.group.EditNicknameActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.setting.SettingActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
     </application>
 
 </manifest>
