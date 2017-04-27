@@ -7,6 +7,8 @@ import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ImageView;
+import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yaozu.object.R;
@@ -21,8 +23,8 @@ import com.yaozu.object.utils.Utils;
 public class MineFragment extends BaseFragment implements View.OnClickListener {
     public static String TAG = "MineFragment";
     private ImageView ivUsericon;
-    private TextView tvTheme, tvReplyPost, tvComment, tvCollect;
-    private TextView tvUsername;
+    private LinearLayout tvTheme, tvReplyPost, tvComment, tvCollect;
+    private TextView tvUsername, tvUserid;
 
     private CardView cardView2;
 
@@ -38,6 +40,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
 
         Utils.setUserImg(LoginInfo.getInstance(this.getActivity()).getIconPath(), ivUsericon);
         tvUsername.setText(LoginInfo.getInstance(this.getActivity()).getUserName());
+        tvUserid.setText("呱呱号: " + LoginInfo.getInstance(this.getActivity()).getUserAccount());
     }
 
     @Override
@@ -50,11 +53,12 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
         View view = inflater.inflate(R.layout.fragment_mine, container, false);
         ivUsericon = (ImageView) view.findViewById(R.id.fragment_usericon);
-        tvTheme = (TextView) view.findViewById(R.id.fragment_mine_theme);
-        tvReplyPost = (TextView) view.findViewById(R.id.fragment_mine_replypost);
-        tvComment = (TextView) view.findViewById(R.id.fragment_mine_comment);
-        tvCollect = (TextView) view.findViewById(R.id.fragment_mine_collect);
+        tvTheme = (LinearLayout) view.findViewById(R.id.fragment_mine_theme);
+        tvReplyPost = (LinearLayout) view.findViewById(R.id.fragment_mine_replypost);
+        tvComment = (LinearLayout) view.findViewById(R.id.fragment_mine_comment);
+        tvCollect = (LinearLayout) view.findViewById(R.id.fragment_mine_collect);
         tvUsername = (TextView) view.findViewById(R.id.fragment_username);
+        tvUserid = (TextView) view.findViewById(R.id.fragment_userid);
         cardView2 = (CardView) view.findViewById(R.id.cardview2);
         return view;
     }

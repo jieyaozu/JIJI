@@ -156,9 +156,6 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             case R.id.action_share:
                 showToast("分享");
                 return true;
-            case R.id.action_sort:
-                showToast("排序");
-                return true;
             case R.id.action_post_delete:
                 showToast("删除");
                 return true;

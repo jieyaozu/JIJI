@@ -131,7 +131,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                 }
                 //Log.d("=====content======>", content);
                 if (!isEdit) {
-                    checkImageData(content);//校验一下图片
+                    checkImageData(content);//校验一下图片0
                     sendPostRequest(title, content, groupid, sectionid, permission);
                 } else {
                     //拿到传进来的图片名

@@ -13,10 +13,12 @@ import android.widget.TextView;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MessageBean;
+import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.MsgType;
+import com.yaozu.object.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -49,7 +51,7 @@ public class MessageFragment extends BaseFragment {
     @Override
     public void onResume() {
         super.onResume();
-        if(Constant.IS_CLEARGROUP_MESSAGE_SUCCESS){
+        if (Constant.IS_CLEARGROUP_MESSAGE_SUCCESS) {
             Constant.IS_CLEARGROUP_MESSAGE_SUCCESS = false;
             List<MessageBean> allbeans = messageBeanDao.findAllBeans();
             if (allbeans != null) {
@@ -95,7 +97,11 @@ public class MessageFragment extends BaseFragment {
             String imgurl = messageBean.getIcon();
             tvTitle.setText(messageBean.getTitle());
             adtitional.setText(messageBean.getAdditional());
-            ImageLoader.getInstance().displayImage(imgurl, ivIcon, Constant.IMAGE_OPTIONS_FOR_ROUNDCORNER);
+            if (MsgType.TYPE_GROUP.equals(messageBean.getType())) {
+                ivIcon.setImageResource(R.drawable.group_message_icon);
+            } else {
+                Utils.setUserImg(imgurl, ivIcon);
+            }
             if (messageBean.getNewMsgnumber() > 0) {
                 tvMsgNumber.setVisibility(View.VISIBLE);
                 tvMsgNumber.setText(messageBean.getNewMsgnumber() + "");
