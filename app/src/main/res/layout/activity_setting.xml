@@ -55,13 +55,14 @@
             android:textSize="16dp" />
 
         <TextView
+            android:id="@+id/setting_system_clearcache_value"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/setting_system_clearcache"
             android:layout_centerVertical="true"
+            android:layout_marginRight="5dp"
             android:drawablePadding="10dp"
             android:drawableRight="@drawable/text_arrow_gray"
-            android:layout_marginRight="5dp"
             android:gravity="center_vertical"
             android:text="3.0M"
             android:textColor="@color/nomralblack"
@@ -90,8 +91,8 @@
             android:layout_height="wrap_content"
             android:layout_alignRight="@+id/setting_checkupdate"
             android:layout_centerVertical="true"
-            android:drawablePadding="10dp"
             android:layout_marginRight="5dp"
+            android:drawablePadding="10dp"
             android:drawableRight="@drawable/text_arrow_gray"
             android:gravity="center_vertical"
             android:text="V1.0"

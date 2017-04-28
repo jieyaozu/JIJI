@@ -25,6 +25,7 @@ import com.yaozu.object.activity.group.GroupMessageActivity;
 import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.activity.group.GroupSearchActivity;
 import com.yaozu.object.activity.group.SectionGroupActivity;
+import com.yaozu.object.activity.setting.UserSettingActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
 import com.yaozu.object.activity.user.UserInfoActivity;
@@ -281,6 +282,16 @@ public class IntentUtil {
         Intent intent = new Intent(context, UserReplyPostActivity.class);
         intent.putExtra(IntentKey.INTENT_USERID, userid);
         intent.putExtra(IntentKey.INTENT_USERNAME, username);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 用户个人设置页面
+     *
+     * @param context
+     */
+    public static void toUserSettingActivity(Context context) {
+        Intent intent = new Intent(context, UserSettingActivity.class);
         context.startActivity(intent);
     }
 }

@@ -20,6 +20,7 @@ public class FileUtil {
     private String SDPATH;
     private String DWONLOADPATH;
     public static String APP_FOLDER = "mayimen";
+
     /**
      * "/superplan/file/"
      */
@@ -104,12 +105,16 @@ public class FileUtil {
     }
 
     public static long getAppCacheSize(Context context) {
-        File file = context.getDir("images", Context.MODE_PRIVATE);
+        //File file = context.getDir("cache", Context.MODE_PRIVATE);
+        String cacheDirPath = "/data/data/" + context.getPackageName() + "/cache/";
+        File file = new File(cacheDirPath);
         return getSize(file);
     }
 
     public static void cleanAppCache(Context context) {
-        File file = context.getDir("images", Context.MODE_PRIVATE);
+        //File file = context.getDir("cache", Context.MODE_PRIVATE);
+        String cacheDirPath = "/data/data/" + context.getPackageName() + "/cache/";
+        File file = new File(cacheDirPath);
         delFolder(file.getPath());
     }
 
