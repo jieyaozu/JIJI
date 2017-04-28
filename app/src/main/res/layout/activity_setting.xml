@@ -6,4 +6,109 @@
 
     <include layout="@layout/activity_common_toolsbar" />
 
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="20dp"
+        android:text="账号设置"
+        android:textColor="@color/gray_white" />
+
+    <TextView
+        android:id="@+id/setting_account_set"
+        style="@style/RippleBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:layout_marginTop="@dimen/dimen_5"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="个人设置"
+        android:textColor="@color/nomralblack"
+        android:textSize="16dp" />
+
+    <TextView
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginLeft="15dp"
+        android:layout_marginTop="10dp"
+        android:text="系统设置"
+        android:textColor="@color/gray_white" />
+
+    <RelativeLayout
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/setting_system_clearcache"
+            style="@style/RippleBackground"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:layout_marginTop="@dimen/dimen_5"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="手动清理缓存"
+            android:textColor="@color/nomralblack"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/setting_system_clearcache"
+            android:layout_centerVertical="true"
+            android:drawablePadding="10dp"
+            android:drawableRight="@drawable/text_arrow_gray"
+            android:layout_marginRight="5dp"
+            android:gravity="center_vertical"
+            android:text="3.0M"
+            android:textColor="@color/nomralblack"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+    <RelativeLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content">
+
+        <TextView
+            android:id="@+id/setting_checkupdate"
+            style="@style/RippleBackground"
+            android:layout_width="match_parent"
+            android:layout_height="50dp"
+            android:layout_marginLeft="15dp"
+            android:layout_marginRight="15dp"
+            android:gravity="center_vertical"
+            android:paddingLeft="15dp"
+            android:text="检查更新"
+            android:textColor="@color/nomralblack"
+            android:textSize="16dp" />
+
+        <TextView
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_alignRight="@+id/setting_checkupdate"
+            android:layout_centerVertical="true"
+            android:drawablePadding="10dp"
+            android:layout_marginRight="5dp"
+            android:drawableRight="@drawable/text_arrow_gray"
+            android:gravity="center_vertical"
+            android:text="V1.0"
+            android:textColor="@color/nomralblack"
+            android:textSize="16dp" />
+    </RelativeLayout>
+
+    <TextView
+        android:id="@+id/setting_about"
+        style="@style/RippleBackground"
+        android:layout_width="match_parent"
+        android:layout_height="50dp"
+        android:layout_marginLeft="15dp"
+        android:layout_marginRight="15dp"
+        android:gravity="center_vertical"
+        android:paddingLeft="15dp"
+        android:text="关于"
+        android:textColor="@color/nomralblack"
+        android:textSize="16dp" />
 </LinearLayout>

@@ -19,7 +19,7 @@
         <RelativeLayout
             android:id="@+id/user_detail_themepost"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:background="@drawable/main_listview_selector">
 
             <TextView
@@ -50,7 +50,7 @@
         <RelativeLayout
             android:id="@+id/user_detail_replypost"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:background="@drawable/main_listview_selector">
 
             <TextView
@@ -81,7 +81,7 @@
         <RelativeLayout
             android:id="@+id/user_detail_set_admin_layout"
             android:layout_width="match_parent"
-            android:layout_height="45dp"
+            android:layout_height="50dp"
             android:background="@color/colorWhite"
             android:visibility="gone">
 
