@@ -81,6 +81,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     //是新增还是编辑
     private boolean isEdit = false;
+    private List<MyImage> oldImages = new ArrayList<>();//编辑前的图片集合
 
     @Override
     protected void setContentView() {
@@ -134,18 +135,9 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                     checkImageData(content);//校验一下图片0
                     sendPostRequest(title, content, groupid, sectionid, permission);
                 } else {
-                    //拿到传进来的图片名
-                    for (int i = 0; i < mPost.getImages().size(); i++) {
-                        MyImage image = mPost.getImages().get(i);
-                        System.out.println("===List里面的name===>" + image.getDisplayName());
-                    }
-                    //拿到编辑的图片名
-                    String[] array = content.split("<img>");
-                    for (String str : array) {
-                        if (str.contains("</img>")) {
-                            System.out.println("===Content 里面的name===>" + str.substring(0, str.indexOf("</img>")));
-                        }
-                    }
+                    //校验一下图片0
+                    checkImageData(content);
+                    requestEditPost(mPost.getPostid(), title, content, permission);
                 }
                 return true;
             default:
@@ -188,8 +180,11 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
         groupid = getIntent().getStringExtra(IntentKey.INTENT_GROUP_ID);
         if (mPost != null) {
+            postid = mPost.getPostid();
+            groupid = mPost.getGroupid();
             etTitle.setText(mPost.getTitle());
             etContent.setText(mPost.getContent());
+            oldImages.addAll(mPost.getImages());
             EditContentImageUtil.showImageInEditTextView(this, etContent, mPost.getImages(), "");
         }
         initGroupSpinnerData();
@@ -280,6 +275,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
                         uploadImagesToServer(post);
                         if (mListData == null || mListData.size() == 0) {
                             post.setUploadstatus("");
+                            ObjectApplication.tempPost = null;
                         }
                         closeBaseProgressDialog();
                         Constant.SENDING_POST = true;
@@ -304,6 +300,109 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
      */
     private void uploadImagesToServer(Post post) {
         NetUtil.uploadPostImagesToServer(getApplicationContext(), post, mListData, postid);
+    }
+
+    /**
+     * 编辑贴子
+     *
+     * @param postid
+     * @param title
+     * @param content
+     * @param permission
+     */
+    private void requestEditPost(final String postid, final String title, final String content, String permission) {
+        showBaseProgressDialog("发送中...");
+        String url = DataInterface.EDIT_POST;
+        ParamList parameters = new ParamList();
+        parameters.add(new ParamList.Parameter("postid", postid));
+        parameters.add(new ParamList.Parameter("title", title));
+        parameters.add(new ParamList.Parameter("permission", permission));
+        try {
+            parameters.add(new ParamList.Parameter("content", URLEncoder.encode(content, "utf-8")));
+        } catch (UnsupportedEncodingException e) {
+            e.printStackTrace();
+        }
+
+        RequestManager.getInstance().postRequest(this, url, parameters, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                closeBaseProgressDialog();
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        //最后需要删除的图片
+                        List<MyImage> deleteImages = getDeleteImages(content, oldImages);
+                        for (MyImage image : deleteImages) {
+                            requestDeleteImage(postid, image.getDisplayName());
+                        }
+                        ObjectApplication.tempPost = mPost;
+                        mPost.setImages(mListData);
+                        uploadImagesToServer(mPost);
+                        if (mListData == null || mListData.size() == 0) {
+                            ObjectApplication.tempPost = null;
+                        }
+                        Constant.SENDING_POST = true;
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                closeBaseProgressDialog();
+            }
+        });
+    }
+
+    /**
+     * 删除图片
+     *
+     * @param postid
+     * @param displayname
+     */
+    private void requestDeleteImage(String postid, String displayname) {
+        String url = DataInterface.DELETE_IMAGE + "postid=" + postid + "&displayname=" + displayname;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    /**
+     * 得到需要删除的图片
+     *
+     * @param content   正文文本
+     * @param imageList 旧的图片集合
+     * @return
+     */
+    private List<MyImage> getDeleteImages(String content, List<MyImage> imageList) {
+        String[] array = content.split("<img>");
+        //拿到传进来的图片名
+        for (int i = imageList.size() - 1; i >= 0; i--) {
+            MyImage image = imageList.get(i);
+            //拿到编辑的图片名
+            for (String str : array) {
+                if (str.contains("</img>")) {
+                    String name = str.substring(0, str.indexOf("</img>"));
+                    if (name.equals(image.getDisplayName())) {
+                        imageList.remove(image);
+                    }
+                }
+            }
+        }
+        return imageList;
     }
 
     /**

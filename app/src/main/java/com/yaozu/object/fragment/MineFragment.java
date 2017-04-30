@@ -14,6 +14,7 @@ import android.widget.TextView;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.setting.SettingActivity;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 
@@ -50,6 +51,19 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
         super.onCreate(savedInstanceState);
     }
 
+    @Override
+    public void onResume() {
+        super.onResume();
+        if (Constant.IS_EDIT_USERICON) {
+            Constant.IS_EDIT_USERICON = false;
+            Utils.setUserImg(LoginInfo.getInstance(this.getActivity()).getIconPath(), ivUsericon);
+        }
+        if (Constant.IS_EDIT_USERNAME) {
+            Constant.IS_EDIT_USERNAME = false;
+            tvUsername.setText(LoginInfo.getInstance(this.getActivity()).getUserName());
+        }
+    }
+
     @Nullable
     @Override
     public View onCreateView(LayoutInflater inflater, @Nullable ViewGroup container, @Nullable Bundle savedInstanceState) {
@@ -80,7 +94,7 @@ public class MineFragment extends BaseFragment implements View.OnClickListener {
                 IntentUtil.toCollectActivity(this.getActivity());
                 break;
             case R.id.fragment_usericon:
-
+                IntentUtil.toUserIconActivity(this.getActivity(), LoginInfo.getInstance(this.getActivity()).getUserAccount(), LoginInfo.getInstance(this.getActivity()).getIconPath());
                 break;
             case R.id.cardview_userinfo:
                 IntentUtil.toUserInfoActivity(this.getActivity(), "", LoginInfo.getInstance(this.getActivity()).getUserAccount());

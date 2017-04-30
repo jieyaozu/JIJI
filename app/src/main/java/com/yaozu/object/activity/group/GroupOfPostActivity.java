@@ -183,7 +183,11 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
         super.onResume();
         if (Constant.SENDING_POST) {
             Constant.SENDING_POST = false;
-            listViewAdapter.addDataToFirst(ObjectApplication.tempPost);
+            if (ObjectApplication.tempPost != null) {
+                listViewAdapter.addDataToFirst(ObjectApplication.tempPost);
+            } else {
+                refreshLayout.doRefreshing();
+            }
         }
     }
 

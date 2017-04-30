@@ -96,6 +96,13 @@ public class LoginInfo {
         return mUserName;
     }
 
+    public void setUserName(String username) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constant.USER_NAME, username);
+        editor.commit();
+        mUserName = username;
+    }
+
     public static String getFromDevice() {
         if (TextUtils.isEmpty(mFromDevice)) {
             mFromDevice = preferences.getString(Constant.USER_FROM_DEVICE, "");
@@ -117,6 +124,15 @@ public class LoginInfo {
         return mSmallIcon;
     }
 
+    public void updateUserIcon(String iconpath, String smalliconPath) {
+        SharedPreferences.Editor editor = preferences.edit();
+        editor.putString(Constant.USER_ICON, iconpath);
+        editor.putString(Constant.USER_SMALL_ICON, smalliconPath);
+        mIcon = null;
+        mSmallIcon = null;
+        editor.commit();
+    }
+
     public String getUserToken() {
         return mToken;//preferences.getString(Constant.USER_TOKEN, "");
     }
@@ -136,6 +152,8 @@ public class LoginInfo {
         SharedPreferences.Editor editor = preferences.edit();
         editor.putBoolean(Constant.IS_LOGINING, false);
         editor.putString(Constant.USER_TOKEN, "");
+        editor.putString(Constant.USER_ACCOUNT, "");
+        mAccount = null;
         editor.commit();
     }
 

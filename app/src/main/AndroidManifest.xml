@@ -26,14 +26,6 @@
                 <category android:name="android.intent.category.LAUNCHER" />
             </intent-filter>
         </activity>
-        <activity
-            android:name="com.yaozu.object.SettingsActivity"
-            android:label="@string/title_activity_settings"
-            android:parentActivityName="android.support.v7.app.AppCompatActivity">
-            <meta-data
-                android:name="android.support.PARENT_ACTIVITY"
-                android:value="android.support.v7.app.AppCompatActivity" />
-        </activity>
 
         <activity
             android:name=".activity.user.LoginActivity"
@@ -46,9 +38,6 @@
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
 
-        <activity
-            android:name="com.yaozu.object.SettingsActivity2"
-            android:theme="@style/SwipeBackTheme" />
         <activity
             android:name="com.yaozu.object.MainActivity"
             android:launchMode="singleTask"
@@ -161,6 +150,14 @@
             android:name=".activity.setting.UserSettingActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.setting.ChangePasswordActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.user.UserIconDetail"
+            android:screenOrientation="portrait"
+            android:theme="@style/BlackTheme" />
     </application>
 
 </manifest>

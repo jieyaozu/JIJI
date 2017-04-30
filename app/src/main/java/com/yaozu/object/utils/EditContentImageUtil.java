@@ -91,30 +91,18 @@ public class EditContentImageUtil {
         String contentString = content.getText().toString();
         String[] arrayString = contentString.split("<img>");
         Log.d("length:", "" + arrayString.length);
-        if (arrayString.length <= 1) {
-            if (images != null) {
-                for (MyImage image : images) {
-                    Bitmap defaultbitmap = getDefaultbgBitmap(context, image);
-                    UrlImageSpan imageSpan = new UrlImageSpan(context, defaultbitmap, image.getImageurl_big(), content);
-                    String path = "<img>" + image.getDisplayName() + "</img>";
-                    SpannableString spannableString = new SpannableString(path);
-                    spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
-                    //content.append("\r\n");
-                    content.append(spannableString);
-                }
-            }
-        } else {
-            content.setText("");
-            //TODO
-            for (int i = 0; i < arrayString.length; i++) {
-                String p = arrayString[i];
-                //有图片
-                if (p.contains("</img>")) {
-                    p = p.substring(p.indexOf("</img>") + "</img>".length(), p.length());
-                    //插入图片
-                    int pos = i - 1;
-                    if (pos < images.size()) {
-                        MyImage image = images.get(pos);
+        content.setText("");
+        //TODO
+        for (int i = 0; i < arrayString.length; i++) {
+            String p = arrayString[i];
+            //有图片
+            if (p.contains("</img>")) {
+                String displayName = p.substring(0, p.indexOf("</img>"));
+                p = p.substring(p.indexOf("</img>") + "</img>".length(), p.length());
+                //插入图片
+                if (images != null && images.size() > 0) {
+                    MyImage image = getDesImage(images, displayName, null);//images.get(pos);
+                    if (image != null) {
                         Bitmap defaultbitmap = getDefaultbgBitmap(context, image);
                         UrlImageSpan imageSpan = new UrlImageSpan(context, defaultbitmap, image.getImageurl_big(), content);
                         String path = "<img>" + image.getDisplayName() + "</img>";
@@ -122,56 +110,33 @@ public class EditContentImageUtil {
                         spannableString.setSpan(imageSpan, 0, path.length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
                         //content.append("\r\n");
                         content.append(spannableString);
-                    } else {
-                        Toast.makeText(context, "数组越界错误", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    //Toast.makeText(context, "图片丢失了", Toast.LENGTH_SHORT).show();
+                    Log.e("EditContentImageUtil:", "图片丢失了");
                 }
-                content.append(p);
             }
+            content.append(p);
         }
     }
 
     public static void addTextImageToLayout(final Context context, LinearLayout layout, String contentString, final List<MyImage> imagesList) {
-        String[] arrayString = contentString.split("<img>");
-        if (arrayString.length <= 1) {
-            for (String str : arrayString) {
-                TextView textView = (TextView) View.inflate(context, R.layout.item_textview, null);
-                textView.setText(str);
-                layout.addView(textView);
-            }
-            for (int i = 0; i < imagesList.size(); i++) {
-                MyImage image = imagesList.get(i);
-                ImageView imageView = (ImageView) View.inflate(context, R.layout.item_imageview, null);
-                int imageWidth = Utils.getScreenWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
-                int imageHeight = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
-                LinearLayout.LayoutParams layoutParams = new LinearLayout.LayoutParams(imageWidth, imageHeight);
-                layoutParams.topMargin = context.getResources().getDimensionPixelSize(R.dimen.dimen_5);
-                ImageLoader.getInstance().displayImage(image.getImageurl_big(), imageView, Constant.IMAGE_OPTIONS_FOR_PARTNER);
-                imageView.setLayoutParams(layoutParams);
-                layout.addView(imageView);
+        //重新排好序的
+        List<MyImage> orderList = new ArrayList<>();
 
-                final int finalI = i;
-                imageView.setOnClickListener(new View.OnClickListener() {
-                    @Override
-                    public void onClick(View v) {
-                        IntentUtil.toScannerPictureActivity(context, (ArrayList<MyImage>) imagesList, finalI);
-                    }
-                });
-            }
-        } else {
-            //TODO
-            for (int i = 0; i < arrayString.length; i++) {
-                TextView textView = (TextView) View.inflate(context, R.layout.item_textview, null);
-                String p = arrayString[i];
-                Log.d("======p=====>", i + ": " + p);
-                //有图片
-                if (p.contains("</img>")) {
-                    Log.d("======img=====>", i + "");
-                    p = p.substring(p.indexOf("</img>") + "</img>".length(), p.length());
-                    //插入图片
-                    int pos = i - 1;
-                    if (pos < imagesList.size()) {
-                        MyImage image = imagesList.get(pos);
+        String[] arrayString = contentString.split("<img>");
+        for (int i = 0; i < arrayString.length; i++) {
+            TextView textView = (TextView) View.inflate(context, R.layout.item_textview, null);
+            String p = arrayString[i];
+            Log.d("======p=====>", i + ": " + p);
+            //有图片
+            if (p.contains("</img>")) {
+                String displayName = p.substring(0, p.indexOf("</img>"));
+                p = p.substring(p.indexOf("</img>") + "</img>".length(), p.length());
+                //插入图片
+                if (imagesList != null && imagesList.size() > 0) {
+                    MyImage image = getDesImage(imagesList, displayName, orderList);//imagesList.get(pos);
+                    if (image != null) {
                         ImageView imageView = (ImageView) View.inflate(context, R.layout.item_imageview, null);
                         int imageWidth = Utils.getScreenWidth(context) - context.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2;
                         int imageHeight = (int) (imageWidth * (Float.parseFloat(image.getHeight()) / Float.parseFloat(image.getWidth())));
@@ -188,14 +153,39 @@ public class EditContentImageUtil {
                                 IntentUtil.toScannerPictureActivity(context, (ArrayList<MyImage>) imagesList, finalI);
                             }
                         });
-                    } else {
-                        Toast.makeText(context, "数组越界错误", Toast.LENGTH_SHORT).show();
                     }
+                } else {
+                    Log.e("EditContentImageUtil:", "图片丢失了");
                 }
-                layout.addView(textView);
-                textView.setText(p);
+            }
+            layout.addView(textView);
+            textView.setText(p);
+        }
+        if (imagesList != null) {
+            if (orderList.size() > 0) imagesList.clear();
+            imagesList.addAll(orderList);
+        }
+    }
+
+    /**
+     * @param imageList
+     * @param desDisplayname 目标图片
+     * @return
+     */
+    private static MyImage getDesImage(List<MyImage> imageList, String desDisplayname, List<MyImage> orderList) {
+        if (imageList != null) {
+            for (int i = 0; i < imageList.size(); i++) {
+                MyImage image = imageList.get(i);
+                if (desDisplayname.equals(image.getDisplayName())) {
+                    imageList.remove(image);
+                    if (orderList != null) {
+                        orderList.add(image);
+                    }
+                    return image;
+                }
             }
         }
+        return null;
     }
 
     //第二种方法

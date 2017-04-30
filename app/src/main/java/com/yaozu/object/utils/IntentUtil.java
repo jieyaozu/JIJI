@@ -1,11 +1,11 @@
 package com.yaozu.object.utils;
 
+import android.app.Activity;
 import android.content.Context;
 import android.content.Intent;
 import android.support.v4.app.FragmentActivity;
 
 import com.yaozu.object.R;
-import com.yaozu.object.SettingsActivity2;
 import com.yaozu.object.activity.CollectActivity;
 import com.yaozu.object.activity.CreateGroupActivity;
 import com.yaozu.object.activity.PostDetailActivity;
@@ -28,6 +28,7 @@ import com.yaozu.object.activity.group.SectionGroupActivity;
 import com.yaozu.object.activity.setting.UserSettingActivity;
 import com.yaozu.object.activity.user.LoginActivity;
 import com.yaozu.object.activity.user.RegisterActivity;
+import com.yaozu.object.activity.user.UserIconDetail;
 import com.yaozu.object.activity.user.UserInfoActivity;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
@@ -40,14 +41,22 @@ import java.util.ArrayList;
  */
 
 public class IntentUtil {
-    public static void toSettingActivity(Context context) {
-        Intent setting = new Intent(context, SettingsActivity2.class);
-        context.startActivity(setting);
-        overridePendingTransition(context);
-    }
 
     private static void overridePendingTransition(Context context) {
         ((FragmentActivity) context).overridePendingTransition(R.anim.right_enter_page, R.anim.right_quit_page);
+    }
+
+    /**
+     * 跳到查看用户头像页面
+     *
+     * @param context
+     */
+    public static void toUserIconActivity(Context context, String userid, String iconpath) {
+        Intent intent = new Intent(context, UserIconDetail.class);
+        intent.putExtra(IntentKey.INTENT_USERID, userid);
+        intent.putExtra(IntentKey.USER_ICON_PATH, iconpath);
+        context.startActivity(intent);
+        ((Activity) context).overridePendingTransition(R.anim.usericon_scale_enter, R.anim.usericon_enter_quit_page);
     }
 
     public static void toScannerPictureActivity(Context context, ArrayList<MyImage> imagesList, int position) {

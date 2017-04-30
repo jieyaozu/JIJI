@@ -43,7 +43,7 @@
                 android:minLines="20"
                 android:padding="15dp"
                 android:textColor="@color/nomralblack"
-                android:textSize="14dp" />
+                android:textSize="16dp" />
         </ScrollView>
 
         <RelativeLayout

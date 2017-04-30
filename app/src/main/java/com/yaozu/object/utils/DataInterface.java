@@ -15,6 +15,10 @@ public class DataInterface {
     public static String LOGIN_URL = APP_HOST + "superplan/login/login.do?method=dologin&";
     public static String REGISTER_URL = APP_HOST + "superplan/register/register.do?method=doregister&";
     public static String UPLOAD_IMAGES = APP_HOST + "superplan/upload/image.do?method=upload&";
+    //修改密码
+    public static String CHANGE_PASSWORD = APP_HOST + "superplan/user/finduser.do?method=changePwd&";
+    //修改用户名
+    public static String RENAME_USERNAME = APP_HOST + "/superplan/servlet/UpdateUserInfoServlet";
     //群封面图
     public static String UPLOAD_GROUP_IMAGES = APP_HOST + "superplan/upload/image.do?method=uploadGroupIcon&";
     public static String UPLOAD_USERICON = APP_HOST + "superplan/upload/usericon.do?method=upload&";
@@ -89,4 +93,8 @@ public class DataInterface {
     public static String SELECT_USERTYPE = APP_HOST + "superplan/app/group.do?method=isAdmin&";
     //设置用户成员类型
     public static String SET_USERTYPE = APP_HOST + "superplan/app/group.do?method=setAdmin&";
+    //编辑贴子
+    public static String EDIT_POST = APP_HOST + "superplan/post/post.do?method=editPost&";
+    //删除单张图片
+    public static String DELETE_IMAGE = APP_HOST + "superplan/post/post.do?method=deleteimage&";
 }

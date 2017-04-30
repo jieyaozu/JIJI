@@ -3,11 +3,14 @@ package com.yaozu.object.activity;
 import android.animation.Animator;
 import android.animation.AnimatorSet;
 import android.animation.ObjectAnimator;
+import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
 import android.support.annotation.RequiresApi;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -32,6 +35,7 @@ import android.widget.Toast;
 import com.alibaba.fastjson.JSON;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
+import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.adapter.PostDetailAdapter;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
@@ -101,6 +105,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_postdetail);
+        registerUpdateReceiver();
     }
 
     @Override
@@ -127,6 +132,12 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             setTopMenuText(mPost.getStatus());
         }
         return true;
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterUpdateRecevier();
     }
 
     @Override
@@ -318,6 +329,15 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         });
     }
 
+    @Override
+    protected void onResume() {
+        super.onResume();
+        if (Constant.SENDING_POST) {
+            Constant.SENDING_POST = false;
+            requestFindPostByid(mPost.getPostid());
+        }
+    }
+
     private void initHeaderView(View headerView) {
         ImageView userIcon = (ImageView) headerView.findViewById(R.id.item_listview_forum_usericon);
         TextView userName = (TextView) headerView.findViewById(R.id.item_listview_forum_username);
@@ -336,6 +356,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
         groupName.setText(mPost.getGroupname() + " >");
+        textLayout.removeAllViews();
         EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent().trim(), mPost.getImages());
         //EditContentImageUtil.showImageInEditTextView(this, content, mPost.getImages(), "");
 
@@ -770,6 +791,48 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                     horizontalListViewAdapter.notifyDataSetChanged();
                 }
                 break;
+        }
+    }
+
+    /**
+     * @Description:
+     * @author
+     * @date 2013-10-28 jieyaozu 10:30:27
+     */
+    protected void registerUpdateReceiver() {
+        if (updataroadcastReceiver == null) {
+            updataroadcastReceiver = new UpdataBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(IntentKey.NOTIFY_UPLOAD_IMAGE_SUCCESS);
+            filter.addAction(IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED);
+            localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.registerReceiver(updataroadcastReceiver, filter);
+        }
+    }
+
+    protected void unRegisterUpdateRecevier() {
+        if (updataroadcastReceiver != null) {
+            localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.unregisterReceiver(updataroadcastReceiver);
+            updataroadcastReceiver = null;
+        }
+    }
+
+    private UpdataBroadcastReceiver updataroadcastReceiver;
+    private LocalBroadcastManager localBroadcastManager;
+
+    /**
+     * 2015-11-5
+     */
+    private class UpdataBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (IntentKey.NOTIFY_UPLOAD_IMAGE_SUCCESS.equals(intent.getAction())) {
+                requestFindPostByid(mPost.getPostid());
+            } else if (IntentKey.NOTIFY_UPLOAD_IMAGE_FAILED.equals(intent.getAction())) {
+
+            }
         }
     }
 }

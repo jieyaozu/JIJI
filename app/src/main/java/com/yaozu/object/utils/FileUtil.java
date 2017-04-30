@@ -280,4 +280,27 @@ public class FileUtil {
             file.delete();
         }
     }
+
+    /**
+     * 重新生成图片的文件名
+     *
+     * @param originName
+     * @return
+     */
+    public static String generateDisplayName(String originName) {
+        String displayName = null;
+        originName = (System.currentTimeMillis() % 1000) + "_" + originName;//保证唯一
+        if (EncodingConvert.isContainsChinese(originName)) {
+            originName = originName.hashCode() + ".jpg";
+        } else {
+            int index = originName.lastIndexOf(".");
+            String suffix = "";
+            if (index > 0) {
+                suffix = originName.substring(index, originName.length());
+            }
+            originName = "guagua_" + EncodingConvert.getRandomString(4) + "_" + System.currentTimeMillis() + suffix;
+        }
+        displayName = originName;
+        return displayName;
+    }
 }
