@@ -54,6 +54,18 @@
                     android:textColor="@color/colorWhite"
                     android:textSize="10dp"
                     android:visibility="visible" />
+
+                <TextView
+                    android:id="@+id/header_listview_forum_permission"
+                    android:layout_width="30dp"
+                    android:layout_height="15dp"
+                    android:layout_gravity="center_vertical"
+                    android:layout_marginLeft="5dp"
+                    android:background="@drawable/public_permission_shape"
+                    android:gravity="center"
+                    android:text="公开"
+                    android:textColor="@color/_public"
+                    android:textSize="10dp" />
             </LinearLayout>
 
             <TextView
@@ -94,13 +106,19 @@
             <TextView
                 android:id="@+id/header_postdetail_group"
                 android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+                android:layout_height="20dp"
                 android:layout_alignBottom="@+id/item_listview_forum_usericon"
                 android:layout_alignParentRight="true"
                 android:layout_marginRight="15dp"
-                android:background="@drawable/main_listview_selector"
-                android:text="时事 >"
-                android:textColor="@color/top_blue" />
+                android:background="@drawable/white_line_corner"
+                android:drawableLeft="@drawable/users_group_icon"
+                android:drawablePadding="5dp"
+                android:gravity="center_vertical"
+                android:paddingLeft="5dp"
+                android:paddingRight="5dp"
+                android:text="时事"
+                android:textColor="@color/colorWhite"
+                android:textSize="12dp" />
         </RelativeLayout>
 
 

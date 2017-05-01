@@ -31,6 +31,7 @@
     <item
         android:id="@+id/action_editpost"
         android:title="编辑"
+        android:visible="false"
         app:showAsAction="never" />
 
     <item

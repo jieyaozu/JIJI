@@ -97,4 +97,6 @@ public class DataInterface {
     public static String EDIT_POST = APP_HOST + "superplan/post/post.do?method=editPost&";
     //删除单张图片
     public static String DELETE_IMAGE = APP_HOST + "superplan/post/post.do?method=deleteimage&";
+    //删除贴子
+    public static String DELETE_POST = APP_HOST + "superplan/post/post.do?method=deletePost&";
 }

@@ -223,10 +223,10 @@ public class FileUtil {
     public static Bitmap compressUserIcon(int maxWidth, String srcpath) {
         BitmapFactory.Options localOptions = new BitmapFactory.Options();
         localOptions.inJustDecodeBounds = true;
-        localOptions.inPreferredConfig = Bitmap.Config.ARGB_8888;
+        localOptions.inPreferredConfig = Bitmap.Config.ARGB_4444;
         BitmapFactory.decodeFile(srcpath, localOptions);
         if (localOptions.outWidth > maxWidth) {
-            int j = localOptions.outWidth / (maxWidth / 2);
+            int j = localOptions.outWidth / (int) (maxWidth / 1.5f);
             localOptions.inSampleSize = j;
         }
         localOptions.inJustDecodeBounds = false;

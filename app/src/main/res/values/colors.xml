@@ -14,4 +14,8 @@
     <color name="top_blue">#63B8FF</color>
     <color name="divider_background_color">#447F7F7F</color>
     <color name="black">#000000</color>
+
+    <color name="_public">#0f9d58</color>
+    <color name="_protected">#63B8FF</color>
+    <color name="_private">#CD6839</color>
 </resources>

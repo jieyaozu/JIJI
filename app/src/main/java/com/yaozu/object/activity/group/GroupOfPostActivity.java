@@ -189,6 +189,10 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
                 refreshLayout.doRefreshing();
             }
         }
+        if (Constant.IS_DELETE_POST) {
+            Constant.IS_DELETE_POST = false;
+            listViewAdapter.removeDeletePost();
+        }
     }
 
     /**

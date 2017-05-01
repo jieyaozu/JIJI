@@ -46,6 +46,16 @@
                 android:textSize="16dp" />
         </ScrollView>
 
+        <TextView
+            android:id="@+id/activity_sendpost_edit_charnumber"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_above="@+id/activity_sendpost_edit_bottomlayout"
+            android:layout_alignParentRight="true"
+            android:layout_marginBottom="5dp"
+            android:layout_marginRight="5dp"
+            android:text="0/140" />
+
         <RelativeLayout
             android:id="@+id/activity_sendpost_edit_bottomlayout"
             android:layout_width="match_parent"

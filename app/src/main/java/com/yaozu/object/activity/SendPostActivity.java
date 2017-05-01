@@ -9,7 +9,9 @@ import android.graphics.Matrix;
 import android.os.Build;
 import android.support.annotation.NonNull;
 import android.support.v7.app.ActionBar;
+import android.text.Editable;
 import android.text.TextUtils;
+import android.text.TextWatcher;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -69,6 +71,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
 
     private EditText etTitle, etContent;
     private ScrollView scrollView;
+    private TextView tvCharNumber;
 
     private int selectedCount = 0;
     private final int REQUEST_RESULT_SELECT_ALBUM = 0;
@@ -162,6 +165,7 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         ivPhotoButton = (ImageView) findViewById(R.id.activity_sendpost_edit_photo);
         etTitle = (EditText) findViewById(R.id.activity_sendpost_edit_title);
         etContent = (EditText) findViewById(R.id.activity_sendpost_edit_content);
+        tvCharNumber = (TextView) findViewById(R.id.activity_sendpost_edit_charnumber);
         sectionSpinner = (Spinner) findViewById(R.id.sendpost_select_section);
         groupSpinner = (Spinner) findViewById(R.id.sendpost_select_group);
         permissionSpinner = (Spinner) findViewById(R.id.sendpost_select_permission);
@@ -197,6 +201,22 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         ivPhotoButton.setOnClickListener(this);
         etTitle.setOnClickListener(this);
         etContent.setOnClickListener(this);
+        etContent.addTextChangedListener(new TextWatcher() {
+            @Override
+            public void beforeTextChanged(CharSequence s, int start, int count, int after) {
+
+            }
+
+            @Override
+            public void onTextChanged(CharSequence s, int start, int before, int count) {
+
+            }
+
+            @Override
+            public void afterTextChanged(Editable s) {
+                tvCharNumber.setText(getNoImageContent(s.toString().trim()).length() + "/140");
+            }
+        });
     }
 
     private void showPermissionRemindDialog() {
@@ -660,6 +680,13 @@ public class SendPostActivity extends BaseActivity implements View.OnClickListen
         permissionBeanList.add(new PermissionBean("protected", "保护"));
         permissionBeanList.add(new PermissionBean("private", "私有"));
         permissionSpinner.setAdapter(permissonAdapter);
+        if (mPost != null) {
+            String permissioncode = mPost.getPermission();
+            int selectIndex = SendPostUtil.getPermissionSelection(permissionBeanList, permissioncode);
+            permissionSpinner.setSelection(selectIndex);
+        } else {
+            permissionSpinner.setSelection(2);
+        }
     }
 
     class PermissonAdapter extends BaseAdapter {

@@ -38,6 +38,8 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
     private Context mContext;
     private List<Post> dataList = new ArrayList<Post>();
     private int screenWidth, itemWidth;
+    private boolean isShowPermissionTag = true;
+    private int clickPosition = 0;
 
     public ForumListViewAdapter(Context context) {
         mContext = context;
@@ -57,6 +59,20 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         }
     }
 
+    /**
+     * 去掉已经删除掉的贴子
+     */
+    public void removeDeletePost() {
+        if (dataList != null) {
+            dataList.remove(clickPosition);
+            notifyDataSetChanged();
+        }
+    }
+
+    public void setShowPermissionTag(boolean show) {
+        isShowPermissionTag = show;
+    }
+
     public void clearData() {
         dataList.clear();
     }
@@ -68,7 +84,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
     }
 
     @Override
-    public void onBindViewHolder(MyViewHolder holder, int position) {
+    public void onBindViewHolder(MyViewHolder holder, final int position) {
         Post post = dataList.get(position);
         if (ObjectApplication.tempPost != null && ObjectApplication.tempPost.getPostid().equals(post.getPostid())) {
             post = ObjectApplication.tempPost;
@@ -96,6 +112,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
                 holder.tvSendStatus.setText("发送中...");
             }
         }
+        setPermissionText(holder.tvPermission, post.getPermission());
         holder.support.setText(post.getSupportNum() + "赞");
         holder.reply.setText(post.getReplyNum() + "回复");
         NoScrollGridViewAdapter adapter = new NoScrollGridViewAdapter();
@@ -117,6 +134,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         holder.itemView.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
+                clickPosition = position;
                 IntentUtil.toPostDetailActivity(mContext, finalPost);
             }
         });
@@ -164,6 +182,7 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
         TextView delete;
         TextView xiachen;
         TextView tvSendStatus;
+        TextView tvPermission;
         LinearLayout superOperator;
         NoScrollGridView noScrollGridView;
         View itemView;
@@ -181,8 +200,34 @@ public class ForumListViewAdapter extends RecyclerView.Adapter<ForumListViewAdap
             reply = (TextView) itemView.findViewById(R.id.item_listview_forum_reply);
             delete = (TextView) itemView.findViewById(R.id.forum_delete);
             tvSendStatus = (TextView) itemView.findViewById(R.id.post_sendstatud);
+            tvPermission = (TextView) itemView.findViewById(R.id.item_listview_forum_permission);
             xiachen = (TextView) itemView.findViewById(R.id.forum_xiachen);
             superOperator = (LinearLayout) itemView.findViewById(R.id.forum_superadmin_operator);
+        }
+    }
+
+    private void setPermissionText(TextView textView, String permission) {
+        if (!isShowPermissionTag) {
+            textView.setVisibility(View.GONE);
+            return;
+        }
+        if ("public".equals(permission)) {
+            textView.setVisibility(View.VISIBLE);
+            textView.setText("公开");
+            textView.setTextColor(mContext.getResources().getColor(R.color._public));
+            textView.setBackgroundResource(R.drawable.public_permission_shape);
+        } else if ("protected".equals(permission)) {
+            textView.setText("保护");
+            textView.setVisibility(View.VISIBLE);
+            textView.setTextColor(mContext.getResources().getColor(R.color._protected));
+            textView.setBackgroundResource(R.drawable.protected_permission_shape);
+        } else if ("private".equals(permission)) {
+            textView.setText("私有");
+            textView.setVisibility(View.VISIBLE);
+            textView.setTextColor(mContext.getResources().getColor(R.color._private));
+            textView.setBackgroundResource(R.drawable.private_permission_shape);
+        } else {
+            textView.setVisibility(View.GONE);
         }
     }
 

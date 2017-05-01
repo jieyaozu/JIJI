@@ -57,6 +57,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
     public void onViewCreated(View view, @Nullable Bundle savedInstanceState) {
         super.onViewCreated(view, savedInstanceState);
         listViewAdapter = new ForumListViewAdapter(this.getActivity());
+        listViewAdapter.setShowPermissionTag(false);
         linearLayoutManager = new LinearLayoutManager(this.getActivity());
         mRecyclerView.setLayoutManager(linearLayoutManager);
         mRecyclerView.setItemAnimator(new DefaultItemAnimator());

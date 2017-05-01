@@ -110,6 +110,25 @@ public class GroupDao {
         db.close();
     }
 
+    /**
+     * 我是否是此群的成员
+     *
+     * @param groupid 目标群ID
+     * @return
+     */
+    public boolean isGroupMember(String groupid) {
+        boolean ishave = false;
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from mygroup where groupid=?", new String[]{groupid});
+            while (cursor.moveToNext()) {
+                ishave = true;
+                break;
+            }
+        }
+        return ishave;
+    }
+
     /*
     * ***************************************************************群消息*********************************************************
     * */

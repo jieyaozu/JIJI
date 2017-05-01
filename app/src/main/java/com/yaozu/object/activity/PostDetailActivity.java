@@ -9,6 +9,7 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Bitmap;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
@@ -32,6 +33,8 @@ import android.widget.LinearLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.alibaba.fastjson.JSON;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
@@ -53,6 +56,7 @@ import com.yaozu.object.utils.DateUtil;
 import com.yaozu.object.utils.EditContentImageUtil;
 import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
+import com.yaozu.object.utils.GroupPermission;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
@@ -124,12 +128,15 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
             menu.findItem(R.id.action_post_delete).setVisible(true);
             menu.findItem(R.id.action_post_xiachen).setVisible(true);
         }
-        if (mPost != null && mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
+        if ((mPost != null && mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) || (mPost != null && GroupPermission.isMyAdminGroupid(groupDao, mPost.getGroupid()))) {
             menu.findItem(R.id.action_post_delete).setVisible(true);
         }
         if (mPost != null && isMyAdminGroupid(mPost.getGroupid())) {
             menu.findItem(R.id.action_set_top).setVisible(true);
             setTopMenuText(mPost.getStatus());
+        }
+        if (mPost != null && mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
+            menu.findItem(R.id.action_editpost).setVisible(true);
         }
         return true;
     }
@@ -168,7 +175,18 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 showToast("分享");
                 return true;
             case R.id.action_post_delete:
-                showToast("删除");
+                new MaterialDialog.Builder(this)
+                        .backgroundColorRes(R.color.colorWhite)
+                        .content("确定要删除吗?")
+                        .contentColorRes(R.color.nomralblack)
+                        .positiveText("确定")
+                        .negativeText("取消")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                requestDeletePost(mPost.getPostid());
+                            }
+                        }).show();
                 return true;
             case R.id.action_post_xiachen:
                 showToast("下沉");
@@ -347,7 +365,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         TextView reply = (TextView) headerView.findViewById(R.id.header_postdetail_reply_tv);
         TextView createTime = (TextView) headerView.findViewById(R.id.item_listview_forum_time);
         TextView groupName = (TextView) headerView.findViewById(R.id.header_postdetail_group);
+        TextView tvPermission = (TextView) headerView.findViewById(R.id.header_listview_forum_permission);
 
+        setPermissionText(tvPermission, mPost.getPermission());
         userName.setText(mPost.getUserName());
         title.setText(mPost.getTitle());
         //content.setText(mPost.getContent());
@@ -355,10 +375,15 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         Utils.setUserImg(mPost.getUserIcon(), userIcon);
         support.setText(mPost.getSupportNum() + "赞");
         reply.setText(mPost.getReplyNum() + "回复");
-        groupName.setText(mPost.getGroupname() + " >");
+        groupName.setText(mPost.getGroupname());
         textLayout.removeAllViews();
         EditContentImageUtil.addTextImageToLayout(this, textLayout, mPost.getContent().trim(), mPost.getImages());
         //EditContentImageUtil.showImageInEditTextView(this, content, mPost.getImages(), "");
+        if ("protected".equals(mPost.getPermission()) && !groupDao.isGroupMember(mPost.getGroupid())) {
+            etEditContent.setEnabled(false);
+            etEditContent.setBackgroundResource(R.drawable.no_edit_shape);
+            etEditContent.setHint("此贴设为保护，非群成员不可回复");
+        }
 
         userIcon.setOnClickListener(new View.OnClickListener() {
             @Override
@@ -378,9 +403,14 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         //是否收藏
         requestIsCollect(mPost.getPostid());
         //是否可以显示删除按钮
-        if (mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
+        if (mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount()) || GroupPermission.isMyAdminGroupid(groupDao, mPost.getGroupid())) {
             if (mMenu != null)
                 mMenu.findItem(R.id.action_post_delete).setVisible(true);
+        }
+        //是否可以显示编辑按钮
+        if (mPost != null && mPost.getUserid().equals(LoginInfo.getInstance(this).getUserAccount())) {
+            if (mMenu != null)
+                mMenu.findItem(R.id.action_editpost).setVisible(true);
         }
 
         if (isMyAdminGroupid(mPost.getGroupid())) {
@@ -388,6 +418,27 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 mMenu.findItem(R.id.action_set_top).setVisible(true);
                 setTopMenuText(mPost.getStatus());
             }
+        }
+    }
+
+    private void setPermissionText(TextView textView, String permission) {
+        if ("public".equals(permission)) {
+            textView.setVisibility(View.VISIBLE);
+            textView.setText("公开");
+            textView.setTextColor(getResources().getColor(R.color._public));
+            textView.setBackgroundResource(R.drawable.public_permission_shape);
+        } else if ("protected".equals(permission)) {
+            textView.setText("保护");
+            textView.setVisibility(View.VISIBLE);
+            textView.setTextColor(getResources().getColor(R.color._protected));
+            textView.setBackgroundResource(R.drawable.protected_permission_shape);
+        } else if ("private".equals(permission)) {
+            textView.setText("私有");
+            textView.setVisibility(View.VISIBLE);
+            textView.setTextColor(getResources().getColor(R.color._private));
+            textView.setBackgroundResource(R.drawable.private_permission_shape);
+        } else {
+            textView.setVisibility(View.GONE);
         }
     }
 
@@ -504,6 +555,35 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
     }
 
     /**
+     * 删除
+     *
+     * @param postid
+     */
+    private void requestDeletePost(String postid) {
+        showBaseProgressDialog("正在删除...");
+        String url = DataInterface.DELETE_POST + "postid=" + postid;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                closeBaseProgressDialog();
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    showToast(requestData.getBody().getMessage());
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        Constant.IS_DELETE_POST = true;
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                closeBaseProgressDialog();
+            }
+        });
+    }
+
+    /**
      * 查找回复的帖子
      */
     private void findReplyPostRequest(final int pageindex, String parentid) {
@@ -547,6 +627,9 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         switch (v.getId()) {
             case R.id.activity_postdetail_more:
                 hideSoftInput();
+                if ("protected".equals(mPost.getPermission()) && !groupDao.isGroupMember(mPost.getGroupid())) {
+                    return;
+                }
                 llMoreLayout.postDelayed(new Runnable() {
                     @Override
                     public void run() {

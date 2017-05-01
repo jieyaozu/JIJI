@@ -3,6 +3,7 @@ package com.yaozu.object.utils;
 import android.text.TextUtils;
 
 import com.yaozu.object.bean.GroupBean;
+import com.yaozu.object.bean.PermissionBean;
 import com.yaozu.object.bean.SectionBean;
 
 import java.util.List;
@@ -53,6 +54,30 @@ public class SendPostUtil {
         }
         for (int i = 0; i < data_list.size(); i++) {
             if (groupid.equals(data_list.get(i).getGroupid())) {
+                selectPos = i;
+                break;
+            }
+        }
+        return selectPos;
+    }
+
+    /**
+     * 根据permissioncode找出在当前集合中的位置
+     *
+     * @param data_list
+     * @param permissioncode
+     * @return
+     */
+    public static int getPermissionSelection(List<PermissionBean> data_list, String permissioncode) {
+        int selectPos = -1;
+        if (data_list == null) {
+            return -1;
+        }
+        if (TextUtils.isEmpty(permissioncode)) {
+            return selectPos;
+        }
+        for (int i = 0; i < data_list.size(); i++) {
+            if (permissioncode.equals(data_list.get(i).getPermissioncode())) {
                 selectPos = i;
                 break;
             }

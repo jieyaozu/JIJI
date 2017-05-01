@@ -44,8 +44,8 @@
 
                         <ImageView
                             android:id="@+id/group_detail_edit_icon"
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="20dp"
+                            android:layout_height="20dp"
                             android:layout_alignParentBottom="true"
                             android:layout_alignParentRight="true"
                             android:layout_marginBottom="5dp"
@@ -83,18 +83,35 @@
                                 android:textColor="@color/colorWhite"
                                 android:textSize="12dp" />
 
-                            <TextView
-                                android:id="@+id/group_detail_section"
+                            <LinearLayout
                                 android:layout_width="wrap_content"
                                 android:layout_height="wrap_content"
                                 android:layout_marginLeft="10dp"
                                 android:layout_marginTop="10dp"
-                                android:background="@drawable/main_transparent_listview_selector"
-                                android:drawablePadding="@dimen/dimen_5"
-                                android:drawableRight="@drawable/text_arrow_white"
-                                android:text=""
-                                android:textColor="@color/colorWhite"
-                                android:textSize="13dp" />
+                                android:background="@drawable/white_line_corner"
+                                android:orientation="horizontal"
+                                android:paddingBottom="1dp"
+                                android:paddingLeft="10dp"
+                                android:paddingRight="10dp"
+                                android:paddingTop="1dp">
+
+                                <ImageView
+                                    android:layout_width="10dp"
+                                    android:layout_height="10dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:src="@drawable/icon_section" />
+
+                                <TextView
+                                    android:id="@+id/group_detail_section"
+                                    android:layout_width="wrap_content"
+                                    android:layout_height="wrap_content"
+                                    android:layout_marginLeft="5dp"
+                                    android:layout_gravity="center_vertical"
+                                    android:drawablePadding="@dimen/dimen_5"
+                                    android:text="dsafds"
+                                    android:textColor="@color/colorWhite"
+                                    android:textSize="13dp" />
+                            </LinearLayout>
                         </LinearLayout>
                     </RelativeLayout>
                 </LinearLayout>

@@ -37,6 +37,7 @@ public class Constant {
     public static boolean SENDING_POST = false;
     public static boolean IS_EDIT_USERICON = false;//上传头像
     public static boolean IS_EDIT_USERNAME = false;// 更改名称
+    public static boolean IS_DELETE_POST = false;
 
     public static final String LOGIN_MSG = "login_msg";
     public static String CRASH_MSG = "crash_msg";

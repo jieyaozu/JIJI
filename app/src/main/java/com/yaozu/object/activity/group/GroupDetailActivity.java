@@ -28,6 +28,7 @@ import com.yaozu.object.activity.CropImageActivity;
 import com.yaozu.object.activity.MyAlbumActivity;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.MyImage;
+import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.entity.GroupBeanReqData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
@@ -38,6 +39,7 @@ import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.EncodingConvert;
 import com.yaozu.object.utils.FileUtil;
+import com.yaozu.object.utils.GroupPermission;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.NetUtil;
@@ -81,6 +83,8 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
     private FileUtil fileUtil = new FileUtil();
     public static String ICON_PATH = FileUtil.getSDPath() + File.separator + FileUtil.APP_FOLDER + File.separator + "icon.jpg";
 
+    private GroupDao groupDao;
+
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_group_detail);
@@ -89,6 +93,7 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
     @TargetApi(Build.VERSION_CODES.JELLY_BEAN)
     @Override
     protected void initView() {
+        groupDao = new GroupDao(this);
         aCache = ACache.get(this);
         objectBeanCache = ObjectBeanCache.getInstance();
         rootView = findViewById(R.id.activity_group_detail);
@@ -133,9 +138,16 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
             mGroupbean = (GroupBean) object;
             bindDataToView((GroupBean) object);
         }
+
+        if (GroupPermission.isMyCreatGroupid(groupDao, mGroupbean.getGroupid())) {
+            ivEditIcon.setVisibility(View.VISIBLE);
+        } else {
+            ivEditIcon.setVisibility(View.GONE);
+        }
     }
 
-    /**9
+    /**
+     * 9
      * 查找群的详情
      */
     private void requestGroupDetail(final String groupid) {
@@ -370,6 +382,12 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
                 popupwindow.dismiss();
             }
         });
+
+        if (GroupPermission.isMyCreatGroupid(groupDao, mGroupbean.getGroupid())) {
+            tvEdit.setVisibility(View.VISIBLE);
+        } else {
+            tvEdit.setVisibility(View.GONE);
+        }
 
         tvExit.setOnClickListener(new View.OnClickListener() {
             @Override
