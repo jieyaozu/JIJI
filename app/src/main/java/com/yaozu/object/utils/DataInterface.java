@@ -79,6 +79,8 @@ public class DataInterface {
     public static String FIND_APPLY_ENTER_GROUP_MSG = APP_HOST + "superplan/app/group.do?method=findMsg&";
     //加入群
     public static String JOIN_GROUP = APP_HOST + "superplan/app/group.do?method=addToGroup&";
+    //退出群
+    public static String EXIT_GROUP = APP_HOST + "superplan/app/group.do?method=exitGroup&";
     //清除群消息
     public static String CLEAR_GROUP_MSG = APP_HOST + "superplan/app/group.do?method=clearGroupMsg&";
     //搜索群

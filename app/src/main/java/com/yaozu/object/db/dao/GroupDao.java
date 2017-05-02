@@ -35,6 +35,15 @@ public class GroupDao {
         db.close();
     }
 
+    public void deleteGroupById(String groupid) {
+        SQLiteDatabase db = helper.getWritableDatabase();
+        if (db.isOpen()) {
+            db.execSQL("delete from mygroup where groupid=?",
+                    new Object[]{groupid});
+        }
+        db.close();
+    }
+
     public List<GroupBean> findAllMyGroup() {
         List<GroupBean> beanList = new ArrayList<>();
         SQLiteDatabase db = helper.getReadableDatabase();

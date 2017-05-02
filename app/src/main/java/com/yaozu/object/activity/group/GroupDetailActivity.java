@@ -8,6 +8,7 @@ import android.graphics.Color;
 import android.graphics.drawable.BitmapDrawable;
 import android.graphics.drawable.ColorDrawable;
 import android.os.Build;
+import android.support.annotation.NonNull;
 import android.support.annotation.RequiresApi;
 import android.text.TextUtils;
 import android.view.Gravity;
@@ -21,6 +22,8 @@ import android.widget.RelativeLayout;
 import android.widget.TextView;
 import android.widget.Toast;
 
+import com.afollestad.materialdialogs.DialogAction;
+import com.afollestad.materialdialogs.MaterialDialog;
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.activity.BaseNoTitleActivity;
@@ -31,6 +34,7 @@ import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.entity.GroupBeanReqData;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.listener.DownLoadIconListener;
 import com.yaozu.object.listener.UploadListener;
@@ -385,14 +389,28 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
 
         if (GroupPermission.isMyCreatGroupid(groupDao, mGroupbean.getGroupid())) {
             tvEdit.setVisibility(View.VISIBLE);
+            tvExit.setVisibility(View.GONE);
         } else {
             tvEdit.setVisibility(View.GONE);
+            tvExit.setVisibility(View.VISIBLE);
         }
 
         tvExit.setOnClickListener(new View.OnClickListener() {
             @Override
             public void onClick(View v) {
                 popupwindow.dismiss();
+                new MaterialDialog.Builder(GroupDetailActivity.this)
+                        .backgroundColorRes(R.color.colorWhite)
+                        .content("确定要退出此群吗?")
+                        .contentColorRes(R.color.nomralblack)
+                        .positiveText("确定")
+                        .negativeText("取消")
+                        .onPositive(new MaterialDialog.SingleButtonCallback() {
+                            @Override
+                            public void onClick(@NonNull MaterialDialog dialog, @NonNull DialogAction which) {
+                                requestExitGroup(LoginInfo.getInstance(GroupDetailActivity.this).getUserAccount(), mGroupbean.getGroupid());
+                            }
+                        }).show();
             }
         });
 
@@ -410,5 +428,34 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
         scaleAt.setFillEnabled(true);
         scaleAt.setInterpolator(new DecelerateInterpolator());
         contentview.startAnimation(scaleAt);
+    }
+
+    /**
+     * 退出群
+     *
+     * @param userid
+     * @param groupid
+     */
+    private void requestExitGroup(String userid, final String groupid) {
+        showBaseProgressDialog("退出中...");
+        String url = DataInterface.EXIT_GROUP + "userid=" + userid + "&groupid=" + groupid;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                closeBaseProgressDialog();
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    if (Constant.SUCCESS.equals(requestData.getBody().getCode())) {
+                        groupDao.deleteGroupById(groupid);
+                        finish();
+                    }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+                closeBaseProgressDialog();
+            }
+        });
     }
 }
