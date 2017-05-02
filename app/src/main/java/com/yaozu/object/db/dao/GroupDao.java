@@ -74,6 +74,25 @@ public class GroupDao {
     }
 
     /**
+     * 查出所有的群ID
+     *
+     * @return
+     */
+    public List<String> findAllMyGroupid() {
+        List<String> groupids = new ArrayList<>();
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from mygroup", null);
+            while (cursor.moveToNext()) {
+                String groupid = cursor.getString(cursor.getColumnIndex("groupid"));
+                groupids.add(groupid);
+            }
+        }
+        db.close();
+        return groupids;
+    }
+
+    /**
      * 查出我所管理的群的群ID
      *
      * @return

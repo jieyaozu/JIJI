@@ -204,12 +204,13 @@ public class GroupDetailActivity extends BaseNoTitleActivity implements View.OnC
                 iconLayout.addView(imageView);
             }
         }
-
-        String isMember = groupBean.getIsGroupMember();
-        if ("0".equals(isMember)) {
-            bottomLayout.setVisibility(View.VISIBLE);
-        } else {
+        //是否是群成员
+        if (GroupPermission.isGroupMember(groupDao, groupBean.getGroupid())) {
             bottomLayout.setVisibility(View.GONE);
+            ivGroupMenu.setVisibility(View.VISIBLE);
+        } else {
+            bottomLayout.setVisibility(View.VISIBLE);
+            ivGroupMenu.setVisibility(View.GONE);
         }
 
         downloadBackgroundImage(groupBean.getGroupicon());

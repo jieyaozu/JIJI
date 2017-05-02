@@ -9,6 +9,19 @@ import java.util.List;
  */
 
 public class GroupPermission {
+
+    public static boolean isGroupMember(GroupDao groupDao, String groupid){
+        List<String> groupidList = groupDao.findAllMyGroupid();
+        boolean isGroupMember = false;
+        for (int i = 0; i < groupidList.size(); i++) {
+            if (groupidList.get(i).equals(groupid)) {
+                isGroupMember = true;
+                break;
+            }
+        }
+        return isGroupMember;
+    }
+
     /**
      * 这个群id是否是我管理的
      *
