@@ -39,6 +39,8 @@ public class Constant {
     public static boolean IS_EDIT_USERNAME = false;// 更改名称
     public static boolean IS_DELETE_POST = false;
 
+    public static String ACTION_PUSH_NOTIFY = "push.notify.message";
+
     public static final String LOGIN_MSG = "login_msg";
     public static String CRASH_MSG = "crash_msg";
     public static String SP_PLAN_MSG = "plan_msg";

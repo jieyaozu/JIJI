@@ -27,6 +27,12 @@
             </intent-filter>
         </activity>
 
+        <receiver android:name=".pushreceiver.MyPushReceiver">
+            <intent-filter>
+                <action android:name="push.notify.message" />
+            </intent-filter>
+        </receiver>
+
         <activity
             android:name=".activity.user.LoginActivity"
             android:launchMode="singleTask"
