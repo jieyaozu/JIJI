@@ -18,26 +18,26 @@ import com.igexin.sdk.message.GTTransmitMessage;
 public class MyIntentService extends GTIntentService {
     @Override
     public void onReceiveServicePid(Context context, int i) {
-
+        System.out.println("=========onReceiveServicePid=========>" + i);
     }
 
     @Override
-    public void onReceiveClientId(Context context, String s) {
-
+    public void onReceiveClientId(Context context, String clientid) {
+        System.out.println("=========onReceiveClientId=========>" + clientid);
     }
 
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage gtTransmitMessage) {
-
+        System.out.println("=========onReceiveMessageData=========>" + new String(gtTransmitMessage.getPayload()));
     }
 
     @Override
     public void onReceiveOnlineState(Context context, boolean b) {
-
+        System.out.println("=========onReceiveOnlineState=========>" + b);
     }
 
     @Override
     public void onReceiveCommandResult(Context context, GTCmdMessage gtCmdMessage) {
-
+        System.out.println("=========onReceiveMessageData=========>" + gtCmdMessage.getClientId());
     }
 }
