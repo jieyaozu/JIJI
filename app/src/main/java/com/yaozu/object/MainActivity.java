@@ -16,6 +16,7 @@ import android.widget.RadioButton;
 import android.widget.RadioGroup;
 import android.widget.TextView;
 
+import com.igexin.sdk.PushManager;
 import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.bean.MessageBean;
@@ -29,6 +30,8 @@ import com.yaozu.object.fragment.GroupFragment;
 import com.yaozu.object.fragment.MessageFragment;
 import com.yaozu.object.fragment.MineFragment;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.service.GetuiPushService;
+import com.yaozu.object.service.MyIntentService;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.MsgType;
@@ -51,6 +54,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void setContentView() {
         setContentView(R.layout.activity_main);
+        // com.getui.demo.DemoPushService 为第三方自定义推送服务
+        PushManager.getInstance().initialize(this.getApplicationContext(), GetuiPushService.class);
+        PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
         setSwipeBackEnable(false);
         messageBeanDao = new MessageBeanDao(this);
     }

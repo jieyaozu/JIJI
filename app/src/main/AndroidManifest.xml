@@ -8,6 +8,12 @@
     <uses-permission android:name="android.permission.READ_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.WRITE_EXTERNAL_STORAGE" />
     <uses-permission android:name="android.permission.MOUNT_UNMOUNT_FILESYSTEMS" />
+    <!-- iBeancon功能所需权限 -->;
+    <uses-permission android:name="android.permission.BLUETOOTH" />
+    <uses-permission android:name="android.permission.BLUETOOTH_ADMIN" />
+    <!-- 个推3.0电子围栏功能所需权限 -->
+    <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION" />
+    <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION" />
 
     <application
         android:name=".ObjectApplication"
@@ -32,6 +38,13 @@
                 <action android:name="push.notify.message" />
             </intent-filter>
         </receiver>
+
+        <service
+            android:name=".service.GetuiPushService"
+            android:exported="true"
+            android:label="PushService"
+            android:process=":pushservice" />
+        <service android:name=".service.MyIntentService" />
 
         <activity
             android:name=".activity.user.LoginActivity"
