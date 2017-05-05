@@ -21,6 +21,7 @@ import com.yaozu.object.activity.BaseActivity;
 import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.bean.UserInfo;
+import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.entity.ApplyGroupData;
 import com.yaozu.object.entity.LoginInfo;
@@ -337,9 +338,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                         MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
                         if (messageBean == null) {
                             messageBean = new MessageBean();
-                            if ("applying".equals(groupMessage.getStatus())) {
+                            if (GMStatus.APPLYING.equals(groupMessage.getStatus())) {
                                 messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
-                            } else if ("exit".equals(groupMessage.getStatus())) {
+                            } else if (GMStatus.EXIT.equals(groupMessage.getStatus())) {
                                 messageBean.setAdditional(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
                             }
                             messageBean.setType(MsgType.TYPE_GROUP);
@@ -348,9 +349,9 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             messageBean.setIcon(groupMessage.getGroupicon());
                             messageBeanDao.addMessage(messageBean);
                         } else {
-                            if ("applying".equals(groupMessage.getStatus())) {
+                            if (GMStatus.APPLYING.equals(groupMessage.getStatus())) {
                                 messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
-                            } else if ("exit".equals(groupMessage.getStatus())) {
+                            } else if (GMStatus.EXIT.equals(groupMessage.getStatus())) {
                                 messageBean.setAdditional(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
                             }
                             messageBean.setType(MsgType.TYPE_GROUP);
