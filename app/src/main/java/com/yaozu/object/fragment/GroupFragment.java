@@ -1,7 +1,12 @@
 package com.yaozu.object.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v4.widget.SwipeRefreshLayout;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -10,6 +15,7 @@ import android.widget.ImageView;
 import android.widget.Toast;
 
 import com.yaozu.object.R;
+import com.yaozu.object.activity.group.GroupOfPostActivity;
 import com.yaozu.object.adapter.GroupListAdapter;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.db.dao.GroupDao;
@@ -18,6 +24,7 @@ import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersListView;
 
@@ -59,6 +66,13 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        registerUpdateReceiver();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unRegisterUpdateRecevier();
     }
 
     @Nullable
@@ -120,6 +134,45 @@ public class GroupFragment extends BaseFragment implements View.OnClickListener 
             case R.id.fragment_create_group:
                 IntentUtil.toCreatGroupActivity(this.getActivity());
                 break;
+        }
+    }
+
+    /**
+     * @Description:
+     * @author
+     * @date 2013-10-28 jieyaozu 10:30:27
+     */
+    protected void registerUpdateReceiver() {
+        if (updataroadcastReceiver == null) {
+            updataroadcastReceiver = new UpdataBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(IntentKey.NOTIFY_NEWPOST_REMIND);
+            localBroadcastManager = LocalBroadcastManager.getInstance(this.getActivity());
+            localBroadcastManager.registerReceiver(updataroadcastReceiver, filter);
+        }
+    }
+
+    protected void unRegisterUpdateRecevier() {
+        if (updataroadcastReceiver != null) {
+            localBroadcastManager = LocalBroadcastManager.getInstance(this.getActivity());
+            localBroadcastManager.unregisterReceiver(updataroadcastReceiver);
+            updataroadcastReceiver = null;
+        }
+    }
+
+    private UpdataBroadcastReceiver updataroadcastReceiver;
+    private LocalBroadcastManager localBroadcastManager;
+
+    /**
+     * 2015-11-5
+     */
+    private class UpdataBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (IntentKey.NOTIFY_NEWPOST_REMIND.equals(intent.getAction())) {
+                listViewAdapter.notifyDataSetChanged();
+            }
         }
     }
 }

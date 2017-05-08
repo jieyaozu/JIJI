@@ -1,5 +1,7 @@
 package com.yaozu.object.activity.group;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -18,13 +20,12 @@ import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.db.dao.MessageBeanDao;
-import com.yaozu.object.entity.ApplyGroupData;
-import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.MsgType;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
@@ -70,7 +71,14 @@ public class GroupMessageActivity extends BaseActivity {
         mRecyclerView.setAdapter(stringAdapter);
         refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
 
-        requestFindGroupMessage();
+        //把群消息提醒数置为0
+        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
+        messageBean.setNewMsgnumber(0);
+        messageBeanDao.updateBean(messageBean);
+        //发个广播更新下UI
+        Intent playingintent = new Intent(IntentKey.NOTIFY_MESSAGE_REMIND);
+        LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        playinglocalBroadcastManager.sendBroadcast(playingintent);
     }
 
     @Override
@@ -84,64 +92,6 @@ public class GroupMessageActivity extends BaseActivity {
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
-    private void requestFindGroupMessage() {
-        String url = DataInterface.FIND_APPLY_ENTER_GROUP_MSG + "userid=" + LoginInfo.getInstance(this).getUserAccount();
-        RequestManager.getInstance().getRequest(this, url, ApplyGroupData.class, new RequestManager.OnResponseListener() {
-            @Override
-            public void onSuccess(Object object, int code, String message) {
-                if (object != null) {
-                    ApplyGroupData applyGroupData = (ApplyGroupData) object;
-                    List<GroupMessage> applyList = applyGroupData.getBody().getApplybeans();
-                    if (applyList != null && applyList.size() > 0) {
-                        insertGroupMessage(applyList);
-                        groupMessageList.addAll(0, applyList);
-                        messageAdapter.notifyDataSetChanged();
-                        //清除
-                        requestClearGroupMsg();
-                    }
-                }
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-
-            }
-        });
-    }
-
-    private void requestClearGroupMsg() {
-        String url = DataInterface.CLEAR_GROUP_MSG + "userid=" + LoginInfo.getInstance(this).getUserAccount();
-        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
-            @Override
-            public void onSuccess(Object object, int code, String message) {
-                if (object != null) {
-                    Constant.IS_CLEARGROUP_MESSAGE_SUCCESS = true;
-                    MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
-                    messageBean.setNewMsgnumber(0);
-                    messageBeanDao.updateBean(messageBean);
-                }
-            }
-
-            @Override
-            public void onFailure(int code, String message) {
-
-            }
-        });
-    }
-
-    /**
-     * 插入群消息
-     *
-     * @param messageList
-     */
-    private void insertGroupMessage(List<GroupMessage> messageList) {
-        if (messageList != null) {
-            for (GroupMessage message : messageList) {
-                groupDao.addGroupMessage(message);
-            }
-        }
-    }
-
     public class GroupMessageAdapter extends RecyclerView.Adapter<GroupMessageAdapter.MyViewHolder> {
 
         @Override
@@ -153,7 +103,6 @@ public class GroupMessageActivity extends BaseActivity {
         @Override
         public void onBindViewHolder(GroupMessageAdapter.MyViewHolder holder, int position) {
             final GroupMessage groupMessage = groupMessageList.get(position);
-
             holder.tvMessage.setText(groupMessage.getMessage());
             holder.tvTime.setText(DateUtil.getRelativeTime(groupMessage.getCreatetime()));
             Utils.setUserImg(groupMessage.getGroupicon(), holder.ivGroupIcon);
@@ -169,10 +118,13 @@ public class GroupMessageActivity extends BaseActivity {
                 holder.opLayout.setVisibility(View.GONE);
             }
             if (GMStatus.ADDED.equals(groupMessage.getStatus())) {
+                holder.tvResult.setText("已同意");
                 holder.tvResult.setVisibility(View.VISIBLE);
             } else if (GMStatus.REFUSE.equals(groupMessage.getStatus())) {
                 holder.tvResult.setText("已拒绝");
                 holder.tvResult.setVisibility(View.VISIBLE);
+            } else {
+                holder.tvResult.setVisibility(View.GONE);
             }
             holder.tvAgree.setOnClickListener(new View.OnClickListener() {
                 @Override

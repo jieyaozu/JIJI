@@ -12,6 +12,7 @@ import com.yaozu.object.bean.Post;
 
 public class ObjectApplication extends Application {
     public static Post tempPost = null;
+    public static String clientid = null;
 
     @Override
     public void onCreate() {

@@ -9,6 +9,7 @@ import android.support.v4.view.animation.FastOutSlowInInterpolator;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -45,7 +46,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
     private NoScrollListView mHeaderListView;
     private HeaderListViewAdapter mHeaderAdapter;
     private FloatingActionButton ivButton;
-    private int currentPage = 1;
+    private String mLastPostid = "";
     private HeaderViewRecyclerAdapter stringAdapter;
     private LinearLayoutManager linearLayoutManager;
     private TextView progressTextView;
@@ -119,19 +120,18 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
 
     @Override
     protected void onIRefresh() {
-        currentPage = 1;
+        mLastPostid = "";
         refreshLayout.setIsCanLoad(true);
-        requestPostList(currentPage);
+        requestPostList(mLastPostid);
     }
 
     @Override
     protected void onILoad() {
-        currentPage++;
-        requestPostList(currentPage);
+        requestPostList(mLastPostid);
     }
 
-    private void requestPostList(final int pageIndex) {
-        String url = DataInterface.FIND_HOME_POST_LIST + "pageindex=" + pageIndex;
+    private void requestPostList(final String lastpostid) {
+        String url = DataInterface.FIND_HOME_POST_LIST + "lastpostid=" + lastpostid;
         RequestManager.getInstance().getRequest(this.getActivity(), url, HomeForumDataInfo.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
@@ -139,7 +139,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
                 refreshLayout.completeRefresh();
                 if (object != null) {
                     HomeForumDataInfo postDataInfo = (HomeForumDataInfo) object;
-                    if (pageIndex == 1) {
+                    if (TextUtils.isEmpty(lastpostid)) {
                         List<Post> topPostList = postDataInfo.getBody().getToplist();
                         if (topPostList == null || topPostList.size() <= 0) {
                             mHeaderListView.setVisibility(View.GONE);
@@ -151,6 +151,8 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
                     listViewAdapter.addData(postList);
                     if (postList == null || postList.size() == 0) {
                         refreshLayout.setIsCanLoad(false);
+                    } else {
+                        mLastPostid = postList.get(postList.size() - 1).getPostid();
                     }
                 }
             }

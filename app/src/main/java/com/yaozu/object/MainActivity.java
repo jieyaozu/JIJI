@@ -1,12 +1,16 @@
 package com.yaozu.object;
 
 import android.app.Dialog;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.net.Uri;
 import android.os.Build;
 import android.support.v4.app.Fragment;
 import android.support.v4.app.FragmentManager;
 import android.support.v4.app.FragmentTransaction;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.view.KeyEvent;
 import android.view.MenuItem;
@@ -22,18 +26,23 @@ import com.yaozu.object.bean.GroupMessage;
 import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.bean.UserInfo;
 import com.yaozu.object.bean.constant.GMStatus;
+import com.yaozu.object.db.dao.GroupDao;
 import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.entity.ApplyGroupData;
 import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.entity.RequestData;
 import com.yaozu.object.entity.UserInfoData;
 import com.yaozu.object.fragment.ForumFragment;
 import com.yaozu.object.fragment.GroupFragment;
 import com.yaozu.object.fragment.MessageFragment;
 import com.yaozu.object.fragment.MineFragment;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.pushreceiver.remind.NewPostRemind;
 import com.yaozu.object.service.GetuiPushService;
 import com.yaozu.object.service.MyIntentService;
+import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.MsgType;
 
@@ -60,6 +69,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         PushManager.getInstance().registerPushIntentService(this.getApplicationContext(), MyIntentService.class);
         setSwipeBackEnable(false);
         messageBeanDao = new MessageBeanDao(this);
+        registerUpdateReceiver();
     }
 
     @Override
@@ -75,6 +85,12 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void initView() {
         mRadioGroup = (RadioGroup) findViewById(R.id.main_bottom_layout_group);
+    }
+
+    @Override
+    protected void onDestroy() {
+        super.onDestroy();
+        unRegisterUpdateRecevier();
     }
 
     @Override
@@ -95,7 +111,8 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
         //检查用户信息
         requestFindUserinfo(LoginInfo.getInstance(this).getUserAccount());
 
-        requestFindGroupMessage();
+        messageBeanDao.initMessageData();
+        setGroupDotVisibility();
     }
 
     @Override
@@ -320,6 +337,27 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
     @Override
     protected void onResume() {
         super.onResume();
+        Constant.IS_DELETE_POST = false;
+        requestFindGroupMessage();
+    }
+
+    /**
+     * 插入群消息
+     *
+     * @param messageList
+     */
+    private int insertGroupMessage(List<GroupMessage> messageList) {
+        int count = 0;
+        GroupDao groupDao = new GroupDao(this);
+        if (messageList != null) {
+            for (GroupMessage message : messageList) {
+                boolean action = groupDao.addGroupMessage(message);
+                if (action) {
+                    count++;
+                }
+            }
+        }
+        return count;
     }
 
     /**
@@ -334,41 +372,42 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                     ApplyGroupData applyGroupData = (ApplyGroupData) object;
                     List<GroupMessage> applyList = applyGroupData.getBody().getApplybeans();
                     if (applyList != null && applyList.size() > 0) {
+                        int count = insertGroupMessage(applyList);
                         GroupMessage groupMessage = applyList.get(applyList.size() - 1);
-                        MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
-                        if (messageBean == null) {
-                            messageBean = new MessageBean();
-                            if (GMStatus.APPLYING.equals(groupMessage.getStatus())) {
-                                messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
-                            } else if (GMStatus.EXIT.equals(groupMessage.getStatus())) {
-                                messageBean.setAdditional(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
-                            }
-                            messageBean.setType(MsgType.TYPE_GROUP);
-                            messageBean.setNewMsgnumber(applyList.size());
-                            messageBean.setTitle("群消息助手");
-                            messageBean.setIcon(groupMessage.getGroupicon());
-                            messageBeanDao.addMessage(messageBean);
-                        } else {
-                            if (GMStatus.APPLYING.equals(groupMessage.getStatus())) {
-                                messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
-                            } else if (GMStatus.EXIT.equals(groupMessage.getStatus())) {
-                                messageBean.setAdditional(groupMessage.getUsername() + "已退出" + groupMessage.getGroupname());
-                            }
-                            messageBean.setType(MsgType.TYPE_GROUP);
-                            messageBean.setNewMsgnumber(applyList.size());
-                            messageBean.setTitle("群消息助手");
-                            messageBean.setIcon(groupMessage.getGroupicon());
-                            messageBeanDao.updateBean(messageBean);
-                        }
-                        setMessageDotVisibility(View.VISIBLE);
-                    } else {
-                        MessageBean messageBean = messageBeanDao.findFriend(MsgType.TYPE_GROUP);
+                        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
                         if (messageBean != null) {
-                            messageBean.setNewMsgnumber(0);
-                            messageBean.setTitle("群消息助手");
+                            if (GMStatus.APPLYING.equals(groupMessage.getStatus())) {
+                                messageBean.setAdditional(groupMessage.getUsername() + "申请加入" + groupMessage.getGroupname());
+                            } else if (GMStatus.EXIT.equals(groupMessage.getStatus())) {
+                                messageBean.setAdditional("退出群通知");
+                            }
+                            messageBean.setNewMsgnumber(messageBean.getNewMsgnumber() + count);
                             messageBeanDao.updateBean(messageBean);
+                            if (count > 0) setMessageDotVisibility(View.VISIBLE);
+                        }
+                        requestClearGroupMsg();
+                    } else {
+                        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
+                        if (messageBean.getNewMsgnumber() > 0) {
+                            setMessageDotVisibility(View.VISIBLE);
                         }
                     }
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
+    }
+
+    private void requestClearGroupMsg() {
+        String url = DataInterface.CLEAR_GROUP_MSG + "userid=" + LoginInfo.getInstance(this).getUserAccount();
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
                 }
             }
 
@@ -386,5 +425,64 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
      */
     private void setMessageDotVisibility(int visibility) {
         ivMessagedot.setVisibility(visibility);
+    }
+
+    //群消息提醒显示与否
+    private void setGroupDotVisibility() {
+        if (NewPostRemind.getInstance(MainActivity.this).getTotalRemindCount() > 0) {
+            ivGroupdot.setVisibility(View.VISIBLE);
+        } else {
+            ivGroupdot.setVisibility(View.INVISIBLE);
+        }
+    }
+
+    /**
+     * @Description:
+     * @author
+     * @date 2013-10-28 jieyaozu 10:30:27
+     */
+    protected void registerUpdateReceiver() {
+        if (updataroadcastReceiver == null) {
+            updataroadcastReceiver = new UpdataBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(IntentKey.NOTIFY_NEWPOST_REMIND);
+            filter.addAction(IntentKey.NOTIFY_MESSAGE_REMIND);
+            localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.registerReceiver(updataroadcastReceiver, filter);
+        }
+    }
+
+    protected void unRegisterUpdateRecevier() {
+        if (updataroadcastReceiver != null) {
+            localBroadcastManager = LocalBroadcastManager.getInstance(this);
+            localBroadcastManager.unregisterReceiver(updataroadcastReceiver);
+            updataroadcastReceiver = null;
+        }
+    }
+
+    private UpdataBroadcastReceiver updataroadcastReceiver;
+    private LocalBroadcastManager localBroadcastManager;
+
+    /**
+     * 2015-11-5
+     */
+    private class UpdataBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (IntentKey.NOTIFY_NEWPOST_REMIND.equals(intent.getAction())) {
+                setGroupDotVisibility();
+            } else if (IntentKey.NOTIFY_MESSAGE_REMIND.equals(intent.getAction())) {
+                MessageBean groupRemind = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
+                MessageBean replyRemind = messageBeanDao.findMessageBean(MsgType.TYPE_REPLY);
+                MessageBean commentRemind = messageBeanDao.findMessageBean(MsgType.TYPE_COMMENT);
+                int remindCount = groupRemind.getNewMsgnumber() + replyRemind.getNewMsgnumber() + commentRemind.getNewMsgnumber();
+                if (remindCount > 0) {
+                    setMessageDotVisibility(View.VISIBLE);
+                } else {
+                    setMessageDotVisibility(View.INVISIBLE);
+                }
+            }
+        }
     }
 }

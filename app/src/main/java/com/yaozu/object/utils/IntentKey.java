@@ -29,9 +29,10 @@ public class IntentKey {
 
     public static final String NOTIFY_UPLOAD_IMAGE_SUCCESS = "notify_upload_image_success";//上传成功的广播
     public static final String NOTIFY_UPLOAD_IMAGE_FAILED = "notify_upload_image_failed";//上传失败的广播
+    public static final String NOTIFY_MESSAGE_REMIND = "notify_message_remind";//消息页面提醒
+    public static final String NOTIFY_NEWPOST_REMIND = "notify_newpost_remind";//新发贴子提醒
 
     //消息推送
     public static String INTENT_PUSH_NOTIFY_BUNDLE = "push_notify";
-    public static String INTENT_PUSH_MSG_TYPE = "push_msg_type";//消息类型
-
+    public static String INTENT_PUSH_MSG_DATA = "push_msg_data";//消息
 }

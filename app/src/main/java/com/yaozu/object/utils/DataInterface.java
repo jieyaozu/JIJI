@@ -23,7 +23,7 @@ public class DataInterface {
     public static String UPLOAD_GROUP_IMAGES = APP_HOST + "superplan/upload/image.do?method=uploadGroupIcon&";
     public static String UPLOAD_USERICON = APP_HOST + "superplan/upload/usericon.do?method=upload&";
     //发表贴子
-    public static String ADD_POST = APP_HOST + "superplan/post/post.do?method=add&";
+    public static String ADD_POST = APP_HOST + "superplan/post/post.do?method=sendPost&";
     //回复贴子
     public static String REPLY_ADD_POST = APP_HOST + "superplan/post/post.do?method=replypost&";
     //查找首页贴子列表
@@ -101,4 +101,6 @@ public class DataInterface {
     public static String DELETE_IMAGE = APP_HOST + "superplan/post/post.do?method=deleteimage&";
     //删除贴子
     public static String DELETE_POST = APP_HOST + "superplan/post/post.do?method=deletePost&";
+    //关联用户id和推送clientid
+    public static String BIND_USERID_CLIENTID = APP_HOST + "superplan/user/finduser.do?method=bindClientid&";
 }

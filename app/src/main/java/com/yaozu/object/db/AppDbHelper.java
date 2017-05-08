@@ -41,6 +41,7 @@ public class AppDbHelper extends SQLiteOpenHelper {
                 "                         groupname varchar(64), " +
                 "                         groupicon varchar(64), " +
                 "                         message varchar(512), " +
+                "                         messageid varchar(36) unique, " +
                 "                         createtime varchar(32), " +
                 "                         status varchar(32))");
     }

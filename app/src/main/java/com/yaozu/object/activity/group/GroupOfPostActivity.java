@@ -13,6 +13,7 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
@@ -33,6 +34,7 @@ import com.yaozu.object.bean.Post;
 import com.yaozu.object.entity.GroupForumDataInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.pushreceiver.remind.NewPostRemind;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.IntentKey;
@@ -59,7 +61,7 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
     private NoScrollListView mHeaderListView;
     private HeaderListViewAdapter mHeaderAdapter;
     private FloatingActionButton ivButton;
-    private int currentPage = 1;
+    private String mLastPostId = "";
     private HeaderViewRecyclerAdapter stringAdapter;
     private LinearLayoutManager linearLayoutManager;
 
@@ -78,6 +80,7 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onDestroy() {
         super.onDestroy();
+        NewPostRemind.getInstance(this).putRemind(groupBean.getGroupid(), 0);
         unRegisterUpdateRecevier();
     }
 
@@ -143,15 +146,14 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
 
     @Override
     protected void onIRefresh() {
-        currentPage = 1;
+        mLastPostId = "";
         refreshLayout.setIsCanLoad(true);
-        requestGroupPostList(groupBean.getGroupid(), currentPage);
+        requestGroupPostList(groupBean.getGroupid(), mLastPostId);
     }
 
     @Override
     protected void onILoad() {
-        currentPage++;
-        requestGroupPostList(groupBean.getGroupid(), currentPage);
+        requestGroupPostList(groupBean.getGroupid(), mLastPostId);
     }
 
     @Override
@@ -181,6 +183,7 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
     @Override
     protected void onResume() {
         super.onResume();
+        NewPostRemind.getInstance(this).putRemind(groupBean.getGroupid(), 0);
         if (Constant.SENDING_POST) {
             Constant.SENDING_POST = false;
             if (ObjectApplication.tempPost != null) {
@@ -198,18 +201,18 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
     /**
      * 获取群内的贴子
      *
-     * @param pageIndex
+     * @param lastpostid
      */
-    private void requestGroupPostList(String groupid, final int pageIndex) {
+    private void requestGroupPostList(String groupid, final String lastpostid) {
         String userid = LoginInfo.getInstance(this).getUserAccount();
-        String url = DataInterface.FIND_GROUP_POST_LIST + "groupid=" + groupid + "&userid=" + userid + "&pageindex=" + pageIndex;
+        String url = DataInterface.FIND_GROUP_POST_LIST + "groupid=" + groupid + "&userid=" + userid + "&lastpostid=" + lastpostid;
         RequestManager.getInstance().getRequest(this, url, GroupForumDataInfo.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
                 refreshLayout.completeRefresh();
                 if (object != null) {
                     GroupForumDataInfo postDataInfo = (GroupForumDataInfo) object;
-                    if (pageIndex == 1) {
+                    if (TextUtils.isEmpty(lastpostid)) {
                         listViewAdapter.clearData();
                         mHeaderAdapter.setData(postDataInfo.getBody().getToplist());
                         isMember = postDataInfo.getBody().getIsGroupMember();
@@ -224,6 +227,8 @@ public class GroupOfPostActivity extends BaseActivity implements View.OnClickLis
                     listViewAdapter.addData(postList);
                     if (postList == null || postList.size() == 0) {
                         refreshLayout.setIsCanLoad(false);
+                    } else {
+                        mLastPostId = postList.get(postList.size() - 1).getPostid();
                     }
                 }
             }

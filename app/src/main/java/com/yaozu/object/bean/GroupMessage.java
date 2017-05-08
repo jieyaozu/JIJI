@@ -5,6 +5,7 @@ package com.yaozu.object.bean;
  */
 
 public class GroupMessage {
+    private String messageid;
     private String userid;
     private String username;
     private String groupid;
@@ -12,12 +13,19 @@ public class GroupMessage {
     private String groupicon;
     private String message;
     /**
-     *
      * 是申请入群还是退群
      * applying exit added refuse
      */
     private String status;
     private String createtime;
+
+    public String getMessageid() {
+        return messageid;
+    }
+
+    public void setMessageid(String messageid) {
+        this.messageid = messageid;
+    }
 
     public String getCreatetime() {
         return createtime;

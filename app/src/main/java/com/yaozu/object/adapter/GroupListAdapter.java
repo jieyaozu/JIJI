@@ -8,11 +8,13 @@ import android.view.ViewGroup;
 import android.widget.BaseAdapter;
 import android.widget.ImageView;
 import android.widget.LinearLayout;
+import android.widget.RelativeLayout;
 import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.bean.GroupBean;
 import com.yaozu.object.bean.constant.GroupUserType;
+import com.yaozu.object.pushreceiver.remind.NewPostRemind;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.stickylistheaders.StickyListHeadersAdapter;
@@ -91,10 +93,11 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
         if (convertView == null) {
             holder = new MyViewHolder();
             view = LayoutInflater.from(mContext).inflate(R.layout.item_group_listview, parent, false);
-            holder.layout = (LinearLayout) view.findViewById(R.id.item_group_layout);
+            holder.layout = (RelativeLayout) view.findViewById(R.id.item_group_layout);
             holder.tvGroupName = (TextView) view.findViewById(R.id.item_groupname);
             holder.ivGroupIcon = (ImageView) view.findViewById(R.id.item_group_icon);
             holder.divider = view.findViewById(R.id.item_group_divider);
+            holder.tvRemind = (TextView) view.findViewById(R.id.item_groupremind_number);
             view.setTag(holder);
         } else {
             view = convertView;
@@ -104,6 +107,13 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
             holder.divider.setVisibility(View.GONE);
         }
         final GroupBean groupBean = groupBeanList.get(position);
+        int remindCount = NewPostRemind.getInstance(mContext).getRemindNumber(groupBean.getGroupid());
+        if (remindCount <= 0) {
+            holder.tvRemind.setVisibility(View.GONE);
+        } else {
+            holder.tvRemind.setVisibility(View.VISIBLE);
+            holder.tvRemind.setText(remindCount + "");
+        }
         holder.tvGroupName.setText(groupBean.getGroupname());
         Utils.setUserImg(groupBean.getGroupicon(), holder.ivGroupIcon);
         holder.layout.setOnClickListener(new View.OnClickListener() {
@@ -144,10 +154,11 @@ public class GroupListAdapter extends BaseAdapter implements StickyListHeadersAd
     }
 
     class MyViewHolder {
-        private LinearLayout layout;
+        private RelativeLayout layout;
         private TextView tvGroupName;
         private ImageView ivGroupIcon;
         private View divider;
+        private TextView tvRemind;
     }
 
 }

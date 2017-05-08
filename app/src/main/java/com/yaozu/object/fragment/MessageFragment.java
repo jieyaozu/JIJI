@@ -1,7 +1,13 @@
 package com.yaozu.object.fragment;
 
+import android.content.BroadcastReceiver;
+import android.content.Context;
+import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.support.annotation.Nullable;
+import android.support.v4.content.LocalBroadcastManager;
+import android.text.TextUtils;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -16,6 +22,7 @@ import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.MsgType;
 import com.yaozu.object.utils.Utils;
@@ -46,20 +53,18 @@ public class MessageFragment extends BaseFragment {
             messageBeanList.addAll(allbeans);
             listAdapter.notifyDataSetChanged();
         }
+        registerUpdateReceiver();
+    }
+
+    @Override
+    public void onDestroy() {
+        super.onDestroy();
+        unRegisterUpdateRecevier();
     }
 
     @Override
     public void onResume() {
         super.onResume();
-        if (Constant.IS_CLEARGROUP_MESSAGE_SUCCESS) {
-            Constant.IS_CLEARGROUP_MESSAGE_SUCCESS = false;
-            List<MessageBean> allbeans = messageBeanDao.findAllBeans();
-            if (allbeans != null) {
-                messageBeanList.clear();
-                messageBeanList.addAll(allbeans);
-                listAdapter.notifyDataSetChanged();
-            }
-        }
     }
 
     @Nullable
@@ -94,13 +99,19 @@ public class MessageFragment extends BaseFragment {
             TextView adtitional = (TextView) view.findViewById(R.id.item_message_additional);
             TextView tvMsgNumber = (TextView) view.findViewById(R.id.item_message_number);
             final MessageBean messageBean = messageBeanList.get(position);
-            String imgurl = messageBean.getIcon();
             tvTitle.setText(messageBean.getTitle());
-            adtitional.setText(messageBean.getAdditional());
+            if (TextUtils.isEmpty(messageBean.getAdditional())) {
+                adtitional.setVisibility(View.GONE);
+            } else {
+                adtitional.setVisibility(View.VISIBLE);
+                adtitional.setText(messageBean.getAdditional());
+            }
             if (MsgType.TYPE_GROUP.equals(messageBean.getType())) {
                 ivIcon.setImageResource(R.drawable.group_message_icon);
-            } else {
-                Utils.setUserImg(imgurl, ivIcon);
+            } else if (MsgType.TYPE_REPLY.equals(messageBean.getType())) {
+                ivIcon.setImageResource(R.drawable.group_message_icon);
+            } else if (MsgType.TYPE_COMMENT.equals(messageBean.getType())) {
+                ivIcon.setImageResource(R.drawable.group_message_icon);
             }
             if (messageBean.getNewMsgnumber() > 0) {
                 tvMsgNumber.setVisibility(View.VISIBLE);
@@ -117,6 +128,51 @@ public class MessageFragment extends BaseFragment {
                 }
             });
             return view;
+        }
+    }
+
+
+    /**
+     * @Description:
+     * @author
+     * @date 2013-10-28 jieyaozu 10:30:27
+     */
+    protected void registerUpdateReceiver() {
+        if (updataroadcastReceiver == null) {
+            updataroadcastReceiver = new UpdataBroadcastReceiver();
+            IntentFilter filter = new IntentFilter();
+            filter.addAction(IntentKey.NOTIFY_MESSAGE_REMIND);
+            localBroadcastManager = LocalBroadcastManager.getInstance(this.getActivity());
+            localBroadcastManager.registerReceiver(updataroadcastReceiver, filter);
+        }
+    }
+
+    protected void unRegisterUpdateRecevier() {
+        if (updataroadcastReceiver != null) {
+            localBroadcastManager = LocalBroadcastManager.getInstance(this.getActivity());
+            localBroadcastManager.unregisterReceiver(updataroadcastReceiver);
+            updataroadcastReceiver = null;
+        }
+    }
+
+    private UpdataBroadcastReceiver updataroadcastReceiver;
+    private LocalBroadcastManager localBroadcastManager;
+
+    /**
+     * 2015-11-5
+     */
+    private class UpdataBroadcastReceiver extends BroadcastReceiver {
+
+        @Override
+        public void onReceive(Context context, Intent intent) {
+            if (IntentKey.NOTIFY_MESSAGE_REMIND.equals(intent.getAction())) {
+                List<MessageBean> allbeans = messageBeanDao.findAllBeans();
+                if (allbeans != null) {
+                    messageBeanList.clear();
+                    messageBeanList.addAll(allbeans);
+                    listAdapter.notifyDataSetChanged();
+                }
+            }
         }
     }
 }

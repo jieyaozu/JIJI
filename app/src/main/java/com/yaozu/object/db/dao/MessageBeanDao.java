@@ -5,7 +5,9 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yaozu.object.bean.MessageBean;
+import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.db.AppDbHelper;
+import com.yaozu.object.utils.MsgType;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -79,7 +81,7 @@ public class MessageBeanDao {
         return beanList;
     }
 
-    public MessageBean findFriend(String type) {
+    public MessageBean findMessageBean(String type) {
         MessageBean messageBean = null;
         SQLiteDatabase db = helper.getReadableDatabase();
         if (db.isOpen()) {
@@ -100,5 +102,39 @@ public class MessageBeanDao {
         }
         db.close();
         return messageBean;
+    }
+
+    /**
+     * 初始化一些默认存在的数据，比如群消息助手、回复我的、评论我的、赞我的
+     */
+    public void initMessageData() {
+        MessageBean groupbean = findMessageBean(MsgType.TYPE_GROUP);
+        if (groupbean == null) {
+            groupbean = new MessageBean();
+            groupbean.setType(MsgType.TYPE_GROUP);
+            groupbean.setNewMsgnumber(0);
+            groupbean.setTitle("群消息助手");
+            //改为固定的图标
+            //messageBean.setIcon(groupMessage.getGroupicon());
+            addMessage(groupbean);
+        }
+
+        MessageBean replybean = findMessageBean(MsgType.TYPE_REPLY);
+        if (replybean == null) {
+            replybean = new MessageBean();
+            replybean.setType(MsgType.TYPE_REPLY);
+            replybean.setNewMsgnumber(0);
+            replybean.setTitle("回复我的");
+            addMessage(replybean);
+        }
+
+        MessageBean commentbean = findMessageBean(MsgType.TYPE_COMMENT);
+        if (commentbean == null) {
+            commentbean = new MessageBean();
+            commentbean.setType(MsgType.TYPE_COMMENT);
+            commentbean.setNewMsgnumber(0);
+            commentbean.setTitle("回复我的");
+            addMessage(commentbean);
+        }
     }
 }

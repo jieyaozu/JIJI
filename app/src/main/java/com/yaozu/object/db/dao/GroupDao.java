@@ -166,14 +166,37 @@ public class GroupDao {
      *
      * @param groupMessage
      */
-    public void addGroupMessage(GroupMessage groupMessage) {
+    public boolean addGroupMessage(GroupMessage groupMessage) {
+        if (isHaveGroupMessage(groupMessage.getMessageid())) {
+            return false;
+        }
         SQLiteDatabase db = helper.getWritableDatabase();
         if (db.isOpen()) {
-            db.execSQL("insert into groupmessage (userid,username,groupid,groupname,groupicon,message,status,createtime) values (?,?,?,?,?,?,?,?)",
+            db.execSQL("insert into groupmessage (userid,username,groupid,groupname,groupicon,message,status,createtime,messageid) values (?,?,?,?,?,?,?,?,?)",
                     new Object[]{groupMessage.getUserid(), groupMessage.getUsername(), groupMessage.getGroupid(), groupMessage.getGroupname(), groupMessage.getGroupicon()
-                            , groupMessage.getMessage(), groupMessage.getStatus(), groupMessage.getCreatetime()});
+                            , groupMessage.getMessage(), groupMessage.getStatus(), groupMessage.getCreatetime(), groupMessage.getMessageid()});
         }
         db.close();
+        return true;
+    }
+
+    /**
+     * 是否已经有此条消息
+     *
+     * @param messageid
+     * @return
+     */
+    public boolean isHaveGroupMessage(String messageid) {
+        boolean ishave = false;
+        SQLiteDatabase db = helper.getReadableDatabase();
+        if (db.isOpen()) {
+            Cursor cursor = db.rawQuery("select * from groupmessage where messageid=?", new String[]{messageid});
+            while (cursor.moveToNext()) {
+                ishave = true;
+                break;
+            }
+        }
+        return ishave;
     }
 
     public void updateMessageBean(GroupMessage bean) {

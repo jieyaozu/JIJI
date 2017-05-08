@@ -1,10 +1,19 @@
 package com.yaozu.object.service;
 
 import android.content.Context;
+import android.content.Intent;
+import android.util.Log;
 
 import com.igexin.sdk.GTIntentService;
 import com.igexin.sdk.message.GTCmdMessage;
 import com.igexin.sdk.message.GTTransmitMessage;
+import com.yaozu.object.ObjectApplication;
+import com.yaozu.object.entity.LoginInfo;
+import com.yaozu.object.entity.RequestData;
+import com.yaozu.object.httpmanager.RequestManager;
+import com.yaozu.object.utils.Constant;
+import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
 
 /**
  * Created by jxj42 on 2017/5/4.
@@ -18,26 +27,57 @@ import com.igexin.sdk.message.GTTransmitMessage;
 public class MyIntentService extends GTIntentService {
     @Override
     public void onReceiveServicePid(Context context, int i) {
-        System.out.println("=========onReceiveServicePid=========>" + i);
+
     }
 
     @Override
     public void onReceiveClientId(Context context, String clientid) {
-        System.out.println("=========onReceiveClientId=========>" + clientid);
+        if (LoginInfo.getInstance(this).isLogining()) {
+            requestBindUserid(LoginInfo.getInstance(this).getUserAccount(), clientid);
+        } else {
+            ObjectApplication.clientid = clientid;
+        }
     }
 
     @Override
     public void onReceiveMessageData(Context context, GTTransmitMessage gtTransmitMessage) {
-        System.out.println("=========onReceiveMessageData=========>" + new String(gtTransmitMessage.getPayload()));
+        String jsonString = new String(gtTransmitMessage.getPayload());
+        Intent intent = new Intent(Constant.ACTION_PUSH_NOTIFY);
+        intent.putExtra(IntentKey.INTENT_PUSH_MSG_DATA, jsonString);
+        sendBroadcast(intent);
     }
 
     @Override
     public void onReceiveOnlineState(Context context, boolean b) {
-        System.out.println("=========onReceiveOnlineState=========>" + b);
+
     }
 
     @Override
     public void onReceiveCommandResult(Context context, GTCmdMessage gtCmdMessage) {
-        System.out.println("=========onReceiveMessageData=========>" + gtCmdMessage.getClientId());
+
+    }
+
+    /**
+     * 关联用户id
+     *
+     * @param userid
+     * @param clientid
+     */
+    private void requestBindUserid(String userid, String clientid) {
+        String url = DataInterface.BIND_USERID_CLIENTID + "userid=" + userid + "&clientid=" + clientid;
+        RequestManager.getInstance().getRequest(this, url, RequestData.class, new RequestManager.OnResponseListener() {
+            @Override
+            public void onSuccess(Object object, int code, String message) {
+                if (object != null) {
+                    RequestData requestData = (RequestData) object;
+                    Log.d("MyIntentService:", requestData.getBody().getMessage());
+                }
+            }
+
+            @Override
+            public void onFailure(int code, String message) {
+
+            }
+        });
     }
 }
