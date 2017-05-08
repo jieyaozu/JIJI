@@ -103,4 +103,8 @@ public class DataInterface {
     public static String DELETE_POST = APP_HOST + "superplan/post/post.do?method=deletePost&";
     //关联用户id和推送clientid
     public static String BIND_USERID_CLIENTID = APP_HOST + "superplan/user/finduser.do?method=bindClientid&";
+    //回复我的帖子
+    public static String REPLY_TO_ME_POSTLIST = APP_HOST + "superplan/post/post.do?method=findReplyMelist&";
+    //评论我的
+    public static String COMMENT_TO_ME_LIST = APP_HOST + "superplan/post/comment.do?method=findCommentListToMe&";
 }

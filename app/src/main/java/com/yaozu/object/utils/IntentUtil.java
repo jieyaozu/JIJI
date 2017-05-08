@@ -7,9 +7,11 @@ import android.support.v4.app.FragmentActivity;
 
 import com.yaozu.object.R;
 import com.yaozu.object.activity.CollectActivity;
+import com.yaozu.object.activity.CommentToMeActivity;
 import com.yaozu.object.activity.CreateGroupActivity;
 import com.yaozu.object.activity.PostDetailActivity;
 import com.yaozu.object.activity.PostReplyDetailActivity;
+import com.yaozu.object.activity.ReplyToMeActivity;
 import com.yaozu.object.activity.ScannerPictureActivity;
 import com.yaozu.object.activity.SendPostActivity;
 import com.yaozu.object.activity.ThemePostActivity;
@@ -96,11 +98,24 @@ public class IntentUtil {
         overridePendingTransition(context);
     }
 
+    /**
+     * @param context
+     * @param post
+     * @param mainuserid 楼主的用户id
+     * @param index
+     */
     public static void toPostReplyDetailActivity(Context context, Post post, String mainuserid, int index) {
         Intent postDetail = new Intent(context, PostReplyDetailActivity.class);
         postDetail.putExtra(IntentKey.INTENT_POST, post);
         postDetail.putExtra(IntentKey.INTENT_POST_POSITION, index);
         postDetail.putExtra(IntentKey.INTENT_USERID, mainuserid);
+        context.startActivity(postDetail);
+        overridePendingTransition(context);
+    }
+
+    public static void toPostReplyDetailActivity(Context context, String postid) {
+        Intent postDetail = new Intent(context, PostReplyDetailActivity.class);
+        postDetail.putExtra(IntentKey.INTENT_POST_ID, postid);
         context.startActivity(postDetail);
         overridePendingTransition(context);
     }
@@ -301,6 +316,26 @@ public class IntentUtil {
      */
     public static void toUserSettingActivity(Context context) {
         Intent intent = new Intent(context, UserSettingActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 去回复我的页面
+     *
+     * @param context activity对象
+     */
+    public static void toReplyToMeActivity(Context context) {
+        Intent intent = new Intent(context, ReplyToMeActivity.class);
+        context.startActivity(intent);
+    }
+
+    /**
+     * 去评论我的页面
+     *
+     * @param context activity对象
+     */
+    public static void toCommentToMeActivity(Context context) {
+        Intent intent = new Intent(context, CommentToMeActivity.class);
         context.startActivity(intent);
     }
 }

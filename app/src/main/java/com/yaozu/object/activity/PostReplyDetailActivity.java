@@ -53,6 +53,7 @@ import java.util.List;
 
 public class PostReplyDetailActivity extends BaseActivity implements View.OnClickListener {
     private Post mPost;
+    private String mPostid;
     private int index;
     private String mainUserid;//楼主的userid
     private ImageView ivUserIcon;
@@ -86,6 +87,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
     @Override
     protected void initView() {
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
+        mPostid = getIntent().getStringExtra(IntentKey.INTENT_POST_ID);
         index = getIntent().getIntExtra(IntentKey.INTENT_POST_POSITION, 0);
         mainUserid = getIntent().getStringExtra(IntentKey.INTENT_USERID);
 
@@ -103,27 +105,31 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         imageListAdapter = new ImageListAdapter(this);
         nlImageViews.setAdapter(imageListAdapter);
 
-        if (mPost.getUserid().equals(mainUserid)) {
-            tvIsMain.setVisibility(View.VISIBLE);
-        } else {
-            tvIsMain.setVisibility(View.GONE);
-        }
-
         commentAdapter = new CommentAdapter();
-        commentAdapter.setDataList(mPost.getComments());
         nlCommentListview.setAdapter(commentAdapter);
     }
 
     @Override
     protected void initData() {
-        Utils.setUserImg(mPost.getUserIcon(), ivUserIcon);
-        tvUserName.setText(mPost.getUserName());
-        tvLayerIndex.setText(index + "楼");
-        tvTime.setText(DateUtil.getRelativeTime(mPost.getCreatetime()));
-        tvContent.setText(mPost.getContent());
+        if (mPost != null) {
+            if (mPost.getUserid().equals(mainUserid)) {
+                tvIsMain.setVisibility(View.VISIBLE);
+            } else {
+                tvIsMain.setVisibility(View.GONE);
+            }
+            commentAdapter.setDataList(mPost.getComments());
 
-        imageListAdapter.setData(mPost.getImages());
-        etEditContent.setHint("回复 " + mPost.getUserName());
+            Utils.setUserImg(mPost.getUserIcon(), ivUserIcon);
+            tvUserName.setText(mPost.getUserName());
+            tvLayerIndex.setText(index + "楼");
+            tvTime.setText(DateUtil.getRelativeTime(mPost.getCreatetime()));
+            tvContent.setText(mPost.getContent());
+
+            imageListAdapter.setData(mPost.getImages());
+            etEditContent.setHint("回复 " + mPost.getUserName());
+        } else if (!TextUtils.isEmpty(mPostid)) {
+            findReplypostRequest(mPostid);
+        }
 
         //把软键盘打开
         //TODO
@@ -257,7 +263,8 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
             public void onSuccess(Object object, int code, String message) {
                 if (object != null) {
                     Post post = (Post) object;
-                    commentAdapter.setDataList(post.getComments());
+                    mPost = post;
+                    initData();
                 }
             }
 

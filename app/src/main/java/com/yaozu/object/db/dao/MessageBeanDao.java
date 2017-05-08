@@ -5,7 +5,6 @@ import android.database.Cursor;
 import android.database.sqlite.SQLiteDatabase;
 
 import com.yaozu.object.bean.MessageBean;
-import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.db.AppDbHelper;
 import com.yaozu.object.utils.MsgType;
 
@@ -133,7 +132,7 @@ public class MessageBeanDao {
             commentbean = new MessageBean();
             commentbean.setType(MsgType.TYPE_COMMENT);
             commentbean.setNewMsgnumber(0);
-            commentbean.setTitle("回复我的");
+            commentbean.setTitle("评论我的");
             addMessage(commentbean);
         }
     }

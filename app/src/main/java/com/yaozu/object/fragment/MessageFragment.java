@@ -16,16 +16,12 @@ import android.widget.ImageView;
 import android.widget.ListView;
 import android.widget.TextView;
 
-import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
 import com.yaozu.object.bean.MessageBean;
-import com.yaozu.object.bean.constant.GMStatus;
 import com.yaozu.object.db.dao.MessageBeanDao;
-import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.utils.MsgType;
-import com.yaozu.object.utils.Utils;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -124,6 +120,10 @@ public class MessageFragment extends BaseFragment {
                 public void onClick(View v) {
                     if (MsgType.TYPE_GROUP.equals(messageBean.getType())) {
                         IntentUtil.toGroupMessageActivity(MessageFragment.this.getActivity());
+                    } else if (MsgType.TYPE_REPLY.equals(messageBean.getType())) {
+                        IntentUtil.toReplyToMeActivity(MessageFragment.this.getActivity());
+                    } else if (MsgType.TYPE_COMMENT.equals(messageBean.getType())) {
+                        IntentUtil.toCommentToMeActivity(MessageFragment.this.getActivity());
                     }
                 }
             });

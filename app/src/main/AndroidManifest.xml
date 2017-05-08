@@ -87,7 +87,7 @@
             android:name=".activity.PostReplyDetailActivity"
             android:screenOrientation="portrait"
             android:theme="@style/SwipeBackTheme"
-            android:windowSoftInputMode="adjustResize" />
+            android:windowSoftInputMode="adjustResize|stateAlwaysHidden" />
         <activity
             android:name=".activity.user.UserInfoActivity"
             android:screenOrientation="portrait"
@@ -177,6 +177,14 @@
             android:name=".activity.user.UserIconDetail"
             android:screenOrientation="portrait"
             android:theme="@style/BlackTheme" />
+        <activity
+            android:name=".activity.ReplyToMeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
+        <activity
+            android:name=".activity.CommentToMeActivity"
+            android:screenOrientation="portrait"
+            android:theme="@style/SwipeBackTheme" />
     </application>
 
 </manifest>
