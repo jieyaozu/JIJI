@@ -1,5 +1,7 @@
 package com.yaozu.object.activity;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -15,15 +17,19 @@ import android.widget.TextView;
 
 import com.nostra13.universalimageloader.core.ImageLoader;
 import com.yaozu.object.R;
+import com.yaozu.object.bean.MessageBean;
 import com.yaozu.object.bean.MyImage;
 import com.yaozu.object.bean.Post;
+import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.entity.DetailReplyPostListInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.Constant;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.utils.MsgType;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.NoScrollGridView;
 import com.yaozu.object.widget.NoScrollListView;
@@ -46,6 +52,7 @@ public class ReplyToMeActivity extends BaseActivity {
     private List<Post> postList = new ArrayList<>();
     private int itemWidth;
     private String mLastPostid = "";
+    private MessageBeanDao messageBeanDao;
 
     @Override
     protected void setContentView() {
@@ -59,6 +66,7 @@ public class ReplyToMeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        messageBeanDao = new MessageBeanDao(this);
         int screenWidth = Utils.getScreenWidth(this);
         itemWidth = (screenWidth - this.getResources().getDimensionPixelSize(R.dimen.forum_item_margin) * 2) / 3;
 
@@ -71,6 +79,8 @@ public class ReplyToMeActivity extends BaseActivity {
         refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
 
         refreshLayout.doRefreshing();
+
+        clearReplyRemindMessage();
     }
 
     @Override
@@ -96,6 +106,20 @@ public class ReplyToMeActivity extends BaseActivity {
     protected void settingActionBar(ActionBar actionBar) {
         actionBar.setTitle("回复我的");
         actionBar.setDisplayHomeAsUpEnabled(true);
+    }
+
+    /**
+     * 清除回复提醒消息
+     */
+    private void clearReplyRemindMessage() {
+        //把群消息提醒数置为0
+        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_REPLY);
+        messageBean.setNewMsgnumber(0);
+        messageBeanDao.updateBean(messageBean);
+        //发个广播更新下UI
+        Intent playingintent = new Intent(IntentKey.NOTIFY_MESSAGE_REMIND);
+        LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        playinglocalBroadcastManager.sendBroadcast(playingintent);
     }
 
     private void requestData(final String lastPostid) {

@@ -3,9 +3,7 @@ package com.yaozu.object.pushreceiver;
 import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
-import android.os.Bundle;
 import android.support.v4.content.LocalBroadcastManager;
-import android.widget.Toast;
 
 import com.google.gson.Gson;
 import com.yaozu.object.bean.GroupMessage;
@@ -36,9 +34,9 @@ public class MyPushReceiver extends BroadcastReceiver {
                 number++;
                 NewPostRemind.getInstance(context).putRemind(groupid, number);
             } else if ("1".equals(msgtype)) {//1为回复我的贴子提醒
-                System.out.println("=======回复我的贴子提醒=========>");
+                handleReplyMessage(context);
             } else if ("2".equals(msgtype)) {//2为评论我的帖子提醒
-                System.out.println("=======评论我的帖子提醒=========>");
+                handleCommentMessage(context);
             } else if ("3".equals(msgtype)) {//3为点赞提醒
                 System.out.println("=======点赞提醒=========>");
             } else if ("4".equals(msgtype)) {//群消息提醒
@@ -64,6 +62,42 @@ public class MyPushReceiver extends BroadcastReceiver {
             }
         } else {
 
+        }
+    }
+
+    /**
+     * 处理回复提醒消息
+     *
+     * @param context
+     */
+    private void handleReplyMessage(Context context) {
+        MessageBeanDao messageBeanDao = new MessageBeanDao(context);
+        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_REPLY);
+        if (messageBean != null) {
+            messageBean.setNewMsgnumber(messageBean.getNewMsgnumber() + 1);
+            messageBeanDao.updateBean(messageBean);
+            //发个广播更新下UI
+            Intent playingintent = new Intent(IntentKey.NOTIFY_MESSAGE_REMIND);
+            LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
+            playinglocalBroadcastManager.sendBroadcast(playingintent);
+        }
+    }
+
+    /**
+     * 处理评论提醒消息
+     *
+     * @param context
+     */
+    private void handleCommentMessage(Context context) {
+        MessageBeanDao messageBeanDao = new MessageBeanDao(context);
+        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_COMMENT);
+        if (messageBean != null) {
+            messageBean.setNewMsgnumber(messageBean.getNewMsgnumber() + 1);
+            messageBeanDao.updateBean(messageBean);
+            //发个广播更新下UI
+            Intent playingintent = new Intent(IntentKey.NOTIFY_MESSAGE_REMIND);
+            LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(context);
+            playinglocalBroadcastManager.sendBroadcast(playingintent);
         }
     }
 }

@@ -1,5 +1,7 @@
 package com.yaozu.object.activity;
 
+import android.content.Intent;
+import android.support.v4.content.LocalBroadcastManager;
 import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
@@ -16,12 +18,16 @@ import android.widget.TextView;
 
 import com.yaozu.object.R;
 import com.yaozu.object.bean.Comment;
+import com.yaozu.object.bean.MessageBean;
+import com.yaozu.object.db.dao.MessageBeanDao;
 import com.yaozu.object.entity.CommentToMeReqData;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
 import com.yaozu.object.utils.DateUtil;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
+import com.yaozu.object.utils.MsgType;
 import com.yaozu.object.utils.Utils;
 import com.yaozu.object.widget.swiperefreshendless.HeaderViewRecyclerAdapter;
 
@@ -41,6 +47,7 @@ public class CommentToMeActivity extends BaseActivity {
 
     private List<Comment> commentList = new ArrayList<>();
     private String mLastCommentId = "";
+    private MessageBeanDao messageBeanDao;
 
     @Override
     protected void setContentView() {
@@ -54,6 +61,7 @@ public class CommentToMeActivity extends BaseActivity {
 
     @Override
     protected void initData() {
+        messageBeanDao = new MessageBeanDao(this);
         commentListAdapter = new CommentListAdapter();
         stringAdapter = new HeaderViewRecyclerAdapter(commentListAdapter);
         linearLayoutManager = new LinearLayoutManager(this);
@@ -63,6 +71,8 @@ public class CommentToMeActivity extends BaseActivity {
         refreshLayout.attachLayoutManagerAndHeaderAdapter(linearLayoutManager, stringAdapter);
 
         refreshLayout.doRefreshing();
+
+        clearCommentRemindMessage();
     }
 
     @Override
@@ -88,6 +98,20 @@ public class CommentToMeActivity extends BaseActivity {
     protected void onILoad() {
         super.onILoad();
         requestCommentData(mLastCommentId);
+    }
+
+    /**
+     * 清除评论提醒消息数
+     */
+    private void clearCommentRemindMessage() {
+        //把群消息提醒数置为0
+        MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_COMMENT);
+        messageBean.setNewMsgnumber(0);
+        messageBeanDao.updateBean(messageBean);
+        //发个广播更新下UI
+        Intent playingintent = new Intent(IntentKey.NOTIFY_MESSAGE_REMIND);
+        LocalBroadcastManager playinglocalBroadcastManager = LocalBroadcastManager.getInstance(this);
+        playinglocalBroadcastManager.sendBroadcast(playingintent);
     }
 
     //网络请求获取数据
@@ -140,7 +164,9 @@ public class CommentToMeActivity extends BaseActivity {
             holder.tvContent.setText(comment.getContent());
             Spannable spannable = new SpannableString(comment.getPostUserName() + " : " + comment.getPostContent());
             ForegroundColorSpan nameColor = new ForegroundColorSpan(getResources().getColor(R.color.top_blue));
-            spannable.setSpan(nameColor, 0, comment.getPostUserName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            if (!TextUtils.isEmpty(comment.getPostUserName())) {
+                spannable.setSpan(nameColor, 0, comment.getPostUserName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            }
             holder.tvPostContent.setText(spannable);
             holder.tvPostContent.setOnClickListener(new View.OnClickListener() {
                 @Override

@@ -227,7 +227,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
                 if (TextUtils.isEmpty(content)) {
                     return;
                 }
-                replyPostRequest(content, mPost.getPostid(), replyuserid);
+                replyPostRequest(content, mPost.getPostid(), mPost.getUserid(), replyuserid);
                 break;
             case R.id.item_listview_replypost_themepost:
                 IntentUtil.toPostDetailActivity(this, mPost.getParentid());
@@ -235,7 +235,14 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         }
     }
 
-    private void replyPostRequest(String content, final String postid, String replyUserid) {
+    /**
+     * 发送评论
+     * @param content 评论内容
+     * @param postid 所评论的帖子ID
+     * @param postUserid 所评论的贴子的用户ID
+     * @param replyUserid 回复对象的用户ID
+     */
+    private void replyPostRequest(String content, final String postid,String postUserid, String replyUserid) {
         showBaseProgressDialog("发送中...");
         String url = DataInterface.ADD_POSTREPLY_COMMENT;
         ParamList parameters = new ParamList();
@@ -243,6 +250,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         parameters.add(new ParamList.Parameter("postid", postid));
         parameters.add(new ParamList.Parameter("commentid", commentid));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
+        parameters.add(new ParamList.Parameter("postUserid", postUserid));
         parameters.add(new ParamList.Parameter("replyuserid", replyUserid));
         parameters.add(new ParamList.Parameter("publictime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
         parameters.add(new ParamList.Parameter("content", content));
