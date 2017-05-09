@@ -29,7 +29,8 @@
                 android:id="@+id/comment_to_me_username"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="name" />
+                android:text="name"
+                android:textColor="@color/nomralblack" />
 
             <TextView
                 android:id="@+id/comment_to_me_pubilctime"
@@ -48,7 +49,8 @@
         android:layout_marginLeft="15dp"
         android:layout_marginRight="15dp"
         android:layout_marginTop="@dimen/dimen_5"
-        android:text="conndsafdsa" />
+        android:text="conndsafdsa"
+        android:textColor="@color/nomralblack" />
 
     <TextView
         android:id="@+id/comment_to_me_postcontent"

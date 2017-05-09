@@ -4,7 +4,10 @@ import android.support.v7.app.ActionBar;
 import android.support.v7.widget.DefaultItemAnimator;
 import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
+import android.text.Spannable;
+import android.text.SpannableString;
 import android.text.TextUtils;
+import android.text.style.ForegroundColorSpan;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
@@ -135,10 +138,14 @@ public class CommentToMeActivity extends BaseActivity {
             holder.tvUserName.setText(comment.getUserName());
             holder.tvPublictime.setText(DateUtil.getRelativeTime(comment.getPublictime()));
             holder.tvContent.setText(comment.getContent());
+            Spannable spannable = new SpannableString(comment.getPostUserName() + " : " + comment.getPostContent());
+            ForegroundColorSpan nameColor = new ForegroundColorSpan(getResources().getColor(R.color.top_blue));
+            spannable.setSpan(nameColor, 0, comment.getPostUserName().length(), Spannable.SPAN_EXCLUSIVE_EXCLUSIVE);
+            holder.tvPostContent.setText(spannable);
             holder.tvPostContent.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IntentUtil.toPostReplyDetailActivity(CommentToMeActivity.this, comment.getPostid());
+                    IntentUtil.toPostReplyDetailActivity(CommentToMeActivity.this, comment.getPostid(), true);
                 }
             });
         }

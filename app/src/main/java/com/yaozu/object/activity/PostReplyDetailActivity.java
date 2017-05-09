@@ -54,6 +54,7 @@ import java.util.List;
 public class PostReplyDetailActivity extends BaseActivity implements View.OnClickListener {
     private Post mPost;
     private String mPostid;
+    private boolean isComeFromComment;//是否是从评论我的页面跳转过来的
     private int index;
     private String mainUserid;//楼主的userid
     private ImageView ivUserIcon;
@@ -62,6 +63,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
     private TextView tvLayerIndex;
     private TextView tvTime;
     private TextView tvContent;
+    private TextView tvThemePost;
 
     private NoScrollListView nlCommentListview;
     private CommentAdapter commentAdapter;
@@ -80,7 +82,11 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
 
     @Override
     protected void settingActionBar(ActionBar actionBar) {
-        actionBar.setTitle(index + "楼");
+        if (isComeFromComment) {
+            actionBar.setTitle("评论");
+        } else {
+            actionBar.setTitle(index + "楼");
+        }
         actionBar.setDisplayHomeAsUpEnabled(true);
     }
 
@@ -88,6 +94,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
     protected void initView() {
         mPost = (Post) getIntent().getSerializableExtra(IntentKey.INTENT_POST);
         mPostid = getIntent().getStringExtra(IntentKey.INTENT_POST_ID);
+        isComeFromComment = getIntent().getBooleanExtra(IntentKey.INTENT_IS_COMEFROM_COMMENT, false);
         index = getIntent().getIntExtra(IntentKey.INTENT_POST_POSITION, 0);
         mainUserid = getIntent().getStringExtra(IntentKey.INTENT_USERID);
 
@@ -102,6 +109,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
         btSend = (Button) findViewById(R.id.activity_postdetail_send);
         nlCommentListview = (NoScrollListView) findViewById(R.id.item_listview_replypost_comments);
         nlImageViews = (NoScrollListView) findViewById(R.id.item_listview_replypost_container);
+        tvThemePost = (TextView) findViewById(R.id.item_listview_replypost_themepost);
         imageListAdapter = new ImageListAdapter(this);
         nlImageViews.setAdapter(imageListAdapter);
 
@@ -128,9 +136,13 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
             imageListAdapter.setData(mPost.getImages());
             etEditContent.setHint("回复 " + mPost.getUserName());
         } else if (!TextUtils.isEmpty(mPostid)) {
+            scrollView.setVisibility(View.INVISIBLE);
             findReplypostRequest(mPostid);
         }
 
+        if (isComeFromComment) {
+            tvThemePost.setVisibility(View.VISIBLE);
+        }
         //把软键盘打开
         //TODO
     }
@@ -138,6 +150,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
     @Override
     protected void setListener() {
         btSend.setOnClickListener(this);
+        tvThemePost.setOnClickListener(this);
         etEditContent.addTextChangedListener(new TextWatcher() {
             @Override
             public void beforeTextChanged(CharSequence s, int start, int count, int after) {
@@ -216,6 +229,9 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
                 }
                 replyPostRequest(content, mPost.getPostid(), replyuserid);
                 break;
+            case R.id.item_listview_replypost_themepost:
+                IntentUtil.toPostDetailActivity(this, mPost.getParentid());
+                break;
         }
     }
 
@@ -264,6 +280,7 @@ public class PostReplyDetailActivity extends BaseActivity implements View.OnClic
                 if (object != null) {
                     Post post = (Post) object;
                     mPost = post;
+                    scrollView.setVisibility(View.VISIBLE);
                     initData();
                 }
             }

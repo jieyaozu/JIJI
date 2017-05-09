@@ -115,6 +115,16 @@
                 android:numColumns="3"
                 android:visibility="visible" />
 
+            <TextView
+                android:id="@+id/item_listview_replypost_themepost"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="55dp"
+                android:background="@drawable/main_transparent_listview_selector"
+                android:text="查看原贴"
+                android:textColor="@color/baoshi_blue"
+                android:visibility="gone" />
+
             <RelativeLayout
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"

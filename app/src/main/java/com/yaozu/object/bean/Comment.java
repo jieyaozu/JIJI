@@ -11,6 +11,8 @@ public class Comment implements Serializable {
     private String userName;
     private String siconpath;
     private String postid;
+    private String postContent;
+    private String postUserName;
     private String commentid;
     private String content;
     private String replyUserid;
@@ -18,6 +20,22 @@ public class Comment implements Serializable {
     private String publictime;
     public int unread;
     public int level;
+
+    public String getPostContent() {
+        return postContent;
+    }
+
+    public void setPostContent(String postContent) {
+        this.postContent = postContent;
+    }
+
+    public String getPostUserName() {
+        return postUserName;
+    }
+
+    public void setPostUserName(String postUserName) {
+        this.postUserName = postUserName;
+    }
 
     public String getUserid() {
         return userid;

@@ -113,9 +113,15 @@ public class IntentUtil {
         overridePendingTransition(context);
     }
 
-    public static void toPostReplyDetailActivity(Context context, String postid) {
+    /**
+     * @param context
+     * @param postid          贴子的ID
+     * @param comefromcomment 是否是从评论页面跳转过来的
+     */
+    public static void toPostReplyDetailActivity(Context context, String postid, boolean comefromcomment) {
         Intent postDetail = new Intent(context, PostReplyDetailActivity.class);
         postDetail.putExtra(IntentKey.INTENT_POST_ID, postid);
+        postDetail.putExtra(IntentKey.INTENT_IS_COMEFROM_COMMENT, comefromcomment);
         context.startActivity(postDetail);
         overridePendingTransition(context);
     }

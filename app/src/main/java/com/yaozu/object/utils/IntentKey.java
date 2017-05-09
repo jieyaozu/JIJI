@@ -26,6 +26,7 @@ public class IntentKey {
     public static final String INTENT_SECTION_ID = "intent_section_id";
     public static final String INTENT_SECTION_NAME = "intent_section_name";
     public static final String INTENT_NICKNAME = "intent_nickname";
+    public static final String INTENT_IS_COMEFROM_COMMENT = "intent_is_comefrom_comment";
 
     public static final String NOTIFY_UPLOAD_IMAGE_SUCCESS = "notify_upload_image_success";//上传成功的广播
     public static final String NOTIFY_UPLOAD_IMAGE_FAILED = "notify_upload_image_failed";//上传失败的广播

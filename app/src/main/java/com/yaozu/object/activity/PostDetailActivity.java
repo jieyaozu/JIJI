@@ -114,7 +114,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
 
     @Override
     protected void settingActionBar(ActionBar actionBar) {
-        actionBar.setTitle("详情");
+        actionBar.setTitle("贴子详情");
         actionBar.setDisplayHomeAsUpEnabled(true);
         actionBar.setShowHideAnimationEnabled(true);
         mActionBar = actionBar;
