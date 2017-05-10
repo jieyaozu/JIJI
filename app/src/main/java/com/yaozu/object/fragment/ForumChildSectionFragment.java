@@ -26,6 +26,7 @@ import com.yaozu.object.entity.HomeForumDataInfo;
 import com.yaozu.object.entity.LoginInfo;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.widget.FloatingActionButton;
 import com.yaozu.object.widget.NoScrollListView;
@@ -38,7 +39,7 @@ import java.util.List;
  * Created by jxj42 on 2017/2/5.
  */
 
-public class ForumChildFragment extends BaseFragment implements View.OnClickListener {
+public class ForumChildSectionFragment extends BaseFragment implements View.OnClickListener {
     public static String TAG = "ForumChildFragment";
     private RecyclerView mRecyclerView;
     private ForumListViewAdapter listViewAdapter;
@@ -47,6 +48,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
     private HeaderListViewAdapter mHeaderAdapter;
     private FloatingActionButton ivButton;
     private String mLastPostid = "";
+    private String mSectionid;
     private HeaderViewRecyclerAdapter stringAdapter;
     private LinearLayoutManager linearLayoutManager;
     private TextView progressTextView;
@@ -101,6 +103,8 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
     @Override
     public void onCreate(@Nullable Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
+        Bundle bundle = getArguments();
+        mSectionid = bundle.getString(IntentKey.INTENT_SECTION_ID);
     }
 
     @Nullable
@@ -120,16 +124,16 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
     protected void onIRefresh() {
         mLastPostid = "";
         refreshLayout.setIsCanLoad(true);
-        requestPostList(mLastPostid);
+        requestPostList(mSectionid, mLastPostid);
     }
 
     @Override
     protected void onILoad() {
-        requestPostList(mLastPostid);
+        requestPostList(mSectionid, mLastPostid);
     }
 
-    private void requestPostList(final String lastpostid) {
-        String url = DataInterface.FIND_HOME_POST_LIST + "lastpostid=" + lastpostid;
+    private void requestPostList(String sectionid, final String lastpostid) {
+        String url = DataInterface.FIND_SECTION_POST_LIST + "lastpostid=" + lastpostid + "&sectionid=" + sectionid;
         RequestManager.getInstance().getRequest(this.getActivity(), url, HomeForumDataInfo.class, new RequestManager.OnResponseListener() {
             @Override
             public void onSuccess(Object object, int code, String message) {
@@ -208,7 +212,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
             if (convertView != null) {
                 view = convertView;
             } else {
-                view = View.inflate(ForumChildFragment.this.getActivity(), R.layout.item_listview_header_forum, null);
+                view = View.inflate(ForumChildSectionFragment.this.getActivity(), R.layout.item_listview_header_forum, null);
             }
             TextView tvTitle = (TextView) view.findViewById(R.id.home_toppost_title);
             final Post post = mDataList.get(position);
@@ -216,7 +220,7 @@ public class ForumChildFragment extends BaseFragment implements View.OnClickList
             view.setOnClickListener(new View.OnClickListener() {
                 @Override
                 public void onClick(View v) {
-                    IntentUtil.toPostDetailActivity(ForumChildFragment.this.getActivity(), post.getPostid());
+                    IntentUtil.toPostDetailActivity(ForumChildSectionFragment.this.getActivity(), post.getPostid());
                 }
             });
             return view;

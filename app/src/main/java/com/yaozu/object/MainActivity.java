@@ -113,6 +113,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
         messageBeanDao.initMessageData();
         setGroupDotVisibility();
+        setMessageDotVisibility();
     }
 
     @Override
@@ -383,13 +384,13 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
                             }
                             messageBean.setNewMsgnumber(messageBean.getNewMsgnumber() + count);
                             messageBeanDao.updateBean(messageBean);
-                            if (count > 0) setMessageDotVisibility(View.VISIBLE);
+                            if (count > 0) ivMessagedot.setVisibility(View.VISIBLE);
                         }
                         requestClearGroupMsg();
                     } else {
                         MessageBean messageBean = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
                         if (messageBean.getNewMsgnumber() > 0) {
-                            setMessageDotVisibility(View.VISIBLE);
+                            ivMessagedot.setVisibility(View.VISIBLE);
                         }
                     }
                 }
@@ -420,11 +421,17 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
 
     /**
      * 小红点的展示与否
-     *
-     * @param visibility
      */
-    private void setMessageDotVisibility(int visibility) {
-        ivMessagedot.setVisibility(visibility);
+    private void setMessageDotVisibility() {
+        MessageBean groupRemind = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
+        MessageBean replyRemind = messageBeanDao.findMessageBean(MsgType.TYPE_REPLY);
+        MessageBean commentRemind = messageBeanDao.findMessageBean(MsgType.TYPE_COMMENT);
+        int remindCount = groupRemind.getNewMsgnumber() + replyRemind.getNewMsgnumber() + commentRemind.getNewMsgnumber();
+        if (remindCount > 0) {
+            ivMessagedot.setVisibility(View.VISIBLE);
+        } else {
+            ivMessagedot.setVisibility(View.INVISIBLE);
+        }
     }
 
     //群消息提醒显示与否
@@ -473,15 +480,7 @@ public class MainActivity extends BaseActivity implements View.OnClickListener {
             if (IntentKey.NOTIFY_NEWPOST_REMIND.equals(intent.getAction())) {
                 setGroupDotVisibility();
             } else if (IntentKey.NOTIFY_MESSAGE_REMIND.equals(intent.getAction())) {
-                MessageBean groupRemind = messageBeanDao.findMessageBean(MsgType.TYPE_GROUP);
-                MessageBean replyRemind = messageBeanDao.findMessageBean(MsgType.TYPE_REPLY);
-                MessageBean commentRemind = messageBeanDao.findMessageBean(MsgType.TYPE_COMMENT);
-                int remindCount = groupRemind.getNewMsgnumber() + replyRemind.getNewMsgnumber() + commentRemind.getNewMsgnumber();
-                if (remindCount > 0) {
-                    setMessageDotVisibility(View.VISIBLE);
-                } else {
-                    setMessageDotVisibility(View.INVISIBLE);
-                }
+                setMessageDotVisibility();
             }
         }
     }

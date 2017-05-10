@@ -652,7 +652,7 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
                 if (TextUtils.isEmpty(content)) {
                     return;
                 }
-                replyPostRequest(content, mPost.getPostid());
+                replyPostRequest(content, mPost.getPostid(), mPost.getUserid());
                 break;
         }
     }
@@ -680,13 +680,21 @@ public class PostDetailActivity extends BaseActivity implements View.OnClickList
         });
     }
 
-    private void replyPostRequest(String content, String parentid) {
+    /**
+     * 回帖子
+     *
+     * @param content      回复内容
+     * @param parentid     主贴子的postid
+     * @param parentUserid 主贴子的用户ID
+     */
+    private void replyPostRequest(String content, String parentid, String parentUserid) {
         showBaseProgressDialog("发送中...");
         String url = DataInterface.REPLY_ADD_POST;
         ParamList parameters = new ParamList();
         replypostid = (System.currentTimeMillis() + LoginInfo.getInstance(this).getUserAccount()).hashCode() + "";
         parameters.add(new ParamList.Parameter("postid", replypostid));
         parameters.add(new ParamList.Parameter("parentid", parentid));
+        parameters.add(new ParamList.Parameter("parentUserid", parentUserid));
         parameters.add(new ParamList.Parameter("userid", LoginInfo.getInstance(this).getUserAccount()));
         parameters.add(new ParamList.Parameter("createtime", DateUtil.generateDateOfTime(System.currentTimeMillis())));
         parameters.add(new ParamList.Parameter("content", content));

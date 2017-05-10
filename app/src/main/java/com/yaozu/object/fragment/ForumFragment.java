@@ -17,6 +17,7 @@ import com.yaozu.object.db.dao.SectionDao;
 import com.yaozu.object.entity.SectionReqData;
 import com.yaozu.object.httpmanager.RequestManager;
 import com.yaozu.object.utils.DataInterface;
+import com.yaozu.object.utils.IntentKey;
 import com.yaozu.object.utils.IntentUtil;
 import com.yaozu.object.widget.PagerSlidingTabStrip;
 
@@ -147,7 +148,14 @@ public class ForumFragment extends BaseFragment {
         public Fragment getItem(int position) {
             Fragment fragment = fragments.get(position);
             if (fragment == null) {
-                fragment = new ForumChildFragment();
+                if (position == 0) {
+                    fragment = new ForumChildFragment();
+                } else {
+                    fragment = new ForumChildSectionFragment();
+                    Bundle bundle = new Bundle();
+                    bundle.putString(IntentKey.INTENT_SECTION_ID, beanList.get(position).getSectionid());
+                    fragment.setArguments(bundle);
+                }
                 fragments.put(position, fragment);
             }
             return fragment;

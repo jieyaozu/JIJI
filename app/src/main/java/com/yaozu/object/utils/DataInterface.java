@@ -28,6 +28,8 @@ public class DataInterface {
     public static String REPLY_ADD_POST = APP_HOST + "superplan/post/post.do?method=replypost&";
     //查找首页贴子列表
     public static String FIND_HOME_POST_LIST = APP_HOST + "superplan/post/post.do?method=findHomelist&";
+    //查找版块内的贴子
+    public static String FIND_SECTION_POST_LIST = APP_HOST + "superplan/post/post.do?method=findSectionPostlist&";
     //查找群内贴子列表
     public static String FIND_GROUP_POST_LIST = APP_HOST + "superplan/post/post.do?method=findGrouplist&";
     //查找所有回贴
